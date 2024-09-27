@@ -1,6 +1,6 @@
 ﻿namespace SimuladorOtroBanco
 {
-    partial class Form1
+    partial class frmSimuladorOtroBanco
     {
         /// <summary>
         ///  Required designer variable.
@@ -94,7 +94,7 @@
             lblDescripcion.TabIndex = 6;
             lblDescripcion.Text = "Descripción";
             // 
-            // Form1
+            // frmSimuladorOtroBanco
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -106,8 +106,8 @@
             Controls.Add(txtDescripcion);
             Controls.Add(txtMonto);
             Controls.Add(txtTelefono);
-            Name = "Form1";
-            Text = "Form1";
+            Name = "frmSimuladorOtroBanco";
+            Text = "Simulador otro banco ";
             ResumeLayout(false);
             PerformLayout();
         }

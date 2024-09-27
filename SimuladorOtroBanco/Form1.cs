@@ -1,8 +1,8 @@
 namespace SimuladorOtroBanco
 {
-    public partial class Form1 : Form
+    public partial class frmSimuladorOtroBanco : Form
     {
-        public Form1()
+        public frmSimuladorOtroBanco()
         {
             InitializeComponent();
         }
