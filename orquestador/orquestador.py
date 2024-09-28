@@ -23,7 +23,7 @@ def orquestador():
         #acepta nuevas conexiones
         receptorExterno_socket, receptor_direccion = orquestador_Socket.accept()
         #crear un nuevo hilo para manejar la conexion del cliente
-        cliente_thread = threading.Thread(target = Metodo_para_manejar_receptor, args = (receptorExterno_socket, receptor_direccion))
-        cliente_thread.start()
+        #cliente_thread = threading.Thread(target = Metodo_para_manejar_receptor, args = (receptorExterno_socket, receptor_direccion))
+        #cliente_thread.start()
 
 orquestador()
