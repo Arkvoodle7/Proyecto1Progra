@@ -6,7 +6,7 @@ import configparser
 config = configparser.ConfigParser()
 config.read('Config.ini')
 puerto = int(config['Orquestador']['puerto'])
-#
+
 
 def orquestador():
     #objeto socket para el servidor
