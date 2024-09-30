@@ -9,7 +9,7 @@ class ReceptorExterno
 {
     static void Main(string[] args)
     {
-        //cargar la configuracion desde el archivo .inij
+        //cargar la configuracion desde el archivo .ini
         var config = LeerConfiguracion("Config.ini");
         string ipReceptorExterno = config["ReceptorExterno.IP"];
         int portReceptorExterno = int.Parse(config["ReceptorExterno.Port"]);
