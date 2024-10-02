@@ -31,6 +31,42 @@ def desinscribir_usuario(cuenta, identificacion, telefono):
     except Exception as e:
         print(f"Error al conectar con el servidor: {e}")
 
+def enviar_pago(telefono_envia, telefono_recibe, monto, descripcion):
+    trama = f"""
+    <transaccion>
+    <telefono>{telefono_envia}</telefono>
+    <monto>{monto}</monto>
+    <descripcion>{descripcion}</descripcion>
+    </transaccion>
+    """
+    
+    # conexion con el orquestador
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(('localhost', 8080))  
+            s.sendall(trama.encode('utf-8'))
+            respuesta = s.recv(4096).decode('utf-8')
+            print(f"Respuesta del servidor: {respuesta}")
+    except Exception as e:
+        print(f"Error al conectar con el servidor: {e}")
+
+def consultar_saldo(telefono):
+    trama = f"""
+    <saldo>
+    <telefono>{telefono}</telefono>
+    </saldo>
+    """
+    
+    # conexion con orquestador
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(('localhost', 8080))  
+            s.sendall(trama.encode('utf-8'))
+            respuesta = s.recv(4096).decode('utf-8')
+            print(f"Respuesta del servidor: {respuesta}")
+    except Exception as e:
+        print(f"Error al conectar con el servidor: {e}")
+
 # Función para abrir la ventana de inscripción/desinscripción
 def abrir_inscribir_desinscribir():
     ventana_inscribir = tk.Toplevel()
@@ -76,6 +112,7 @@ def abrir_enviar_pago():
     descripcion_entry = tk.Entry(ventana_pago)
     descripcion_entry.pack()
     
+    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_envia_entry.get(), telefono_recibe_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
     enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: None)  # Aquí va la lógica
     enviar_btn.pack()
 
@@ -88,12 +125,16 @@ def abrir_consultar_saldo():
     telefono_saldo_entry = tk.Entry(ventana_saldo)
     telefono_saldo_entry.pack()
     
+    consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))  # Aquí va la lógica
+    consultar_btn.pack()
+
     consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: None)  # Aquí va la lógica
     consultar_btn.pack()
 
 # Crear ventana principal
 ventana_principal = tk.Tk()
 ventana_principal.title("Simulador Interno")
+ventana_principal.geometry('400x300')
 
 # Botones en la ventana principal
 inscribir_btn = tk.Button(ventana_principal, text="Inscribir/Desinscribir", command=abrir_inscribir_desinscribir)
@@ -106,5 +147,4 @@ enviar_pago_btn.pack()
 consultar_saldo_btn = tk.Button(ventana_principal, text="Consultar saldo", command=abrir_consultar_saldo)
 consultar_saldo_btn.pack()
 
-# Ejecutar ventana principal
 ventana_principal.mainloop()
