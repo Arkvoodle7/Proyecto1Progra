@@ -33,23 +33,23 @@ class ValidadorTransaccion:
     #validaciones
     def validar_transaccion(self, telefono, monto, descripcion):
         
+        if len(telefono) != 8 or not telefono.isdigit():
+            return self.generar_respuesta_error("Debe enviar un número de teléfono válido.")
+        
+        if not telefono and not monto and not descripcion:
+            return self.generar_respuesta_error("Debe enviar los datos completos y válidos")
+        
+        if len(descripcion) > 25:
+            return self.generar_respuesta_error("La descripción no puede superar 25 caracteres")
+        
+        if float(monto) > 100000:
+            return self.generar_respuesta_error("El monto no debe ser superior a 100.000.")
+
         #valida si el cliente esta registrado en
         registro = self.collection.find_one({"telefono": telefono})
 
         if not registro:
             return self.generar_respuesta_error("Cliente no asociado a pagos móviles.")
-
-        if len(telefono) != 8 or not telefono.isdigit():
-            return self.generar_respuesta_error("Debe enviar un número de teléfono válido.")
-
-        if not telefono and not monto and not descripcion:
-            return self.generar_respuesta_error("Debe enviar los datos completos y válidos")
-         
-        if float(monto) > 100000:
-            return self.generar_respuesta_error("El monto no debe ser superior a 100.000.")
-        
-        if len(descripcion) > 25:
-            return self.generar_respuesta_error("La descripción no puede superar 25 caracteres")
 
         return None 
     def obtener_registro_cliente(self, telefono):
