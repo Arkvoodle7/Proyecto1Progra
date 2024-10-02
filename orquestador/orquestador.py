@@ -17,8 +17,8 @@ from Validaciones_Transaccion import ValidadorTransaccion
 config = configparser.ConfigParser()
 config.read('D:/U/Programacion 4/Proyecto1Progra/orquestador/Config.ini')
 puerto = int(config['Orquestador']['puerto'])
-puerto_bancario = int(config['Banco']['puerto'])  # puerto del socket bancario
-puerto_receptor_externo = int(config['ReceptorExterno']['puerto'])  # puerto del socket receptor externo
+#puerto_bancario = int(config['Banco']['puerto'])  # puerto del socket bancario
+puerto_receptor_externo = int(config['ReceptorExterno']['5000'])  # puerto del socket receptor externo
 
 
 def enviar_trama_bancaria(identificacion, cuenta, monto, tipo):
