@@ -113,6 +113,7 @@ def abrir_enviar_pago():
     descripcion_entry.pack()
     
     enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_envia_entry.get(), telefono_recibe_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
+    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: None)  # Aquí va la lógica
     enviar_btn.pack()
 
 def abrir_consultar_saldo():
@@ -127,6 +128,8 @@ def abrir_consultar_saldo():
     consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))  # Aquí va la lógica
     consultar_btn.pack()
 
+    consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: None)  # Aquí va la lógica
+    consultar_btn.pack()
 
 # Crear ventana principal
 ventana_principal = tk.Tk()

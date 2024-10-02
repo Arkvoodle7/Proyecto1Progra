@@ -5,20 +5,20 @@ using System.Net.Sockets;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 
-class ReceptorExterno
+class SocketExterno
 {
     static void Main(string[] args)
     {
         //cargar la configuracion desde el archivo .ini
         var config = LeerConfiguracion("Config.ini");
-        string ipReceptorExterno = config["ReceptorExterno.IP"];
-        int portReceptorExterno = int.Parse(config["ReceptorExterno.Port"]);
+        string ipReceptorExterno = config["IP"];
+        int portReceptorExterno = int.Parse(config["Port"]);
 
         //iniciar el socket
         IPAddress ip = IPAddress.Parse(ipReceptorExterno);
         TcpListener server = new TcpListener(ip, portReceptorExterno);
         server.Start();
-        Console.WriteLine($"Receptor externo corriendo en {ipReceptorExterno}:{portReceptorExterno}");
+        Console.WriteLine($"Socket externo corriendo en {ipReceptorExterno}:{portReceptorExterno}");
 
         while (true)
         {
@@ -56,23 +56,13 @@ class ReceptorExterno
     static Dictionary<string, string> LeerConfiguracion(string filePath)
     {
         var config = new Dictionary<string, string>();
-        string currentSection = null;
 
         foreach (var line in File.ReadAllLines(filePath))
         {
-            if (!string.IsNullOrWhiteSpace(line))
+            if (!string.IsNullOrWhiteSpace(line) && !line.StartsWith("[") && !line.StartsWith("#") && line.Contains('='))
             {
-                if (line.StartsWith("[") && line.EndsWith("]"))
-                {
-                    //detectar seccion actual ([ReceptorExterno] o [SocketExterno])
-                    currentSection = line.Trim('[', ']');
-                }
-                else if (line.Contains('=') && currentSection != null)
-                {
-                    var keyValue = line.Split('=');
-                    string key = $"{currentSection}.{keyValue[0].Trim()}";
-                    config[key] = keyValue[1].Trim();
-                }
+                var keyValue = line.Split('=');
+                config[keyValue[0].Trim()] = keyValue[1].Trim();
             }
         }
 
@@ -134,46 +124,9 @@ class ReceptorExterno
         return $"<transaccion><telefono>{telefono}</telefono><monto>{monto}</monto><descripcion>{descripcion}</descripcion></transaccion>";
     }
 
-    static void Enviar()
-    {
-        try
-        {
-            //leer la IP y el puerto del SocketExterno desde el Config.ini
-            var config = LeerConfiguracion("Config.ini");
-            string ipSocketExterno = config["SocketExterno.IP"];
-            int portSocketExterno = int.Parse(config["SocketExterno.Port"]);
-
-            //trama de prueba para enviar (cambiar cuando se conecte a orquestador)
-            string trama = "{\"telefono\":12345678, \"monto\":1000, \"descripcion\":\"Pago externo de prueba\"}";
-
-            //crear conexion TCP al SocketExterno
-            TcpClient client = new TcpClient(ipSocketExterno, portSocketExterno);
-            NetworkStream stream = client.GetStream();
-
-            //enviar la trama
-            byte[] dataToSend = System.Text.Encoding.ASCII.GetBytes(trama);
-            stream.Write(dataToSend, 0, dataToSend.Length);
-
-            //recibir la respuesta del SocketExterno
-            byte[] buffer = new byte[1024];
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
-            string respuesta = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
-
-            //mostrar la respuesta en la consola
-            Console.WriteLine($"Respuesta del SocketExterno: {respuesta}");
-
-            //cerrar la conexion
-            client.Close();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al enviar la trama: {ex.Message}");
-        }
-    }
-
     static void RegistrarBitacora(string tramaRecibida, string tramaRespuesta)
     {
-        string connectionString = "server=localhost;user=root;password=Daniel2510*;database=PagosMovilesReceptorExterno";
+        string connectionString = "server=localhost;user=root;password=Daniel2510*;database=PagosMovilesSocketExterno";
 
         using (MySqlConnection conn = new MySqlConnection(connectionString))
         {
