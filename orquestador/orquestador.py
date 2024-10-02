@@ -9,7 +9,6 @@ mongo_uri = "mongodb://localhost:27017"
 
 # Instancia del validador
 validador = ValidadorInscripcion(mongo_uri)
-=======
 import xml.etree.ElementTree as xml
 from Validaciones_Transaccion import ValidadorTransaccion
 
@@ -171,22 +170,6 @@ def orquestador():
         print(f"Conexión recibida de {receptor_direccion}")
         cliente_thread = threading.Thread(target=manejar_cliente, args=(receptor_externo_socket,))
         cliente_thread.start()
-
-orquestador()
-    orquestador_Socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    orquestador_Socket.bind(('localhost', puerto))
-    # escucha las conexiones y permite tener 5 en cola
-    orquestador_Socket.listen(5)
-    print(f"Orquestador escuchando en el puerto {puerto}...")
-
-    # hilo para manejar el cliente
-    while True:
-        # acepta nuevas conexiones
-        receptorExterno_socket, receptor_direccion = orquestador_Socket.accept()
-        # crear un nuevo hilo para manejar la conexion del cliente
-        cliente_thread = threading.Thread(target=recibir_trama, args=(receptorExterno_socket,))
-        cliente_thread.start()
-
 
 if __name__ == "__main__":
     orquestador()
