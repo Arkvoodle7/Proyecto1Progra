@@ -19,7 +19,7 @@ public class SocketBancario {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(socketPort)) {
-            System.out.println("Socket Bancario escuchando en el puerto " + socketPort);
+            System.out.println("Socket Bancario escuchando en el puerto: " + socketPort);
 
             // Mantiene el servidor escuchando indefinidamente
             while (true) {
