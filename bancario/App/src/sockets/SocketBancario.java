@@ -19,7 +19,7 @@ public class SocketBancario {
 
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(socketPort)) {
-            System.out.println("Socket Bancario escuchando en el puerto: " + socketPort);
+            System.out.println("Socket Bancario escuchando en el puerto " + socketPort);
 
             // Mantiene el servidor escuchando indefinidamente
             while (true) {
@@ -34,34 +34,33 @@ public class SocketBancario {
         }
     }
 
-    //M
     private void manejarConexion(Socket socket) {
         try (
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            // Lee la trama recibida desde el cliente
+            // Leer la trama recibida desde el cliente
             String tramaRecibida = in.readLine();
             System.out.println("Trama recibida: " + tramaRecibida);
 
-            // Parsear la trama (se espera en el formato: "Identificacion|Cuenta|Monto|Tipo")
+            // Parsear la trama (por simplicidad, se espera en el formato: "Identificacion|Cuenta|Monto|Tipo")
             String[] partes = tramaRecibida.split("\\|");
             if (partes.length == 4) {
-                TransaccionDto transaccion = new TransaccionDto();
-                transaccion.setIdentificacion(partes[0]);
-                transaccion.setNumeroCuenta(partes[1]);
-                transaccion.setMonto(Double.parseDouble(partes[2]));
-                transaccion.setTipo(partes[3]);
+                TransaccionDto transaccionDTO = new TransaccionDto();
+                transaccionDTO.setIdentificacion(partes[0]);
+                transaccionDTO.setNumeroCuenta(partes[1]);
+                transaccionDTO.setMonto(Double.parseDouble(partes[2]));
+                transaccionDTO.setTipo(partes[3]);
 
                 // Procesar la transacción
                 String respuesta;
-                if (transaccion.getTipo().equals("DEB") || transaccion.getTipo().equals("CRE")) {
-                    respuesta = transaccionService.aplicarTransaccion(transaccion);
+                if (transaccionDTO.getTipo().equals("DEB") || transaccionDTO.getTipo().equals("CRE")) {
+                    respuesta = transaccionService.aplicarTransaccion(transaccionDTO);
                 } else {
                     respuesta = "ERROR|Tipo de transacción inválido";
                 }
 
-                // Enviar respuesta al cliente
+                // Enviar la respuesta al cliente
                 out.write(respuesta);
                 out.newLine();
                 out.flush();

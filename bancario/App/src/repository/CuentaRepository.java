@@ -4,16 +4,13 @@ import config.ConfigProps;
 import entities.Cuenta;
 import interfaces.ICuenta;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class CuentaRepository implements ICuenta {
 
     // Método para obtener la conexión a la base de datos
     private Connection getConnection() throws SQLException {
+
         String url = ConfigProps.getProp("db_url");
         return DriverManager.getConnection(url);
     }
