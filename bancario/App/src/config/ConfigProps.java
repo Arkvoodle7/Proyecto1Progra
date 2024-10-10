@@ -9,7 +9,7 @@ public class ConfigProps {
 
     static {
         try {
-            FileInputStream fileProps = new FileInputStream("local.properties");
+            FileInputStream fileProps = new FileInputStream("bancario/local.properties");
             properties.load(fileProps);
 
         } catch (IOException error) {
