@@ -177,7 +177,7 @@ puerto = int(config['Orquestador']['puerto'])
 
 def manejar_cliente(cliente_socket):
     try:
-        data = cliente_socket.recv(4096).decode('utf-8')  # Recibe datos
+        data = cliente_socket.recv(1024).decode('utf-8')  # Recibe datos
         if not data:
             print("No se recibieron datos del cliente.")
             return
@@ -190,23 +190,25 @@ def manejar_cliente(cliente_socket):
         identificacion = root.find('identificacion').text
         telefono = root.find('telefono').text
 
-        # Validar datos de inscripción o desinscripción
+        # Validar datos de inscripción
         if root.tag == "inscripcion":
-            # Validar datos
+            # Validar los datos básicos
             es_valido, mensaje = validador.validar_datos(cuenta, identificacion, telefono)
             if not es_valido:
                 cliente_socket.sendall(mensaje.encode('utf-8'))
                 return  # Retornar aquí si hay un error
             
-            # Verificar el teléfono
+            # Verificar si el teléfono ya está registrado o si se puede reactivar
             es_valido, respuesta = gestor.verificar_telefono_asociado(cuenta, telefono)
-            if not es_valido:
+            if respuesta:
+                # Envía la respuesta de verificación (éxito o error)
                 cliente_socket.sendall(respuesta.encode('utf-8'))
-                return  # Retornar aquí si hay un error
+                return  # Ya no es necesario continuar si se reactiva o falla
 
-            # Proceder a registrar la asociación si todo es válido
-            gestor.registrar_asociacion(cuenta, identificacion, telefono)
-            cliente_socket.sendall("<respuesta><codigo>0</codigo><descripcion>Inscripción realizada</descripcion></respuesta>".encode('utf-8'))
+            # Si el teléfono no está registrado, procede a registrarlo y envía la respuesta
+            if es_valido and respuesta is None:
+                respuesta_inscripcion = gestor.registrar_asociacion(cuenta, identificacion, telefono)
+                cliente_socket.sendall(respuesta_inscripcion.encode('utf-8'))
 
         elif root.tag == "desinscripcion":
             # Validar datos de desinscripción
@@ -224,7 +226,6 @@ def manejar_cliente(cliente_socket):
     
     finally:
         cliente_socket.close()
-
 
 def orquestador():
     # Configuración y escucha del socket orquestador
