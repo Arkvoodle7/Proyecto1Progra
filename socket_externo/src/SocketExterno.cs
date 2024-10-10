@@ -6,16 +6,14 @@ class SocketExterno
 {
     static void Main(string[] args)
     {
-        //cargar la configuracion desde el archivo .ini
-        var config = LeerConfiguracion("Config.ini");
+        var config = ConfigManagerSE.LeerConfiguracion("Config.ini");
         string ipSocketExterno = config["SocketExterno.IP"];
         int portSocketExterno = int.Parse(config["SocketExterno.Port"]);
 
-        //iniciar el socket
         IPAddress ip = IPAddress.Parse(ipSocketExterno);
         TcpListener server = new TcpListener(ip, portSocketExterno);
         server.Start();
-        Console.WriteLine($"Socket externo corriendo en {ipSocketExterno}:{portSocketExterno}");
+        Console.WriteLine($"Receptor externo corriendo en {ipSocketExterno}:{portSocketExterno}");
 
         while (true)
         {
