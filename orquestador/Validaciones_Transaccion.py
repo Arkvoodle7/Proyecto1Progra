@@ -9,7 +9,7 @@ class ValidadorTransaccion:
         self.collection = self.db['TelefonosXCuentas']
        
     #crea el xml con la respuesta de error si las validaciones son incorrectas
-    def generar_respuesta_error(self, mensaje_error):
+    def generarError(self, mensaje_error):
         respuesta = xml.Element('respuesta')
         codigo = xml.SubElement(respuesta, 'codigo')
         codigo.text = '-1'
@@ -20,7 +20,7 @@ class ValidadorTransaccion:
         return xml.tostring(respuesta, encoding='unicode')
     
     #crea el xml con la respuesta de exito si las validaciones pasan
-    def generar_respuesta_exito(self):
+    def generarExito(self):
         respuesta = xml.Element('respuesta')
         codigo = xml.SubElement(respuesta, 'codigo')
         codigo.text = '0'
@@ -31,28 +31,51 @@ class ValidadorTransaccion:
         return xml.tostring(respuesta, encoding='unicode')
     
     #validaciones
-    def validar_transaccion(self, telefono, monto, descripcion):
+    def validarTransaccion(self, telefono, monto, descripcion):
         
         if len(telefono) != 8 or not telefono.isdigit():
-            return self.generar_respuesta_error("Debe enviar un número de teléfono válido.")
+            return self.generarError("Debe enviar un número de teléfono válido.")
         
         if not telefono and not monto and not descripcion:
-            return self.generar_respuesta_error("Debe enviar los datos completos y válidos")
+            return self.generarError("Debe enviar los datos completos y válidos")
         
         if len(descripcion) > 25:
-            return self.generar_respuesta_error("La descripción no puede superar 25 caracteres")
+            return self.generarError("La descripción no puede superar 25 caracteres")
         
         if float(monto) > 100000:
-            return self.generar_respuesta_error("El monto no debe ser superior a 100.000.")
+            return self.generarError("El monto no debe ser superior a 100.000.")
 
         #valida si el cliente esta registrado en
         registro = self.collection.find_one({"telefono": telefono})
 
         if not registro:
-            return self.generar_respuesta_error("Cliente no asociado a pagos móviles.")
+            return self.generarError("Cliente no asociado a pagos móviles.")
 
         return None 
-    def obtener_registro_cliente(self, telefono):
+    def obtenerCliente(self, telefono):
         # retorna el registro del cliente si existe, de lo contrario None
         return self.collection.find_one({"telefono": telefono})
 
+class ValidadorInscripcion:
+    
+    @staticmethod
+    def validar_datos(cuenta, identificacion, telefono):
+        # Verifica que todos los campos están presentes
+        if not cuenta or not identificacion or not telefono:
+            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
+
+        # Verificación de la identificación (9 dígitos)
+        if len(identificacion) != 9 or not identificacion.isdigit():
+            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
+
+        # Verificación del teléfono (8 dígitos)
+        if len(telefono) != 8 or not telefono.isdigit():
+            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
+
+        # Si pasa todas las validaciones, retorna True
+        return True, None
+
+    @staticmethod
+    def validar_datos_desinscripcion(cuenta, identificacion, telefono):
+        # Reutilizamos la misma lógica de validación para desinscripción
+        return ValidadorInscripcion.validar_datos(cuenta, identificacion, telefono)
