@@ -11,7 +11,7 @@ def inscribir_usuario(cuenta, identificacion, telefono):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(('localhost', 8080)) 
             s.sendall(trama.encode('utf-8'))
-            respuesta = s.recv(4096).decode('utf-8')
+            respuesta = s.recv(1024).decode('utf-8')
             print(f"Respuesta del servidor: {respuesta}")
     except Exception as e:
         print(f"Error al conectar con el servidor: {e}")
@@ -26,7 +26,7 @@ def desinscribir_usuario(cuenta, identificacion, telefono):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(('localhost', 8080))  
             s.sendall(trama.encode('utf-8'))
-            respuesta = s.recv(4096).decode('utf-8')
+            respuesta = s.recv(1024).decode('utf-8')
             print(f"Respuesta del servidor: {respuesta}")
     except Exception as e:
         print(f"Error al conectar con el servidor: {e}")

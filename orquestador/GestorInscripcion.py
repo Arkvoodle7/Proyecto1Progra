@@ -1,26 +1,24 @@
 from pymongo import MongoClient
 
-class ValidadorInscripcion:
-
+class GestorInscripcion:
+    
     def __init__(self, mongo_uri):
         # Conexión a MongoDB
         self.cliente = MongoClient(mongo_uri)
-        self.db = self.cliente['Pagos_Movile']  
-        self.cuentas = self.db['TelefonosXCuentas'] 
-    
-    def validar_datos(self, cuenta, identificacion, telefono):
-        # Verifica que todos los campos están presentes
-        if not cuenta or not identificacion or not telefono:
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
-        
-        # Verificación de la identificación (9 dígitos)
-        if len(identificacion) != 9 or not identificacion.isdigit():
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
+        self.db = self.cliente['Pagos_Movile']
+        self.cuentas = self.db['TelefonosXCuentas']
 
-        # Verificación del teléfono (8 dígitos)
-        if len(telefono) != 8 or not telefono.isdigit():
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
-        
+    def registrar_asociacion(self, cuenta, identificacion, telefono):
+        # Inserta un nuevo registro en la base de datos
+        nueva_cuenta = {
+            "identificacion": identificacion,
+            "numero_cuenta": cuenta,
+            "telefono": telefono,
+            "estado": "activo"
+        }
+        self.cuentas.insert_one(nueva_cuenta)
+
+    def verificar_telefono_asociado(self, cuenta, telefono):
         # Verificación de que la cuenta no tenga ya un número de teléfono asociado
         cuenta_existente = self.cuentas.find_one({"numero_cuenta": cuenta, "estado": "activo"})
         if cuenta_existente:
@@ -40,40 +38,14 @@ class ValidadorInscripcion:
                     {"$set": {"estado": "activo"}}
                 )
                 return True, "<respuesta><codigo>0</codigo><descripcion>Inscripción realizada</descripcion></respuesta>"
-        
+
         # Si pasa las validaciones y no hay cuentas conflictivas
         return True, None
-    
-    def validar_datos_desinscripcion(self, cuenta, identificacion, telefono):
-        # Verifica que todos los campos estén presentes
-        if not cuenta or not identificacion or not telefono:
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
-        
-        # Verificación de la identificación (9 dígitos)
-        if len(identificacion) != 9 or not identificacion.isdigit():
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
-
-        # Verificación del teléfono (8 dígitos)
-        if len(telefono) != 8 or not telefono.isdigit():
-            return False, "<respuesta><codigo>-1</codigo><descripcion>Datos incorrectos</descripcion></respuesta>"
-        
-        # Si pasa las validaciones
-        return True, None
-
-    def registrar_asociacion(self, cuenta, identificacion, telefono):
-        # Inserta un nuevo registro en la base de datos
-        nueva_cuenta = {
-            "identificacion": identificacion,
-            "numero_cuenta": cuenta,
-            "telefono": telefono,
-            "estado": "activo"
-        }
-        self.cuentas.insert_one(nueva_cuenta)
 
     def desinscribir_telefono(self, cuenta, identificacion, telefono):
         # Verifica si el teléfono está afiliado a una cuenta
         cuenta_existente = self.cuentas.find_one({"telefono": telefono, "numero_cuenta": cuenta, "identificacion": identificacion})
-        
+
         if cuenta_existente:
             # Actualiza el estado a "desinscrito"
             self.cuentas.update_one(
@@ -83,6 +55,6 @@ class ValidadorInscripcion:
             return "<respuesta><codigo>0</codigo><descripcion>Desinscripción realizada</descripcion></respuesta>"
         else:
             return "<respuesta><codigo>-1</codigo><descripcion>Teléfono no se encuentra afiliado</descripcion></respuesta>"
-        
+
     def cerrar_conexion(self):
         self.cliente.close()
