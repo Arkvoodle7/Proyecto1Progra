@@ -470,3 +470,7 @@ build/
 .classpath
 .cproject
 .settings/
+
+# IntelliJ IDEA
+*.iml
+.idea/
