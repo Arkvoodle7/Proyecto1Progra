@@ -7,8 +7,6 @@ import xml.etree.ElementTree as ET
 #constructor 
 from Validaciones_Transaccion import ValidadorTransaccion
 
-
-
 class OrquestadorSocket:
 
     def __init__(self):
@@ -227,48 +225,77 @@ class OrquestadorSocket:
 
                 validador = ValidadorTransaccion()
 
-                # Manejo de diferentes tramas
-                if trama.tag == "transaccion":
-                # Valida la transacción y utiliza las funciones ya definidas en ValidadorTransaccion
+                # Identificar el tipo de trama y procesarla
+                if trama.tag == "saldo":
+                    # ORQ6 - Consulta de saldo
+                    telefono = trama.find('telefono').text
+                    registro_cliente = self.validador.obtenerCliente(telefono)
+
+                    if registro_cliente:
+                        identificacion = registro_cliente['identificacion']
+                        cuenta = registro_cliente['numero_cuenta']
+
+                        # Enviar la trama de saldo al sistema bancario
+                        respuesta_banco = self.enviar_trama_saldo(identificacion, cuenta)
+
+                        # Manejar la respuesta del banco
+                        if respuesta_banco and respuesta_banco.startswith("OK|"):
+                            saldo_cliente = respuesta_banco.split('|')[1]
+                            respuesta_exito = f"<respuesta><codigo>0</codigo><saldo>{saldo_cliente}</saldo></respuesta>"
+                            client_socket.send(respuesta_exito.encode('utf-8'))
+                        else:
+                            respuesta_error_banco = self.validador.generarError(f"Error del banco: {respuesta_banco}")
+                            client_socket.send(respuesta_error_banco.encode('utf-8'))
+                    else:
+                        respuesta_error = self.validador.generarError("Cliente no asociado a pagos móviles")
+                        client_socket.send(respuesta_error.encode('utf-8'))
+
+                elif trama.tag == "transaccion":
+                    # ORQ2 y ORQ5 - Procesamiento de transacciones
                     telefono = trama.find('telefono').text
                     monto = trama.find('monto').text
                     descripcion = trama.find('descripcion').text
 
-                # Llama a la función que valida los datos del cliente y genera un error si hay problemas
-                respuesta_error = validador.validarTransaccion(telefono, monto, descripcion)
-                if respuesta_error:
-                    client_socket.send(respuesta_error.encode('utf-8'))
-                    return  # Terminamos aquí si hay un error
+                     # Validar la transacción
+                    respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion)
+                    if respuesta_error:
+                        client_socket.send(respuesta_error.encode('utf-8'))
+                        return
 
-                # Si las validaciones son exitosas, buscar al cliente en la base de datos
-                registro_cliente = validador.obtenerCliente(telefono)
-                if registro_cliente:
-                    # Si el cliente está asociado, proceder con el envío al banco
-                    identificacion = registro_cliente['identificacion']
-                    cuenta = registro_cliente['numero_cuenta']
+                    # Obtener los datos del cliente
+                    registro_cliente = self.validador.obtenerCliente(telefono)
+                    if registro_cliente:
+                        identificacion = registro_cliente['identificacion']
+                        cuenta = registro_cliente['numero_cuenta']
 
-                    # Enviar la trama bancaria
-                    tipo_transaccion = "CRE"
-                    respuesta_banco = self.enviar_trama_bancaria(identificacion, cuenta, monto, tipo_transaccion)
+                        # Enviar la trama bancaria
+                        tipo_transaccion = "CRE"
+                        respuesta_banco = self.enviar_trama_bancaria(identificacion, cuenta, monto, tipo_transaccion)
 
-                    if respuesta_banco and respuesta_banco.startswith("OK|"):
-                        response_success = validador.generarExito()
-                        client_socket.send(response_success.encode('utf-8'))
+                        # Manejar la respuesta del banco
+                        if respuesta_banco and respuesta_banco.startswith("OK|"):
+                            respuesta_exito = self.validador.generarExito()
+                            client_socket.send(respuesta_exito.encode('utf-8'))
+                        else:
+                            respuesta_error_banco = self.validador.generarError(respuesta_banco)
+                            client_socket.send(respuesta_error_banco.encode('utf-8'))
                     else:
-                        response_error_banco = validador.generarError(respuesta_banco)
-                        client_socket.send(response_error_banco.encode('utf-8'))
-                else:
-                    response_error = validador.generarError("Cliente no asociado a pagos móviles")
-                    client_socket.send(response_error.encode('utf-8'))
+                        # Si no está registrado en pagos móviles, enviar al receptor externo (ORQ5)
+                        respuesta_receptor = self.enviar_trama_receptor_externo(telefono, monto, descripcion)
 
-                if trama.tag == "transaccion":
-                    self.recibir_trama(client_socket)
-                elif trama.tag == "saldo":
-                    self.recibe_consulta_saldo(client_socket)
-                elif trama.tag == "inscripcion":
-                    self.manejar_cliente(client_socket)
-                elif trama.tag == "desinscripcion":
-                    self.manejar_cliente(client_socket)
+                    # Manejar la respuesta del receptor externo
+                    if respuesta_receptor and respuesta_receptor.startswith('{"codigo": 0'):
+                        client_socket.send(respuesta_receptor.encode('utf-8'))
+                    else:
+                        respuesta_error_receptor = self.validador.generarError(f"Error en receptor externo: {respuesta_receptor}")
+                        client_socket.send(respuesta_error_receptor.encode('utf-8'))
+
+
+                else:
+                    # Manejar otras tramas como inscripción o desinscripción
+                    if trama.tag in ["inscripcion", "desinscripcion"]:
+                        self.manejar_cliente(client_socket)
+
 
             except ConnectionResetError:
                 print("La conexión ha sido interrumpida por el host remoto.")
