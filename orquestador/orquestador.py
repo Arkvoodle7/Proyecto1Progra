@@ -6,7 +6,8 @@ import xml.etree.ElementTree as ET
 
 #constructor 
 from Validaciones_Transaccion import ValidadorTransaccion
-
+from GestorInscripcion import GestorInscripcion
+from ValidarInscripcion import ValidadorInscripcion
 
 
 class OrquestadorSocket:
@@ -14,11 +15,16 @@ class OrquestadorSocket:
     def __init__(self):
         # archivo de configuración
         config = configparser.ConfigParser()
-        config.read('Config.ini')
+        config.read('D:/U/Programacion 4/Proyecto1Progra/orquestador/Config.ini')
         self.puerto = int(config['Orquestador']['puerto'])
         self.puerto_bancario = int(config['Banco']['puerto'])  # puerto del socket bancario
         self.puerto_receptor_externo = int(config['ReceptorExterno']['puerto'])  # puerto del socket receptor externo
         self.validador = ValidadorTransaccion()
+        self.validadori =ValidadorInscripcion
+        self.mongo_uri = config['MongoDB']['uri']
+        self.gestor = GestorInscripcion(self.mongo_uri)
+
+    
 
     # trama de envio del saldo
     def enviar_trama_saldo(self, identificacion, cuenta):
@@ -119,53 +125,43 @@ class OrquestadorSocket:
             respuesta_error = self.validador.generarError("Error al parsear la trama XML")
             print(respuesta_error)
 
-    def manejar_cliente(self, cliente_socket):
+   
+    def manejar_cliente(self, cliente_socket, root):
+        """
+        Manejar la lógica de inscripción y desinscripción.
+        """
         try:
-            data = cliente_socket.recv(4096).decode('utf-8')  # Recibe datos
-            if not data:
-                print("No se recibieron datos del cliente.")
-                return
-
-            print(f"Datos recibidos: {data}")
-            # Parsear el XML recibido
-            root = ET.fromstring(data)
             cuenta = root.find('cuenta').text
             identificacion = root.find('identificacion').text
             telefono = root.find('telefono').text
 
+            # Validar datos de inscripción
             if root.tag == "inscripcion":
-                # Validar los datos de inscripción
-                es_valido, mensaje = self.validador.validar_datos(cuenta, identificacion, telefono)
-
-                if es_valido:
-                    if mensaje is not None:
-                        # Si la cuenta fue reactivada, enviar la respuesta de éxito
-                        cliente_socket.sendall(mensaje.encode('utf-8'))
-                    else:
-                        # Si es una nueva inscripción, registrar en la base de datos
-                        self.validador.registrar_asociacion(cuenta, identificacion, telefono)
-                        respuesta = "<respuesta><codigo>0</codigo><descripcion>Inscripción realizada</descripcion></respuesta>"
-                        cliente_socket.sendall(respuesta.encode('utf-8'))
-                else:
-                    # Si los datos son inválidos, enviar el mensaje de error
+                es_valido, mensaje = self.validadori.validar_datos(cuenta, identificacion, telefono)
+                if not es_valido:
                     cliente_socket.sendall(mensaje.encode('utf-8'))
+                    return  # Retornar aquí si hay un error
+
+                es_valido, respuesta = self.gestor.verificar_telefono_asociado(cuenta, telefono)
+                if respuesta:
+                    cliente_socket.sendall(respuesta.encode('utf-8'))
+                    return  # Detener si hay error o reactivación
+
+                if es_valido and respuesta is None:
+                    respuesta_inscripcion = self.gestor.registrar_asociacion(cuenta, identificacion, telefono)
+                    cliente_socket.sendall(respuesta_inscripcion.encode('utf-8'))
 
             elif root.tag == "desinscripcion":
-                # Lógica para desinscripción
-                es_valido, mensaje = self.validador.validar_datos_desinscripcion(cuenta, identificacion, telefono)
+                es_valido, mensaje = self.validadori.validar_datos_desinscripcion(cuenta, identificacion, telefono)
+                if not es_valido:
+                    cliente_socket.sendall(mensaje.encode('utf-8'))
+                    return  # Error
 
-                if es_valido:
-                    # Si los datos son válidos, proceder con la desinscripción
-                    respuesta = self.validador.desinscribir_telefono(cuenta, identificacion, telefono)
-                else:
-                    # Si los datos no son válidos, enviar el mensaje de error
-                    respuesta = mensaje
-
+                respuesta = self.gestor.desinscribir_telefono(cuenta, identificacion, telefono)
                 cliente_socket.sendall(respuesta.encode('utf-8'))
 
         except Exception as e:
             print(f"Error al manejar cliente: {e}")
-
         finally:
             cliente_socket.close()
 
@@ -215,68 +211,71 @@ class OrquestadorSocket:
             client_socket.send(respuesta_error.encode('utf-8'))
 
     def handle_client(self, client_socket):
+        """
+        Manejar las diferentes tramas recibidas.
+        """
         while True:
             try:
-                # Aquí se decide qué operación realizar según la trama recibida
                 data = client_socket.recv(1024)
                 if not data:
                     break
+
                 data = data.replace(b'\n', b'').replace(b'\r', b'')
                 print(f"Datos recibidos: {data.decode('utf-8')}")
-                trama = ET.fromstring(data.decode('utf-8'))
+                root = ET.fromstring(data.decode('utf-8'))
 
-                validador = ValidadorTransaccion()
-
-                # Manejo de diferentes tramas
-                if trama.tag == "transaccion":
-                # Valida la transacción y utiliza las funciones ya definidas en ValidadorTransaccion
-                    telefono = trama.find('telefono').text
-                    monto = trama.find('monto').text
-                    descripcion = trama.find('descripcion').text
-
-                # Llama a la función que valida los datos del cliente y genera un error si hay problemas
-                respuesta_error = validador.validarTransaccion(telefono, monto, descripcion)
-                if respuesta_error:
-                    client_socket.send(respuesta_error.encode('utf-8'))
-                    return  # Terminamos aquí si hay un error
-
-                # Si las validaciones son exitosas, buscar al cliente en la base de datos
-                registro_cliente = validador.obtenerCliente(telefono)
-                if registro_cliente:
-                    # Si el cliente está asociado, proceder con el envío al banco
-                    identificacion = registro_cliente['identificacion']
-                    cuenta = registro_cliente['numero_cuenta']
-
-                    # Enviar la trama bancaria
-                    tipo_transaccion = "CRE"
-                    respuesta_banco = self.enviar_trama_bancaria(identificacion, cuenta, monto, tipo_transaccion)
-
-                    if respuesta_banco and respuesta_banco.startswith("OK|"):
-                        response_success = validador.generarExito()
-                        client_socket.send(response_success.encode('utf-8'))
-                    else:
-                        response_error_banco = validador.generarError(respuesta_banco)
-                        client_socket.send(response_error_banco.encode('utf-8'))
-                else:
-                    response_error = validador.generarError("Cliente no asociado a pagos móviles")
-                    client_socket.send(response_error.encode('utf-8'))
-
-                if trama.tag == "transaccion":
-                    self.recibir_trama(client_socket)
-                elif trama.tag == "saldo":
+                # Decidir la operación según el tag
+                if root.tag == "transaccion":
+                    self.manejar_transaccion(client_socket, root)
+                elif root.tag == "saldo":
                     self.recibe_consulta_saldo(client_socket)
-                elif trama.tag == "inscripcion":
-                    self.manejar_cliente(client_socket)
-                elif trama.tag == "desinscripcion":
-                    self.manejar_cliente(client_socket)
+                elif root.tag in ["inscripcion", "desinscripcion"]:
+                    self.manejar_cliente(client_socket, root)
 
             except ConnectionResetError:
                 print("La conexión ha sido interrumpida por el host remoto.")
-                client_socket.close()
+                break
             except OSError:
                 print("El cliente ha cerrado la conexión.")
-        client_socket.close()
+                break
+            except Exception as e:
+                print(f"Error al procesar la trama: {e}")
+                break
 
+        client_socket.close()
+    def manejar_transaccion(self, client_socket, root):
+        """
+        Manejar la lógica de transacciones.
+        """
+        try:
+            telefono = root.find('telefono').text
+            monto = root.find('monto').text
+            descripcion = root.find('descripcion').text
+
+            respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion)
+            if respuesta_error:
+                client_socket.sendall(respuesta_error.encode('utf-8'))
+                return
+
+            registro_cliente = self.validador.obtenerCliente(telefono)
+            if registro_cliente:
+                identificacion = registro_cliente['identificacion']
+                cuenta = registro_cliente['numero_cuenta']
+                respuesta_banco = self.enviar_trama_bancaria(identificacion, cuenta, monto, "CRE")
+
+                if respuesta_banco and respuesta_banco.startswith("OK|"):
+                    response_success = self.validador.generarExito()
+                    client_socket.sendall(response_success.encode('utf-8'))
+                else:
+                    response_error_banco = self.validador.generarError(respuesta_banco)
+                    client_socket.sendall(response_error_banco.encode('utf-8'))
+            else:
+                response_error = self.validador.generarError("Cliente no asociado a pagos móviles")
+                client_socket.sendall(response_error.encode('utf-8'))
+
+        except Exception as e:
+            print(f"Error al manejar transacción: {e}")
+            
     def start(self):
         # objeto socket para el servidor
         Orquestador = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
