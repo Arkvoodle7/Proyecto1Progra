@@ -13,7 +13,7 @@ class SocketExterno
         IPAddress ip = IPAddress.Parse(ipSocketExterno);
         TcpListener server = new TcpListener(ip, portSocketExterno);
         server.Start();
-        Console.WriteLine($"Receptor externo corriendo en {ipSocketExterno}:{portSocketExterno}");
+        Console.WriteLine($"Socket externo corriendo en {ipSocketExterno}:{portSocketExterno}");
 
         while (true)
         {
