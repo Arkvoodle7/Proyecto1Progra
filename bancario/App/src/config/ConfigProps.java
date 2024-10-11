@@ -9,6 +9,7 @@ public class ConfigProps {
 
     static {
         try {
+            System.out.println(System.getProperty("user.dir"));
             FileInputStream fileProps = new FileInputStream("bancario/local.properties");
             properties.load(fileProps);
 
