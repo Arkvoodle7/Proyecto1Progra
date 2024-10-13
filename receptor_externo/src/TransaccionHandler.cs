@@ -71,12 +71,48 @@ class TransaccionHandler
             return "{\"codigo\":-1, \"descripcion\":\"Debe enviar los datos completos y válidos\"}";
         }
 
-        //si todo es correcto, retornar la respuesta positiva o enviar al Orquestador.
-        return "{\"codigo\":0, \"descripcion\":\"Transacción aplicada\"}";
+        string tramaXML = $"<transaccion><telefono>{telefono}</telefono><monto>{monto}</monto><descripcion>{descripcion}</descripcion></transaccion>";
+
+        //enviar trama al Orquestador
+        try
+        {
+            string respuestaOrquestador = EnviarTramaOrquestador(tramaXML);
+
+            //procesar la respuesta del Orquestador
+            if (respuestaOrquestador.Contains("<codigo>0</codigo>"))
+            {
+                return "{\"codigo\": 0, \"descripcion\": \"Transacción aplicada\"}";
+            }
+            else
+            {
+                return "{\"codigo\": -1, \"descripcion\": \"Error en el Orquestador: " + respuestaOrquestador + "\"}";
+            }
+        }
+        catch (Exception ex)
+        {
+            return "{\"codigo\": -1, \"descripcion\": \"Error al conectar con el Orquestador: " + ex.Message + "\"}";
+        }
     }
 
-    static string GenerarXMLTransaccion(string telefono, decimal monto, string descripcion)
+    private string EnviarTramaOrquestador(string tramaXML)
     {
-        return $"<transaccion><telefono>{telefono}</telefono><monto>{monto}</monto><descripcion>{descripcion}</descripcion></transaccion>";
+        //leer la IP y puerto del Orquestador desde la configuracion
+        var config = ConfigManager.LeerConfiguracion("Config.ini");
+        string ipOrquestador = config["Orquestador.IP"];
+        int portOrquestador = int.Parse(config["Orquestador.Port"]);
+
+        using (TcpClient client = new TcpClient(ipOrquestador, portOrquestador))
+        {
+            NetworkStream stream = client.GetStream();
+            byte[] data = Encoding.ASCII.GetBytes(tramaXML);
+            stream.Write(data, 0, data.Length);
+
+            //leer la respuesta del Orquestador
+            byte[] buffer = new byte[1024];
+            int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            string respuesta = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+            return respuesta;
+        }
     }
 }

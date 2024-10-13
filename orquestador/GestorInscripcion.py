@@ -3,10 +3,10 @@ from pymongo import MongoClient
 
 class GestorInscripcion:
     
-    def __init__(self, mongo_uri):
+    def __init__(self, mongouri):
         # Conexión a MongoDB
-        self.cliente = MongoClient(mongo_uri)
-        self.db = self.cliente['Pagos_Movile']
+        self.cliente = MongoClient(mongouri)
+        self.db = self.cliente['PagosMovilesOrquestador']
         self.cuentas = self.db['TelefonosXCuentas']
 
     def registrar_asociacion(self, cuenta, identificacion, telefono):

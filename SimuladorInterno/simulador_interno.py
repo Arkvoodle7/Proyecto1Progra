@@ -1,15 +1,22 @@
 import socket
 import tkinter as tk
+from tkinter import messagebox
+import socket
+import configparser
 
 # Función para inscribir usuario
 def inscribir_usuario(cuenta, identificacion, telefono):
+    # Leer el puerto del Orquestador desde Config.ini
+    config = configparser.ConfigParser()
+    config.read('Config.ini')
+    puerto_orquestador = int(config['Orquestador']['puerto'])
+    
     # Formato de la trama en XML
     trama = f"<inscripcion><cuenta>{cuenta}</cuenta><identificacion>{identificacion}</identificacion><telefono>{telefono}</telefono></inscripcion>"
     
-    # Conexión al socket orquestador
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('localhost', 8080)) 
+            s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(1024).decode('utf-8')
             print(f"Respuesta del servidor: {respuesta}")
@@ -18,49 +25,72 @@ def inscribir_usuario(cuenta, identificacion, telefono):
 
 # Función para desinscribir usuario
 def desinscribir_usuario(cuenta, identificacion, telefono):
+    # Leer el puerto del Orquestador desde Config.ini
+    config = configparser.ConfigParser()
+    config.read('Config.ini')
+    puerto_orquestador = int(config['Orquestador']['puerto'])
+    
     # Formato de la trama en XML
     trama = f"<desinscripcion><cuenta>{cuenta}</cuenta><identificacion>{identificacion}</identificacion><telefono>{telefono}</telefono></desinscripcion>"
     
-    # Conexión al socket orquestador
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('localhost', 8080))  
+            s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(1024).decode('utf-8')
             print(f"Respuesta del servidor: {respuesta}")
     except Exception as e:
         print(f"Error al conectar con el servidor: {e}")
 
-def enviar_pago(telefono_envia, telefono_recibe, monto, descripcion):
-    trama = f"""
-    <transaccion>
-    <telefono>{telefono_envia}</telefono>
-    <monto>{monto}</monto>
-    <descripcion>{descripcion}</descripcion>
-    </transaccion>
-    """
+def enviar_pago(telefono, monto, descripcion):
+    # Leer el puerto del Orquestador desde Config.ini
+    config = configparser.ConfigParser()
+    config.read('Config.ini')
+    puerto_orquestador = int(config['Orquestador']['puerto'])
     
-    # conexion con el orquestador
+    # Crear la trama en formato XML
+    trama = f"""<transaccion>
+                    <telefono>{telefono}</telefono>
+                    <monto>{monto}</monto>
+                    <descripcion>{descripcion}</descripcion>
+                </transaccion>"""
+    
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('localhost', 8080))  
-            s.sendall(trama.encode('utf-8'))
-            respuesta = s.recv(4096).decode('utf-8')
-            print(f"Respuesta del servidor: {respuesta}")
-    except Exception as e:
-        print(f"Error al conectar con el servidor: {e}")
+        orquestador_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        orquestador_socket.connect(('localhost', puerto_orquestador))
+        orquestador_socket.send(trama.encode('utf-8'))
+        
+        respuesta = orquestador_socket.recv(1024).decode('utf-8')
+        orquestador_socket.close()
+        
+        mostrar_popup_respuesta(respuesta)
+    except socket.error as e:
+        mostrar_popup_respuesta(f"Error de conexión con el Orquestador: {str(e)}")
+
+def mostrar_popup_respuesta(respuesta):
+    # Inicializar ventana de tkinter
+    root = tk.Tk()
+    root.withdraw()  # Ocultar la ventana principal
+    
+    # Mostrar un popup con la respuesta
+    messagebox.showinfo("Respuesta del Orquestador", respuesta)
+    
+    # Cerrar la ventana de tkinter
+    root.quit()
 
 def consultar_saldo(telefono):
-    trama = f"""
-    <saldo>
-    <telefono>{telefono}</telefono>
-    </saldo>
-    """
+    # Leer el puerto del Orquestador desde Config.ini
+    config = configparser.ConfigParser()
+    config.read('Config.ini')
+    puerto_orquestador = int(config['Orquestador']['puerto'])
     
-    # conexion con orquestador
+    trama = f"""<saldo>
+    <telefono>{telefono}</telefono>
+    </saldo>"""
+    
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('localhost', 8080))  
+            s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(4096).decode('utf-8')
             print(f"Respuesta del servidor: {respuesta}")
@@ -96,13 +126,9 @@ def abrir_enviar_pago():
     ventana_pago.title("Enviar pago")
     
     # Campos para enviar pago
-    tk.Label(ventana_pago, text="Teléfono del que envía").pack()
-    telefono_envia_entry = tk.Entry(ventana_pago)
-    telefono_envia_entry.pack()
-    
-    tk.Label(ventana_pago, text="Teléfono del que recibe").pack()
-    telefono_recibe_entry = tk.Entry(ventana_pago)
-    telefono_recibe_entry.pack()
+    tk.Label(ventana_pago, text="Teléfono").pack()
+    telefono_entry = tk.Entry(ventana_pago)
+    telefono_entry.pack()
     
     tk.Label(ventana_pago, text="Monto").pack()
     monto_entry = tk.Entry(ventana_pago)
@@ -112,7 +138,7 @@ def abrir_enviar_pago():
     descripcion_entry = tk.Entry(ventana_pago)
     descripcion_entry.pack()
     
-    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_envia_entry.get(), telefono_recibe_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
+    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
     enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: None)  # Aquí va la lógica
     enviar_btn.pack()
 
