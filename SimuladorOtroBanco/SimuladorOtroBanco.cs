@@ -55,12 +55,12 @@ namespace SimuladorOtroBanco
         {
             try
             {
-                //cargar la configuracion desde el archivo .ini
+                //cargar la configuración desde el archivo .ini
                 var config = LeerConfiguracion("Config.ini");
                 string ipReceptorExterno = config["IP"];
                 int puertoReceptorExterno = int.Parse(config["Port"]);
 
-                //crear conexion TCP al Receptor Externo
+                //crear conexión TCP al Receptor Externo
                 TcpClient client = new TcpClient(ipReceptorExterno, puertoReceptorExterno);
                 NetworkStream stream = client.GetStream();
 
@@ -68,16 +68,23 @@ namespace SimuladorOtroBanco
                 byte[] dataToSend = System.Text.Encoding.ASCII.GetBytes(trama);
                 stream.Write(dataToSend, 0, dataToSend.Length);
 
+                //agregar timeout para evitar espera indefinida
+                client.ReceiveTimeout = 5000;  // 5 segundos de timeout
+
                 //recibir la respuesta del Receptor Externo
                 byte[] buffer = new byte[1024];
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string respuesta = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
                 //mostrar la respuesta
-                MessageBox.Show($"Respuesta del Receptor externo: {respuesta}");
+                MessageBox.Show($"Respuesta del Receptor Externo: {respuesta}");
 
-                //cerrar la conexion
+                //cerrar la conexión
                 client.Close();
+            }
+            catch (SocketException ex)
+            {
+                MessageBox.Show($"Error al recibir respuesta: Tiempo de espera agotado o problema de conexión ({ex.Message})");
             }
             catch (Exception ex)
             {
