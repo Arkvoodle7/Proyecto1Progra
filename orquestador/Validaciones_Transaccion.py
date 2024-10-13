@@ -31,7 +31,7 @@ class ValidadorTransaccion:
         return xml.tostring(respuesta, encoding='unicode')
     
     #validaciones
-    def validarTransaccion(self, telefono, monto, descripcion):
+    def validarTransaccion(self, telefono, monto, descripcion, es_interno=True):
         
         if len(telefono) != 8 or not telefono.isdigit():
             return self.generarError("Debe enviar los datos completos y válidos")
@@ -51,7 +51,7 @@ class ValidadorTransaccion:
         #valida si el cliente esta registrado en
         registro = self.collection.find_one({"telefono": telefono})
 
-        if not registro:
+        if not registro and es_interno:
             return self.generarError("Cliente no asociado a pagos móviles.")
 
         return None 

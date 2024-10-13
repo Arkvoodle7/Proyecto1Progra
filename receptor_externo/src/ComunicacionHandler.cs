@@ -10,77 +10,87 @@ class ComunicacionHandler
     {
         try
         {
-            //leer la IP y el puerto del Socket Externo desde el archivo de configuracion
+            // Leer la IP y el puerto del Socket Externo desde el archivo de configuración
             var config = ConfigManager.LeerConfiguracion("Config.ini");
             string ipSocketExterno = config["SocketExterno.IP"];
             int portSocketExterno = int.Parse(config["SocketExterno.Port"]);
 
-            //validar la trama recibida del Orquestador
+            // Validar la trama recibida del Orquestador
             dynamic transaccion = Newtonsoft.Json.JsonConvert.DeserializeObject(tramaRecibida);
 
-            //validar el telefono
+            // Validar el teléfono
             string telefono = transaccion.telefono;
             if (telefono.Length != 8 || !telefono.All(char.IsDigit))
             {
                 return "{\"codigo\":-1, \"descripcion\":\"Debe enviar los datos completos y válidos\"}";
             }
 
-            //validar el monto
+            // Validar el monto
             decimal monto;
 
             if (transaccion.monto == null || string.IsNullOrEmpty(transaccion.monto.ToString()))
             {
-                //si el monto es nulo o vacio retorna un error
+                // Si el monto es nulo o vacío retorna un error
                 return "{\"codigo\":-1, \"descripcion\":\"Debe enviar los datos completos y válidos\"}";
             }
             else
             {
-                //convertir el monto si no es nulo
+                // Convertir el monto si no es nulo
                 monto = (decimal)transaccion.monto;
             }
 
-            //validar el monto
+            // Validar el monto
             if (monto > 100000)
             {
                 return "{\"codigo\":-1, \"descripcion\":\"El monto no debe ser superior a 100.000\"}";
             }
 
-            //validar la descripcion
+            // Validar la descripción
             string descripcion = transaccion.descripcion;
             if (descripcion.Length > 25)
             {
                 return "{\"codigo\":-1, \"descripcion\":\"La descripción no puede superar 25 caracteres\"}";
             }
 
-            //generar la trama JSON para el Socket Externo
+            // Generar la trama JSON para el Socket Externo
             string tramaJSON = $"{{\"telefono\":\"{telefono}\",\"monto\":{monto},\"descripcion\":\"{descripcion}\"}}";
 
-            //conectar al Socket Externo
+            // Conectar al Socket Externo
             TcpClient client = new TcpClient(ipSocketExterno, portSocketExterno);
+
+            // Configurar timeout de 10 segundos (30000 milisegundos)
+            client.SendTimeout = 30000;  // Timeout para enviar datos
+            client.ReceiveTimeout = 30000;  // Timeout para recibir datos
+
             NetworkStream stream = client.GetStream();
 
-            //enviar la trama al Socket Externo
+            // Enviar la trama al Socket Externo
             byte[] dataToSend = Encoding.ASCII.GetBytes(tramaJSON);
             stream.Write(dataToSend, 0, dataToSend.Length);
 
-            //recibir la respuesta del Socket Externo
+            // Recibir la respuesta del Socket Externo
             byte[] buffer = new byte[1024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             string respuesta = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-            //cerrar la conexion
+            // Cerrar la conexión
             client.Close();
 
-            //registrar en la bitáaora del Receptor Externo
+            // Registrar en la bitácora del Receptor Externo
             BitacoraHandler.RegistrarBitacora(tramaRecibida, respuesta);
 
-            return respuesta;  //retornar la respuesta al Orquestador
+            return respuesta;  // Retornar la respuesta al Orquestador
         }
-        catch (Exception ex)
+        catch (SocketException ex)
         {
-            return "{\"codigo\": -1, \"descripcion\": \"Error al conectar con el Socket Externo: " + ex.Message + "\"}";
+            return "{\"codigo\": -1, \"descripcion\": \"Error en el Socket Externo: " + ex.Message + "\"}";
+        }
+        catch (IOException ex)
+        {
+            return "{\"codigo\": -1, \"descripcion\": \"Error de comunicación: " + ex.Message + "\"}";
         }
     }
+
 
     public void RecibirTramaDesdeOrquestador(TcpClient orquestadorClient)
     {

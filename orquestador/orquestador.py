@@ -98,23 +98,23 @@ class OrquestadorSocket:
         print(f"Manejando transacción con teléfono: {telefono}, monto: {monto}, descripción: {descripcion}")
 
         # Validación de la transacción
-        respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion)
-        if respuesta_error:
+        respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion, es_interno=False)
+        if respuesta_error and self.es_transaccion_interna(telefono):
             print(respuesta_error)
             return respuesta_error
 
         # Obtener el cliente asociado
         registro_cliente = self.validador.obtenerCliente(telefono)
-        identificacion = registro_cliente["identificacion"]
-        cuenta = registro_cliente["numero_cuenta"]
+        identificacion = registro_cliente["identificacion"] if registro_cliente else "000000000"
+        cuenta = registro_cliente["numero_cuenta"] if registro_cliente else "000000000"
 
         # Procesar la trama
-        respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto)
+        respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto, descripcion)
 
         # Retornar la respuesta al cliente (ya en formato XML o JSON)
         return respuesta
 
-    def procesar_trama(self, telefono, identificacion, cuenta, monto):
+    def procesar_trama(self, telefono, identificacion, cuenta, monto, descripcion):
         print("Procesando trama...")
         cuenta_existente = self.mongo_db.TelefonosXCuentas.find_one({"telefono": telefono})
 
@@ -126,7 +126,7 @@ class OrquestadorSocket:
         else:
             # Transacción externa
             print("Transacción externa. Enviando al Receptor Externo.")
-            respuesta_externa = self.enviar_trama_receptor_externo(telefono, monto)
+            respuesta_externa = self.enviar_trama_receptor_externo(telefono, monto, descripcion)
             return respuesta_externa
 
     def enviar_trama_bancaria(self, identificacion, cuenta, monto, tipo, es_interno):
@@ -193,22 +193,31 @@ class OrquestadorSocket:
 
     def enviar_trama_receptor_externo(self, telefono, monto, descripcion):
         try:
-            # conexion al socket del receptor externo
+            # Conexión al socket del receptor externo
             receptor_externo_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            
+            # Establecer un timeout de 30 segundos
+            receptor_externo_socket.settimeout(30)  # Timeout de 30 segundos
+            
             receptor_externo_socket.connect(('localhost', self.puerto_receptor_externo))
 
-            # crea la trama en formato JSON para el receptor externo
+            # Crear la trama en formato JSON para el receptor externo
             trama_receptor = f'{{"telefono":"{telefono}", "monto":{monto}, "descripcion":"{descripcion}"}}'
             receptor_externo_socket.send(trama_receptor.encode('utf-8'))
 
-            # espera la respuesta del receptor externo
+            # Espera la respuesta del receptor externo con timeout
             respuesta_receptor = receptor_externo_socket.recv(1024).decode('utf-8')
+            
+            # Cerrar el socket
             receptor_externo_socket.close()
 
             return respuesta_receptor
+        except socket.timeout:
+            print("Timeout al esperar respuesta del Receptor Externo")
+            return '{"codigo":-1, "descripcion":"Timeout al conectar con el Receptor Externo"}'
         except socket.error as e:
-            print(f"Error de socket al conectar con el receptor externo: {e}")
-            return None
+            print(f"Error de socket al conectar con el Receptor Externo: {e}")
+            return '{"codigo":-1, "descripcion":"Error de conexión con el Receptor Externo"}'
         
     def manejar_cliente(self, cliente_socket, root):
         """
