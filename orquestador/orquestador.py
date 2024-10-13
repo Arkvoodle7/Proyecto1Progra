@@ -53,7 +53,7 @@ class OrquestadorSocket:
 
                 # Decidir la operación según el tag
                 if root.tag == "transaccion":
-                    self.manejar_transaccion(client_socket, root)
+                    self.manejar_transaccion(client_socket)
                 elif root.tag == "saldo":
                     self.recibe_consulta_saldo(client_socket)
                 elif root.tag in ["inscripcion", "desinscripcion"]:
