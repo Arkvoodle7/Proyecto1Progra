@@ -39,39 +39,47 @@ public class SocketBancario {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))
         ) {
-            // Leer la trama recibida desde el cliente
+            // Verificar si la conexión ha sido aceptada
+            System.out.println("Conexión aceptada desde el Orquestador");
+
+            // Leer la trama recibida desde el Orquestador
             String tramaRecibida = in.readLine();
-            System.out.println("Trama recibida: " + tramaRecibida);
+            System.out.println("Trama recibida del Orquestador: " + tramaRecibida);
+            if (tramaRecibida == null) {
+                System.out.println("No se recibió ninguna trama. Cerrando conexión.");
+                return;
+            }
 
-            // Parsear la trama (por simplicidad, se espera en el formato: "Identificacion|Cuenta|Monto|Tipo")
+            // Parsear y validar trama
             String[] partes = tramaRecibida.split("\\|");
-            if (partes.length == 4) {
-                TransaccionDto transaccionDTO = new TransaccionDto();
-                transaccionDTO.setIdentificacion(partes[0]);
-                transaccionDTO.setNumeroCuenta(partes[1]);
-                transaccionDTO.setMonto(Double.parseDouble(partes[2]));
-                transaccionDTO.setTipo(partes[3]);
-
-                // Procesar la transacción
-                String respuesta;
-                if (transaccionDTO.getTipo().equals("DEB") || transaccionDTO.getTipo().equals("CRE")) {
-                    respuesta = transaccionService.aplicarTransaccion(transaccionDTO);
-                } else {
-                    respuesta = "ERROR|Tipo de transacción inválido";
-                }
-
-                // Enviar la respuesta al cliente
-                out.write(respuesta);
-                out.newLine();
-                out.flush();
-                System.out.println("Respuesta enviada: " + respuesta);
-            } else {
+            if (partes.length != 4) {
                 out.write("ERROR|Trama inválida");
                 out.newLine();
                 out.flush();
-                System.out.println("Trama inválida recibida");
+                System.out.println("Trama inválida recibida.");
+                return;
             }
 
+            // Procesar transacción
+            TransaccionDto transaccionDTO = new TransaccionDto();
+            transaccionDTO.setIdentificacion(partes[0]);
+            transaccionDTO.setNumeroCuenta(partes[1]);
+            transaccionDTO.setMonto(Double.parseDouble(partes[2]));
+            transaccionDTO.setTipo(partes[3]);
+
+            String respuesta;
+            if (transaccionDTO.getTipo().equals("CRE")) {
+                System.out.println("Procesando transacción de tipo: " + transaccionDTO.getTipo());
+                respuesta = transaccionService.aplicarTransaccion(transaccionDTO);
+            } else {
+                respuesta = "ERROR|Tipo de transacción inválido";
+            }
+
+            // Enviar la respuesta de nuevo al Orquestador
+            System.out.println("Enviando respuesta al Orquestador: " + respuesta);
+            out.write(respuesta);
+            out.newLine();
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

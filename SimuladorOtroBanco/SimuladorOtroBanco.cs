@@ -69,7 +69,7 @@ namespace SimuladorOtroBanco
                 stream.Write(dataToSend, 0, dataToSend.Length);
 
                 //agregar timeout para evitar espera indefinida
-                client.ReceiveTimeout = 5000;  // 5 segundos de timeout
+                client.ReceiveTimeout = 30000;  // 30 segundos de timeout
 
                 //recibir la respuesta del Receptor Externo
                 byte[] buffer = new byte[1024];

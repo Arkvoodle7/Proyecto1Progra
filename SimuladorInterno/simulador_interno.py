@@ -101,6 +101,7 @@ def consultar_saldo(telefono):
 def abrir_inscribir_desinscribir():
     ventana_inscribir = tk.Toplevel()
     ventana_inscribir.title("Inscribir/Desinscribir")
+    ventana_inscribir.geometry('300x200')
     
     # Campos y botones para inscribir/desinscribir
     tk.Label(ventana_inscribir, text="Número de cuenta").pack()
@@ -124,6 +125,7 @@ def abrir_inscribir_desinscribir():
 def abrir_enviar_pago():
     ventana_pago = tk.Toplevel()
     ventana_pago.title("Enviar pago")
+    ventana_pago.geometry('300x200')
     
     # Campos para enviar pago
     tk.Label(ventana_pago, text="Teléfono").pack()
@@ -139,12 +141,12 @@ def abrir_enviar_pago():
     descripcion_entry.pack()
     
     enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
-    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: None)  # Aquí va la lógica
     enviar_btn.pack()
 
 def abrir_consultar_saldo():
     ventana_saldo = tk.Toplevel()
     ventana_saldo.title("Consultar saldo")
+    ventana_saldo.geometry('300x200')
     
     # Campo y botón para consultar saldo
     tk.Label(ventana_saldo, text="Número de teléfono").pack()
@@ -154,13 +156,10 @@ def abrir_consultar_saldo():
     consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))  # Aquí va la lógica
     consultar_btn.pack()
 
-    consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: None)  # Aquí va la lógica
-    consultar_btn.pack()
-
 # Crear ventana principal
 ventana_principal = tk.Tk()
 ventana_principal.title("Simulador Interno")
-ventana_principal.geometry('400x300')
+ventana_principal.geometry('300x200')
 
 # Botones en la ventana principal
 inscribir_btn = tk.Button(ventana_principal, text="Inscribir/Desinscribir", command=abrir_inscribir_desinscribir)
