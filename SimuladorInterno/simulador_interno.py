@@ -8,7 +8,7 @@ import configparser
 def inscribir_usuario(cuenta, identificacion, telefono):
     # Leer el puerto del Orquestador desde Config.ini
     config = configparser.ConfigParser()
-    config.read('Config.ini')
+    config.read('C:/Users/alexl/source/repos/Proyecto1Progra/SimuladorInterno/Config.ini')
     puerto_orquestador = int(config['Orquestador']['puerto'])
     
     # Formato de la trama en XML
