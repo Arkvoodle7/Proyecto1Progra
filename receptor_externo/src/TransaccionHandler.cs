@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
+using System.Threading;
 
 class TransaccionHandler
 {
@@ -21,7 +22,8 @@ class TransaccionHandler
         Console.WriteLine($"Respuesta enviada: {tramaRespuesta}");
 
         //registrar en la bitacora
-        BitacoraHandler.RegistrarBitacora(tramaRecibida, tramaRespuesta);
+        Thread bitacoraThread = new Thread(() => BitacoraHandler.RegistrarBitacora(tramaRecibida, tramaRespuesta));
+        bitacoraThread.Start();
 
         client.Close();
     }

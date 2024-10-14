@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
+using System.Threading;
 
 class TransaccionHandlerSE
 {
@@ -24,7 +25,8 @@ class TransaccionHandlerSE
             stream.Write(respuestaBytes, 0, respuestaBytes.Length);
 
             //registrar en la bitacora
-            BitacoraHandlerSE.RegistrarBitacora(tramaRecibida, tramaRespuesta);
+            Thread bitacoraThread = new Thread(() => BitacoraHandlerSE.RegistrarBitacora(tramaRecibida, tramaRespuesta));
+            bitacoraThread.Start();
 
             //cerrar la conexión
             client.Close();

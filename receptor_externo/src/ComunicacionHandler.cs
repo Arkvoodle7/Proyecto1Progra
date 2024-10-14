@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
+using System.Threading;
 
 class ComunicacionHandler
 {
@@ -77,7 +78,8 @@ class ComunicacionHandler
             client.Close();
 
             // Registrar en la bitácora del Receptor Externo
-            BitacoraHandler.RegistrarBitacora(tramaRecibida, respuesta);
+            Thread bitacoraThread = new Thread(() => BitacoraHandler.RegistrarBitacora(tramaRecibida, respuesta));
+            bitacoraThread.Start();
 
             return respuesta;  // Retornar la respuesta al Orquestador
         }
