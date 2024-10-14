@@ -2,9 +2,9 @@ package entities;
 
 public class Cuenta {
     private int idCuenta;
-    private String identificacion;  // Identificación del propietario de la cuenta
-    private String numeroCuenta;    // Número de la cuenta bancaria
-    private double saldo;           // Saldo de la cuenta
+    private String identificacion;  //identificacion del propietario de la cuenta
+    private String numeroCuenta;    //numero de la cuenta bancaria
+    private double saldo;           //saldo de la cuenta
 
 
     public Cuenta(int idCuenta, String identificacion, String numeroCuenta, double saldo) {
@@ -14,7 +14,7 @@ public class Cuenta {
         this.saldo = saldo;
     }
 
-    // Getters y Setters
+    //getters y setters
     public int getIdCuenta() {
         return idCuenta;
     }

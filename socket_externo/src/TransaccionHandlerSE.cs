@@ -18,11 +18,12 @@ class TransaccionHandlerSE
             Console.WriteLine($"Trama recibida del Receptor Externo: {tramaRecibida}");
 
             //respuesta despues de recibir la trama
-            string tramaRespuesta = "{\"codigo\": 0, \"descripcion\": \"Transacción procesada en el Socket Externo\"}";
+            string tramaRespuesta = "<respuesta><codigo>0</código><saldo>Transacción procesada</saldo></respuesta>";
 
             //enviar la respuesta de vuelta al Receptor Externo
             byte[] respuestaBytes = Encoding.ASCII.GetBytes(tramaRespuesta);
             stream.Write(respuestaBytes, 0, respuestaBytes.Length);
+            Console.WriteLine($"Respuesta enviada al Receptor Externo: {tramaRespuesta}");
 
             //registrar en la bitacora
             Thread bitacoraThread = new Thread(() => BitacoraHandlerSE.RegistrarBitacora(tramaRecibida, tramaRespuesta));
@@ -33,7 +34,7 @@ class TransaccionHandlerSE
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error al procesar la trama del Receptor Externo: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
     }
 }

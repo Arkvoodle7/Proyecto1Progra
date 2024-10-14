@@ -16,20 +16,20 @@ class ReceptorExterno
 
         IPAddress ip = IPAddress.Parse(ipReceptorExterno);
 
-        // Crear TcpListeners para cada puerto
+        //crear TcpListeners para cada puerto
         TcpListener listenerOrquestador = new TcpListener(ip, portOrquestador);
         TcpListener listenerSimulador = new TcpListener(ip, portSimulador);
 
         listenerOrquestador.Start();
         listenerSimulador.Start();
 
-        Console.WriteLine($"Receptor externo corriendo en {ipReceptorExterno}:{portOrquestador} y {ipReceptorExterno}:{portSimulador}");
+        Console.WriteLine($"Receptor Externo escuchando en {portOrquestador} y {portSimulador}");
 
-        // Iniciar tareas para aceptar conexiones en ambos puertos
+        //iniciar tareas para aceptar conexiones en ambos puertos
         Task.Run(() => AceptarConexiones(listenerOrquestador, ManejarClienteDesdeOrquestador));
         Task.Run(() => AceptarConexiones(listenerSimulador, ManejarClienteDesdeSimuladorOtroBanco));
 
-        // Prevenir que el programa termine
+        //prevenir que el programa termine
         Console.ReadLine();
     }
 
@@ -43,18 +43,17 @@ class ReceptorExterno
         }
     }
 
-    // Método para manejar tramas desde el Orquestador
+    //metodo para manejar tramas desde el Orquestador
     static void ManejarClienteDesdeOrquestador(TcpClient client)
     {
         try
         {
-            Console.WriteLine("Procesando transacción desde Orquestador...");
             ComunicacionHandler handler = new ComunicacionHandler();
             handler.RecibirTramaDesdeOrquestador(client);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error al manejar la conexión del Orquestador: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
         finally
         {
@@ -62,18 +61,17 @@ class ReceptorExterno
         }
     }
 
-    // Método para manejar tramas desde el SimuladorOtroBanco
+    //metodo para manejar tramas desde el SimuladorOtroBanco
     static void ManejarClienteDesdeSimuladorOtroBanco(TcpClient client)
     {
         try
         {
-            Console.WriteLine("Procesando transacción desde SimuladorOtroBanco...");
             TransaccionHandler handler = new TransaccionHandler();
             handler.ManejarCliente(client);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error al manejar la conexión del SimuladorOtroBanco: {ex.Message}");
+            Console.WriteLine(ex.Message);
         }
         finally
         {

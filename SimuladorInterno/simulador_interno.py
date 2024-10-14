@@ -2,14 +2,14 @@ import socket
 import tkinter as tk
 import configparser
 
-# Función para inscribir usuario
+#funcion para inscribir usuario
 def inscribir_usuario(cuenta, identificacion, telefono):
-    # Leer el puerto del Orquestador desde Config.ini
+    #leer el puerto del Orquestador desde Config.ini
     config = configparser.ConfigParser()
     config.read('C:/Users/alexl/source/repos/Proyecto1Progra/SimuladorInterno/Config.ini')
     puerto_orquestador = int(config['Orquestador']['puerto'])
     
-    # Formato de la trama en XML
+    #formato de la trama en XML
     trama = f"<inscripcion><cuenta>{cuenta}</cuenta><identificacion>{identificacion}</identificacion><telefono>{telefono}</telefono></inscripcion>"
     
     try:
@@ -17,18 +17,18 @@ def inscribir_usuario(cuenta, identificacion, telefono):
             s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(1024).decode('utf-8')
-            print(f"Respuesta del servidor: {respuesta}")
+            print(f"Respuesta recibida del Orquestador: {respuesta}")
     except Exception as e:
-        print(f"Error al conectar con el servidor: {e}")
+        print(e)
 
-# Función para desinscribir usuario
+#funcion para desinscribir usuario
 def desinscribir_usuario(cuenta, identificacion, telefono):
-    # Leer el puerto del Orquestador desde Config.ini
+    #leer el puerto del Orquestador desde Config.ini
     config = configparser.ConfigParser()
     config.read('Config.ini')
     puerto_orquestador = int(config['Orquestador']['puerto'])
     
-    # Formato de la trama en XML
+    #formato de la trama en XML
     trama = f"<desinscripcion><cuenta>{cuenta}</cuenta><identificacion>{identificacion}</identificacion><telefono>{telefono}</telefono></desinscripcion>"
     
     try:
@@ -36,17 +36,17 @@ def desinscribir_usuario(cuenta, identificacion, telefono):
             s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(1024).decode('utf-8')
-            print(f"Respuesta del servidor: {respuesta}")
+            print(f"Respuesta recibida del Orquestador: {respuesta}")
     except Exception as e:
-        print(f"Error al conectar con el servidor: {e}")
+        print(e)
 
 def enviar_pago(telefono, monto, descripcion):
-    # Leer el puerto del Orquestador desde Config.ini
+    #leer el puerto del Orquestador desde Config.ini
     config = configparser.ConfigParser()
     config.read('Config.ini')
     puerto_orquestador = int(config['Orquestador']['puerto'])
     
-    # Crear la trama en formato XML
+    #crear la trama en formato XML
     trama = f"""<transaccion>
                     <telefono>{telefono}</telefono>
                     <monto>{monto}</monto>
@@ -66,11 +66,11 @@ def enviar_pago(telefono, monto, descripcion):
         mostrar_respuesta(f"Error de conexión con el Orquestador: {str(e)}")
 
 def mostrar_respuesta(respuesta):
-    # Mostrar la respuesta en la consola
-    print(f"Respuesta del Orquestador: {respuesta}")
+    #mostrar la respuesta en la consola
+    print(f"Respuesta recibida del Orquestador: {respuesta}")
 
 def consultar_saldo(telefono):
-    # Leer el puerto del Orquestador desde Config.ini
+    #leer el puerto del Orquestador desde Config.ini
     config = configparser.ConfigParser()
     config.read('Config.ini')
     puerto_orquestador = int(config['Orquestador']['puerto'])
@@ -84,17 +84,17 @@ def consultar_saldo(telefono):
             s.connect(('localhost', puerto_orquestador))
             s.sendall(trama.encode('utf-8'))
             respuesta = s.recv(4096).decode('utf-8')
-            print(f"Respuesta del servidor: {respuesta}")
+            print(f"Respuesta recibida del Orquestador: {respuesta}")
     except Exception as e:
-        print(f"Error al conectar con el servidor: {e}")
+        print(e)
 
-# Función para abrir la ventana de inscripción/desinscripción
+#funcion para abrir la ventana de inscripcion/desinscripcion
 def abrir_inscribir_desinscribir():
     ventana_inscribir = tk.Toplevel()
     ventana_inscribir.title("Inscribir/Desinscribir")
     ventana_inscribir.geometry('300x200')
     
-    # Campos y botones para inscribir/desinscribir
+    #campos y botones para inscribir/desinscribir
     tk.Label(ventana_inscribir, text="Número de cuenta").pack()
     cuenta_entry = tk.Entry(ventana_inscribir)
     cuenta_entry.pack()
@@ -118,7 +118,7 @@ def abrir_enviar_pago():
     ventana_pago.title("Enviar pago")
     ventana_pago.geometry('300x200')
     
-    # Campos para enviar pago
+    #campos para enviar pago
     tk.Label(ventana_pago, text="Teléfono").pack()
     telefono_entry = tk.Entry(ventana_pago)
     telefono_entry.pack()
@@ -139,7 +139,7 @@ def abrir_consultar_saldo():
     ventana_saldo.title("Consultar saldo")
     ventana_saldo.geometry('300x200')
     
-    # Campo y botón para consultar saldo
+    #campo y boton para consultar saldo
     tk.Label(ventana_saldo, text="Número de teléfono").pack()
     telefono_saldo_entry = tk.Entry(ventana_saldo)
     telefono_saldo_entry.pack()
@@ -147,16 +147,15 @@ def abrir_consultar_saldo():
     consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))
     consultar_btn.pack()
 
-# Crear ventana principal
+#crear ventana principal
 ventana_principal = tk.Tk()
 ventana_principal.title("Simulador Interno")
 ventana_principal.geometry('300x200')
 
-# Botones en la ventana principal
+#botones en la ventana principal
 inscribir_btn = tk.Button(ventana_principal, text="Inscribir/Desinscribir", command=abrir_inscribir_desinscribir)
 inscribir_btn.pack()
 
-# Aquí puedes agregar más funcionalidades
 enviar_pago_btn = tk.Button(ventana_principal, text="Enviar pago", command=abrir_enviar_pago)
 enviar_pago_btn.pack()
 

@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class CuentaRepository implements ICuenta {
 
-    // Método para obtener la conexión a la base de datos
+    //metodo para obtener la conexion a la base de datos
     private Connection getConnection() throws SQLException {
         String url = ConfigProps.getProp("db_url");
         return DriverManager.getConnection(url);

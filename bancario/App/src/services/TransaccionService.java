@@ -12,7 +12,7 @@ public class TransaccionService implements ITransaccion {
         this.cuentaRepository = cuentaRepository;
     }
 
-    // Método para que se aplique la Transacción en la Cuenta del Usuario
+    //metodo para que se aplique la Transaccion en la cuenta del usuario
     @Override
     public String aplicarTransaccion(TransaccionDto transaccion) {
         // Busca la Cuenta por medio de la identificación
@@ -31,30 +31,30 @@ public class TransaccionService implements ITransaccion {
         return "OK|Transacción aplicada";
     }
 
-    // Método para Consultar el Saldo de una Cuenta.
+    //metodo para consultar el saldo de una cuenta.
     @Override
     public String consultarSaldo(String identificacion, String numeroCuenta) {
         try {
-            // Validar campos vacíos
+            //validar campos vacios
             if (identificacion == null || identificacion.trim().isEmpty() ||
                     numeroCuenta == null || numeroCuenta.trim().isEmpty()) {
                 return "ERROR|Todos los campos son obligatorios y deben ser válidos.";
             }
 
-            // Buscar el cliente y la cuenta
+            //buscar el cliente y la cuenta
             Cuenta cuenta = cuentaRepository.buscarCuenta(identificacion, numeroCuenta);
             if (cuenta == null) {
-                // Verificar si el cliente existe
+                //verificar si el cliente existe
                 boolean clienteExiste = cuentaRepository.clienteExiste(identificacion);
                 if (!clienteExiste) {
                     return "ERROR|Datos inexistentes";
                 } else {
-                    // Si el cliente existe pero la cuenta no coincide
+                    //si el cliente existe pero la cuenta no coincide
                     return "ERROR|Cuenta incorrecta";
                 }
             }
 
-            // Si todo es correcto, devolver el saldo
+            //si todo es correcto, devolver el saldo
             return "OK|" + cuenta.getSaldo();
 
         } catch (Exception e) {

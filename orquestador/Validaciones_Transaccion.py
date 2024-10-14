@@ -8,7 +8,7 @@ class ValidadorTransaccion:
         self.db = self.client['PagosMovilesOrquestador']
         self.collection = self.db['TelefonosXCuentas']
 
-    # Método para generar un mensaje de error en formato XML
+    #metodo para generar un mensaje de error en formato XML
     def generarError(self, mensaje_error):
         respuesta = ET.Element('respuesta')
         codigo = ET.SubElement(respuesta, 'codigo')
@@ -17,22 +17,22 @@ class ValidadorTransaccion:
         descripcion.text = mensaje_error
         return ET.tostring(respuesta, encoding='unicode')
 
-    # Método para validar la transacción
+    #metodo para validar la transaccion
     def validarTransaccion(self, telefono, monto, descripcion, es_interno=True):
-        # Validar que el teléfono tenga 8 dígitos y sea numérico
+        #validar que el telefono tenga 8 dígitos y sea numerico
         if not telefono or len(telefono) != 8 or not telefono.isdigit():
             return self.generarError("Debe enviar los datos completos y válidos")
 
-        # Validar que monto y descripción no sean nulos o vacíos, excepto en la consulta de saldo
+        #validar que monto y descripcion no sean nulos o vacios, excepto en la consulta de saldo
         if descripcion != "Consulta de saldo":
             if not monto or not descripcion:
                 return self.generarError("Debe enviar los datos completos y válidos")
 
-            # Validar que la descripción no supere 25 caracteres
+            #validar que la descripcion no supere 25 caracteres
             if len(descripcion) > 25:
                 return self.generarError("La descripción no puede superar 25 caracteres")
 
-            # Validar que el monto sea un número válido y no supere 100,000
+            #validar que el monto sea un numero valido y no supere 100,000
             try:
                 monto_float = float(monto)
                 if monto_float > 100000:
@@ -42,15 +42,15 @@ class ValidadorTransaccion:
             except ValueError:
                 return self.generarError("El monto debe ser un número válido")
 
-        # Validar si el cliente está registrado en la base de datos
+        #validar si el cliente esta registrado en la base de datos
         registro = self.collection.find_one({"telefono": telefono})
 
         if not registro and not es_interno:
-            # Si es una transacción externa y el cliente no está registrado, mostrar error
+            #si es una transaccion externa y el cliente no esta registrado, mostrar error
             return self.generarError("Cliente no asociado a pagos móviles.")
 
         return None
 
-    # Método para obtener el cliente
+    #metodo para obtener el cliente
     def obtenerCliente(self, telefono):
         return self.collection.find_one({"telefono": telefono})

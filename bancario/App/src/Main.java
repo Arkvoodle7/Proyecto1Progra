@@ -8,6 +8,6 @@ public class Main {
         TransaccionService transaccionService = new TransaccionService(cuentaRepository);
         SocketBancario socketBancario = new SocketBancario(transaccionService);
 
-        socketBancario.start(); // Inicia el Socket para Recibir Transacciones
+        socketBancario.start(); //inicia el Socket para Recibir Transacciones
     }
 }

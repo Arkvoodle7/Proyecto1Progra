@@ -36,10 +36,10 @@ namespace SimuladorOtroBanco
             string monto = txtMonto.Text;
             string descripcion = txtDescripcion.Text;
 
-            // Generar la trama JSON
+            //generar la trama JSON
             string tramaJSON = GenerarTramaJSON(telefono, monto, descripcion);
 
-            // Enviar la trama al socket del Receptor Externo
+            //enviar la trama al socket del Receptor Externo
             EnviarTrama(tramaJSON);
         }
 
@@ -52,7 +52,7 @@ namespace SimuladorOtroBanco
                 descripcion = descripcion
             };
 
-            // Convertir el objeto a JSON
+            //convertir el objeto a JSON
             return JsonConvert.SerializeObject(transaccion);
         }
 
@@ -65,7 +65,7 @@ namespace SimuladorOtroBanco
             }
             else
             {
-                // Si no es un número, retorna null
+                //si no es un numero, retorna null
                 return null;
             }
         }
@@ -74,40 +74,40 @@ namespace SimuladorOtroBanco
         {
             try
             {
-                // Cargar la configuración desde el archivo .ini
+                //cargar la configuracion desde el archivo .ini
                 var config = LeerConfiguracion("Config.ini");
                 string ipReceptorExterno = config["IP"];
                 int puertoReceptorExterno = int.Parse(config["Port"]);
 
-                // Crear conexión TCP al Receptor Externo
+                //crear conexion TCP al Receptor Externo
                 TcpClient client = new TcpClient(ipReceptorExterno, puertoReceptorExterno);
                 NetworkStream stream = client.GetStream();
 
-                // Enviar la trama
+                //enviar la trama
                 byte[] dataToSend = System.Text.Encoding.ASCII.GetBytes(trama);
                 stream.Write(dataToSend, 0, dataToSend.Length);
 
-                // Agregar timeout para evitar espera indefinida
+                //agregar timeout para evitar espera indefinida
                 client.ReceiveTimeout = 30000;  // 30 segundos de timeout
 
-                // Recibir la respuesta del Receptor Externo
+                //recibir la respuesta del Receptor Externo
                 byte[] buffer = new byte[1024];
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string respuesta = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-                // Mostrar la respuesta en la consola
-                Console.WriteLine($"Respuesta del Receptor Externo: {respuesta}");
+                //mostrar la respuesta en la consola
+                Console.WriteLine($"Respuesta recibida del Receptor Externo: {respuesta}");
 
-                // Cerrar la conexión
+                //cerrar la conexion
                 client.Close();
             }
             catch (SocketException ex)
             {
-                Console.WriteLine($"Error al recibir respuesta: Tiempo de espera agotado o problema de conexión ({ex.Message})");
+                Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al enviar la trama: {ex.Message}");
+                Console.WriteLine(ex.Message);
             }
         }
 
