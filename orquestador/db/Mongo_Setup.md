@@ -7,7 +7,7 @@ db.createCollection("TelefonosXCuentas")
 //crear un índice para garantizar que "telefono" sea único
 db.TelefonosXCuentas.createIndex({ "telefono": 1 }, { unique: true })
 
-//insertar múltiples documentos de tu archivo JSON
+//insertar múltiples documentos
 db.TelefonosXCuentas.insertMany([
     {
         "identificacion": "101110111",
