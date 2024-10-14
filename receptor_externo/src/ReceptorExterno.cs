@@ -2,6 +2,8 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 class ReceptorExterno
 {
@@ -9,28 +11,35 @@ class ReceptorExterno
     {
         var config = ConfigManager.LeerConfiguracion("Config.ini");
         string ipReceptorExterno = config["ReceptorExterno.IP"];
-        int portReceptorExterno = int.Parse(config["ReceptorExterno.Port"]);
+        int portOrquestador = int.Parse(config["ReceptorExterno.PortOrquestador"]);
+        int portSimulador = int.Parse(config["ReceptorExterno.PortSimulador"]);
 
         IPAddress ip = IPAddress.Parse(ipReceptorExterno);
-        TcpListener server = new TcpListener(ip, portReceptorExterno);
-        server.Start();
-        Console.WriteLine($"Receptor externo corriendo en {ipReceptorExterno}:{portReceptorExterno}");
 
+        // Crear TcpListeners para cada puerto
+        TcpListener listenerOrquestador = new TcpListener(ip, portOrquestador);
+        TcpListener listenerSimulador = new TcpListener(ip, portSimulador);
+
+        listenerOrquestador.Start();
+        listenerSimulador.Start();
+
+        Console.WriteLine($"Receptor externo corriendo en {ipReceptorExterno}:{portOrquestador} y {ipReceptorExterno}:{portSimulador}");
+
+        // Iniciar tareas para aceptar conexiones en ambos puertos
+        Task.Run(() => AceptarConexiones(listenerOrquestador, ManejarClienteDesdeOrquestador));
+        Task.Run(() => AceptarConexiones(listenerSimulador, ManejarClienteDesdeSimuladorOtroBanco));
+
+        // Prevenir que el programa termine
+        Console.ReadLine();
+    }
+
+    static void AceptarConexiones(TcpListener listener, Action<TcpClient> manejador)
+    {
         while (true)
         {
-            TcpClient client = server.AcceptTcpClient();
-
-            // Determinar si la conexión viene desde el Orquestador o desde el SimuladorOtroBanco basado en el puerto
-            if (EsConexionDesdeOrquestador(client))
-            {
-                Thread clientThread = new Thread(() => ManejarClienteDesdeOrquestador(client));
-                clientThread.Start();
-            }
-            else
-            {
-                Thread clientThread = new Thread(() => ManejarClienteDesdeSimuladorOtroBanco(client));
-                clientThread.Start();
-            }
+            TcpClient client = listener.AcceptTcpClient();
+            Thread clientThread = new Thread(() => manejador(client));
+            clientThread.Start();
         }
     }
 
@@ -69,20 +78,6 @@ class ReceptorExterno
         finally
         {
             client.Close();
-        }
-    }
-
-    // Método para identificar si la conexión viene desde el Orquestador basado en el puerto
-    static bool EsConexionDesdeOrquestador(TcpClient client)
-    {
-        try
-        {
-            // Identificar si la conexión es desde el puerto del Orquestador (8080)
-            return ((IPEndPoint)client.Client.RemoteEndPoint).Port == 8080;
-        }
-        catch
-        {
-            return false;
         }
     }
 }

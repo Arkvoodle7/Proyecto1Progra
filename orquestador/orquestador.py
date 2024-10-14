@@ -105,8 +105,13 @@ class OrquestadorSocket:
 
         # Obtener el cliente asociado
         registro_cliente = self.validador.obtenerCliente(telefono)
-        identificacion = registro_cliente["identificacion"] if registro_cliente else "000000000"
-        cuenta = registro_cliente["numero_cuenta"] if registro_cliente else "000000000"
+
+        if registro_cliente is None:
+            identificacion = "000000000"
+            cuenta = "000000000"
+        else:
+            identificacion = registro_cliente.get("identificacion", "000000000")
+            cuenta = registro_cliente.get("numero_cuenta", "000000000")
 
         # Procesar la trama
         respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto, descripcion)
@@ -196,8 +201,8 @@ class OrquestadorSocket:
             # Conexión al socket del receptor externo
             receptor_externo_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             
-            # Establecer un timeout de 30 segundos
-            receptor_externo_socket.settimeout(30)  # Timeout de 30 segundos
+            # Establecer un timeout de 20 segundos
+            receptor_externo_socket.settimeout(20)  # Timeout de 20 segundos
             
             receptor_externo_socket.connect(('localhost', self.puerto_receptor_externo))
 

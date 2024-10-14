@@ -74,9 +74,6 @@ def mostrar_popup_respuesta(respuesta):
     
     # Mostrar un popup con la respuesta
     messagebox.showinfo("Respuesta del Orquestador", respuesta)
-    
-    # Cerrar la ventana de tkinter
-    root.quit()
 
 def consultar_saldo(telefono):
     # Leer el puerto del Orquestador desde Config.ini

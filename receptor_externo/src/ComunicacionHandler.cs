@@ -58,9 +58,9 @@ class ComunicacionHandler
             // Conectar al Socket Externo
             TcpClient client = new TcpClient(ipSocketExterno, portSocketExterno);
 
-            // Configurar timeout de 10 segundos (30000 milisegundos)
-            client.SendTimeout = 30000;  // Timeout para enviar datos
-            client.ReceiveTimeout = 30000;  // Timeout para recibir datos
+            // Configurar timeout de 20 segundos (20000 milisegundos)
+            client.SendTimeout = 20000;  // Timeout para enviar datos
+            client.ReceiveTimeout = 20000;  // Timeout para recibir datos
 
             NetworkStream stream = client.GetStream();
 
