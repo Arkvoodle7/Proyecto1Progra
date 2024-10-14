@@ -51,7 +51,8 @@ class ValidadorTransaccion:
         #valida si el cliente esta registrado en
         registro = self.collection.find_one({"telefono": telefono})
 
-        if not registro and es_interno:
+        if not registro and not es_interno:
+            # Si es una transacción externa y el cliente no está registrado, mostrar error
             return self.generarError("Cliente no asociado a pagos móviles.")
 
         return None 

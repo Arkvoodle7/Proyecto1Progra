@@ -18,7 +18,8 @@ class OrquestadorSocket:
         config = configparser.ConfigParser()
         config.read('C:/Users/alexl/source/repos/Proyecto1Progra/orquestador/Config.ini')
         
-        self.puerto = int(config['Orquestador']['puerto'])
+        self.puerto_interno = int(config['Orquestador']['puerto_interno'])
+        self.puerto_externo = int(config['Orquestador']['puerto_externo'])
         self.puerto_bancario = int(config['Banco']['puerto'])  # puerto del socket bancario
         self.puerto_receptor_externo = int(config['ReceptorExterno']['puerto'])  # puerto del socket receptor externo
         
@@ -34,18 +35,25 @@ class OrquestadorSocket:
 
     def start(self):
      # objeto socket para el servidor
-        Orquestador = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        Orquestador.bind(('localhost', self.puerto))
-        Orquestador.listen(5)
-        print(f"Orquestador en el puerto {self.puerto}...")
+        Orquestador_interno = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        Orquestador_externo = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        Orquestador_interno.bind(('localhost', self.puerto_interno))
+        Orquestador_externo.bind(('localhost', self.puerto_externo))
+        Orquestador_interno.listen(5)
+        Orquestador_externo.listen(5)
+        print(f"Orquestador en el puerto {self.puerto_interno} y {self.puerto_externo}...")
 
+        threading.Thread(target=self.accept_connections, args=(Orquestador_interno, True)).start()
+        threading.Thread(target=self.accept_connections, args=(Orquestador_externo, False)).start()
+
+    def accept_connections(self, Orquestador_socket, es_interno):
         while True:
-            client_socket, client_address = Orquestador.accept()
+            client_socket, client_address = Orquestador_socket.accept()
             print(f"Conexión recibida de {client_address}")
-            cliente_thread = threading.Thread(target=self.handle_client, args=(client_socket,))
+            cliente_thread = threading.Thread(target=self.handle_client, args=(client_socket, es_interno))
             cliente_thread.start()
 
-    def handle_client(self, client_socket):
+    def handle_client(self, client_socket, es_interno):
         """
         Manejar las diferentes tramas recibidas.
         """
@@ -54,13 +62,12 @@ class OrquestadorSocket:
                 data = client_socket.recv(1024)
                 if not data:
                     break
-
+        
                 data = data.replace(b'\n', b'').replace(b'\r', b'')
                 print(f"Datos recibidos: {data.decode('utf-8')}")
                 root = ET.fromstring(data.decode('utf-8'))
                 print(f"Tag recibido: {root.tag}")
-
-                # Decidir la operación según el tag
+        
                 if root.tag == "transaccion":
                     print("Llamando a manejar_transaccion con los datos recibidos.")
                     
@@ -70,7 +77,7 @@ class OrquestadorSocket:
                     descripcion = root.find('descripcion').text
 
                     # Llamar a manejar_transaccion con los datos extraídos
-                    respuesta = self.manejar_transaccion(telefono, monto, descripcion)
+                    respuesta = self.manejar_transaccion(telefono, monto, descripcion, es_interno)
                     
                     # Enviar la respuesta al cliente
                     client_socket.send(respuesta.encode('utf-8'))
@@ -93,13 +100,13 @@ class OrquestadorSocket:
         client_socket.close()
 
 
-    def manejar_transaccion(self, telefono, monto, descripcion):
+    def manejar_transaccion(self, telefono, monto, descripcion, es_interno):
         # Lógica para manejar la transacción
         print(f"Manejando transacción con teléfono: {telefono}, monto: {monto}, descripción: {descripcion}")
 
         # Validación de la transacción
-        respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion, es_interno=False)
-        if respuesta_error and self.es_transaccion_interna(telefono):
+        respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion, es_interno)
+        if respuesta_error:
             print(respuesta_error)
             return respuesta_error
 
