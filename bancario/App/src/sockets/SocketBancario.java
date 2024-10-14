@@ -52,27 +52,39 @@ public class SocketBancario {
 
             // Parsear y validar trama
             String[] partes = tramaRecibida.split("\\|");
-            if (partes.length != 4) {
-                out.write("ERROR|Trama inválida");
-                out.newLine();
-                out.flush();
-                System.out.println("Trama inválida recibida.");
-                return;
-            }
-
-            // Procesar transacción
-            TransaccionDto transaccionDTO = new TransaccionDto();
-            transaccionDTO.setIdentificacion(partes[0]);
-            transaccionDTO.setNumeroCuenta(partes[1]);
-            transaccionDTO.setMonto(Double.parseDouble(partes[2]));
-            transaccionDTO.setTipo(partes[3]);
 
             String respuesta;
-            if (transaccionDTO.getTipo().equals("CRE")) {
-                System.out.println("Procesando transacción de tipo: " + transaccionDTO.getTipo());
-                respuesta = transaccionService.aplicarTransaccion(transaccionDTO);
+
+            if (partes.length == 2) {
+                // Solicitud de saldo
+                String identificacion = partes[0];
+                String numeroCuenta = partes[1];
+
+                System.out.println("Procesando consulta de saldo para identificación: " + identificacion + ", cuenta: " + numeroCuenta);
+
+                respuesta = transaccionService.consultarSaldo(identificacion, numeroCuenta);
+
+                System.out.println("Respuesta generada: " + respuesta);
+
+            } else if (partes.length == 4) {
+                // Procesar transacción
+                TransaccionDto transaccionDTO = new TransaccionDto();
+                transaccionDTO.setIdentificacion(partes[0]);
+                transaccionDTO.setNumeroCuenta(partes[1]);
+                transaccionDTO.setMonto(Double.parseDouble(partes[2]));
+                transaccionDTO.setTipo(partes[3]);
+
+                if (transaccionDTO.getTipo().equals("CRE") || transaccionDTO.getTipo().equals("DEB")) {
+                    System.out.println("Procesando transacción de tipo: " + transaccionDTO.getTipo());
+                    respuesta = transaccionService.aplicarTransaccion(transaccionDTO);
+                } else {
+                    respuesta = "ERROR|Tipo de transacción inválido";
+                }
+
+                System.out.println("Respuesta generada: " + respuesta);
             } else {
-                respuesta = "ERROR|Tipo de transacción inválido";
+                respuesta = "ERROR|Trama inválida";
+                System.out.println("Trama inválida recibida.");
             }
 
             // Enviar la respuesta de nuevo al Orquestador
@@ -85,6 +97,7 @@ public class SocketBancario {
         } finally {
             try {
                 socket.close();
+                System.out.println("Conexión cerrada con el Orquestador");
             } catch (IOException e) {
                 e.printStackTrace();
             }

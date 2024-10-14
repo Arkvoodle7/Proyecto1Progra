@@ -83,7 +83,7 @@ class OrquestadorSocket:
                     client_socket.send(respuesta.encode('utf-8'))
 
                 elif root.tag == "saldo":
-                    self.recibe_consulta_saldo(client_socket)
+                    self.recibe_consulta_saldo(root, client_socket)
                 elif root.tag in ["inscripcion", "desinscripcion"]:
                     self.manejar_cliente(client_socket, root)
 
@@ -288,30 +288,25 @@ class OrquestadorSocket:
     def enviar_trama_saldo(self, identificacion, cuenta):
         try:
             bancario_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            bancario_socket.connect(('localhost', self.puerto_bancario))  # Cambiar el puerto si es necesario
+            bancario_socket.connect(('localhost', self.puerto_bancario))
 
-            # crea la trama sobre el saldo para bancario
-            trama_saldo = f"{identificacion}|{cuenta}"
+            # Crea la trama sobre el saldo para bancario
+            trama_saldo = f"{identificacion}|{cuenta}\n"  # Agregar '\n' al final
             bancario_socket.send(trama_saldo.encode('utf-8'))
 
-            # recibe la respuesta de bancario
+            # Recibe la respuesta de bancario
             respuesta_banco = bancario_socket.recv(1024).decode('utf-8')
             bancario_socket.close()
 
-            return respuesta_banco
+            return respuesta_banco.strip()
         except socket.error as e:
             print(f"Error de socket al conectar con el banco: {e}")
             return None
         
-    def recibe_consulta_saldo(self, client_socket):
-        data = client_socket.recv(1024).decode('utf-8')
-        print("Trama recibida en el orquestador para consulta de saldo:")
-        print(data)
-
+    def recibe_consulta_saldo(self, root, client_socket):
         try:
-            consulta_saldo_xml = ET.fromstring(data)
-
-            telefono = consulta_saldo_xml.find('telefono').text
+            # Ya tenemos el objeto root, extraemos el teléfono
+            telefono = root.find('telefono').text
 
             respuesta_error = self.validador.validarTransaccion(telefono, "0", "Consulta de saldo")
             if respuesta_error:
@@ -319,31 +314,47 @@ class OrquestadorSocket:
                 client_socket.send(respuesta_error.encode('utf-8'))
                 return
 
-            # Obtener los datos del cliente (ya validado en ValidadorTransaccion)
+            # Obtener los datos del cliente
             registro_cliente = self.validador.obtenerCliente(telefono)
+            if not registro_cliente:
+                respuesta_error = self.validador.generarError("Cliente no asociado a pagos móviles.")
+                client_socket.send(respuesta_error.encode('utf-8'))
+                return
+
             identificacion = registro_cliente['identificacion']
             cuenta = registro_cliente['numero_cuenta']
 
-            # trama para obtener el saldo
+            # Trama para obtener el saldo
             respuesta_banco = self.enviar_trama_saldo(identificacion, cuenta)
 
-            # procesamiento de la respuesta de banco
-            if respuesta_banco and respuesta_banco.startswith("OK|"):
-                saldo_cliente = respuesta_banco.split('|')[1]
+            # Procesamiento de la respuesta del banco
+            if respuesta_banco:
+                if respuesta_banco.startswith("OK|"):
+                    saldo_cliente = respuesta_banco.split('|', 1)[1]
 
-                # respuesta de exito con xml
-                respuesta_exito = f"<respuesta><codigo>0</codigo><saldo>{saldo_cliente}</saldo></respuesta>"
-                print(f"Respuesta enviada: {respuesta_exito}")
-                client_socket.send(respuesta_exito.encode('utf-8'))
+                    # Respuesta de éxito en XML
+                    respuesta_exito = f"<respuesta><codigo>0</codigo><saldo>{saldo_cliente}</saldo></respuesta>"
+                    print(f"Respuesta enviada: {respuesta_exito}")
+                    client_socket.send(respuesta_exito.encode('utf-8'))
+                elif respuesta_banco.startswith("ERROR|"):
+                    # Extraer el mensaje de error
+                    mensaje_error = respuesta_banco.split('|', 1)[1]
+                    respuesta_error_banco = self.validador.generarError(mensaje_error)
+                    print(f"Error recibido del banco: {mensaje_error}")
+                    client_socket.send(respuesta_error_banco.encode('utf-8'))
+                else:
+                    # Respuesta inesperada
+                    respuesta_error_banco = self.validador.generarError("Respuesta inesperada del banco.")
+                    print("Respuesta inesperada del banco.")
+                    client_socket.send(respuesta_error_banco.encode('utf-8'))
             else:
-                # respuesta de error con xml
-                respuesta_error_banco = self.validador.generarError(f"Error desde el banco: {respuesta_banco}")
-                print(f"Error recibido del banco: {respuesta_banco}")
+                respuesta_error_banco = self.validador.generarError("No se recibió respuesta del banco.")
                 client_socket.send(respuesta_error_banco.encode('utf-8'))
 
         except ET.ParseError:
             respuesta_error = self.validador.generarError("Error al parsear la trama XML")
             print(respuesta_error)
+            client_socket.send(respuesta_error.encode('utf-8'))
 
 if __name__ == "__main__":
     orquestador = OrquestadorSocket()

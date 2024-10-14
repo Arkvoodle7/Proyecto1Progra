@@ -1,14 +1,33 @@
 using Newtonsoft.Json;
 using System.Net.Sockets;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace SimuladorOtroBanco
 {
     public partial class frmSimuladorOtroBanco : Form
     {
+        [DllImport("kernel32.dll")]
+        static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll")]
+        static extern bool FreeConsole();
+
         public frmSimuladorOtroBanco()
         {
             InitializeComponent();
+            InicializarConsola();
+        }
+
+        public void InicializarConsola()
+        {
+            AllocConsole();
+            Console.Title = "Consola de SimuladorOtroBanco";
+        }
+
+        private void frmSimuladorOtroBanco_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            FreeConsole();
         }
 
         private void btnEnviar_Click(object sender, EventArgs e)
@@ -17,10 +36,10 @@ namespace SimuladorOtroBanco
             string monto = txtMonto.Text;
             string descripcion = txtDescripcion.Text;
 
-            //generar la trama JSON
+            // Generar la trama JSON
             string tramaJSON = GenerarTramaJSON(telefono, monto, descripcion);
 
-            //enviar la trama al socket del Receptor Externo
+            // Enviar la trama al socket del Receptor Externo
             EnviarTrama(tramaJSON);
         }
 
@@ -33,7 +52,7 @@ namespace SimuladorOtroBanco
                 descripcion = descripcion
             };
 
-            //convertir el objeto a JSON
+            // Convertir el objeto a JSON
             return JsonConvert.SerializeObject(transaccion);
         }
 
@@ -46,7 +65,7 @@ namespace SimuladorOtroBanco
             }
             else
             {
-                //si no es un numero retorna null
+                // Si no es un número, retorna null
                 return null;
             }
         }
@@ -55,40 +74,40 @@ namespace SimuladorOtroBanco
         {
             try
             {
-                //cargar la configuración desde el archivo .ini
+                // Cargar la configuración desde el archivo .ini
                 var config = LeerConfiguracion("Config.ini");
                 string ipReceptorExterno = config["IP"];
                 int puertoReceptorExterno = int.Parse(config["Port"]);
 
-                //crear conexión TCP al Receptor Externo
+                // Crear conexión TCP al Receptor Externo
                 TcpClient client = new TcpClient(ipReceptorExterno, puertoReceptorExterno);
                 NetworkStream stream = client.GetStream();
 
-                //enviar la trama
+                // Enviar la trama
                 byte[] dataToSend = System.Text.Encoding.ASCII.GetBytes(trama);
                 stream.Write(dataToSend, 0, dataToSend.Length);
 
-                //agregar timeout para evitar espera indefinida
+                // Agregar timeout para evitar espera indefinida
                 client.ReceiveTimeout = 30000;  // 30 segundos de timeout
 
-                //recibir la respuesta del Receptor Externo
+                // Recibir la respuesta del Receptor Externo
                 byte[] buffer = new byte[1024];
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string respuesta = System.Text.Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-                //mostrar la respuesta
-                MessageBox.Show($"Respuesta del Receptor Externo: {respuesta}");
+                // Mostrar la respuesta en la consola
+                Console.WriteLine($"Respuesta del Receptor Externo: {respuesta}");
 
-                //cerrar la conexión
+                // Cerrar la conexión
                 client.Close();
             }
             catch (SocketException ex)
             {
-                MessageBox.Show($"Error al recibir respuesta: Tiempo de espera agotado o problema de conexión ({ex.Message})");
+                Console.WriteLine($"Error al recibir respuesta: Tiempo de espera agotado o problema de conexión ({ex.Message})");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al enviar la trama: {ex.Message}");
+                Console.WriteLine($"Error al enviar la trama: {ex.Message}");
             }
         }
 
@@ -107,6 +126,5 @@ namespace SimuladorOtroBanco
 
             return config;
         }
-
     }
 }

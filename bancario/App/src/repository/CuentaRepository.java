@@ -10,7 +10,6 @@ public class CuentaRepository implements ICuenta {
 
     // Método para obtener la conexión a la base de datos
     private Connection getConnection() throws SQLException {
-
         String url = ConfigProps.getProp("db_url");
         return DriverManager.getConnection(url);
     }
@@ -42,7 +41,7 @@ public class CuentaRepository implements ICuenta {
         return cuenta;
     }
 
-
+    @Override
     public void actualizarCuenta(Cuenta cuenta) {
         String query = "UPDATE Cuentas SET saldo = ? WHERE id_cuenta = ?";
 
@@ -57,4 +56,22 @@ public class CuentaRepository implements ICuenta {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean clienteExiste(String identificacion) {
+        String query = "SELECT 1 FROM Clientes WHERE identificacion = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, identificacion);
+            ResultSet rs = statement.executeQuery();
+
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

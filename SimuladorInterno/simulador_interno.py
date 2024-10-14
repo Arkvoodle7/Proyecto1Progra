@@ -1,7 +1,5 @@
 import socket
 import tkinter as tk
-from tkinter import messagebox
-import socket
 import configparser
 
 # Función para inscribir usuario
@@ -63,17 +61,13 @@ def enviar_pago(telefono, monto, descripcion):
         respuesta = orquestador_socket.recv(1024).decode('utf-8')
         orquestador_socket.close()
         
-        mostrar_popup_respuesta(respuesta)
+        mostrar_respuesta(respuesta)
     except socket.error as e:
-        mostrar_popup_respuesta(f"Error de conexión con el Orquestador: {str(e)}")
+        mostrar_respuesta(f"Error de conexión con el Orquestador: {str(e)}")
 
-def mostrar_popup_respuesta(respuesta):
-    # Inicializar ventana de tkinter
-    root = tk.Tk()
-    root.withdraw()  # Ocultar la ventana principal
-    
-    # Mostrar un popup con la respuesta
-    messagebox.showinfo("Respuesta del Orquestador", respuesta)
+def mostrar_respuesta(respuesta):
+    # Mostrar la respuesta en la consola
+    print(f"Respuesta del Orquestador: {respuesta}")
 
 def consultar_saldo(telefono):
     # Leer el puerto del Orquestador desde Config.ini
@@ -137,7 +131,7 @@ def abrir_enviar_pago():
     descripcion_entry = tk.Entry(ventana_pago)
     descripcion_entry.pack()
     
-    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_entry.get(), monto_entry.get(), descripcion_entry.get()))  # Aquí va la lógica
+    enviar_btn = tk.Button(ventana_pago, text="Enviar", command=lambda: enviar_pago(telefono_entry.get(), monto_entry.get(), descripcion_entry.get()))
     enviar_btn.pack()
 
 def abrir_consultar_saldo():
@@ -150,7 +144,7 @@ def abrir_consultar_saldo():
     telefono_saldo_entry = tk.Entry(ventana_saldo)
     telefono_saldo_entry.pack()
     
-    consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))  # Aquí va la lógica
+    consultar_btn = tk.Button(ventana_saldo, text="Consultar", command=lambda: consultar_saldo(telefono_saldo_entry.get()))
     consultar_btn.pack()
 
 # Crear ventana principal
