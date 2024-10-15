@@ -100,26 +100,33 @@ class ComunicacionHandler
     {
         try
         {
-            // Obtener el stream de la conexión con el Orquestador
+            //obtener el stream de la conexion con el Orquestador
             NetworkStream stream = orquestadorClient.GetStream();
             byte[] buffer = new byte[1024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
             string tramaRecibida = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-            // Mostrar la trama recibida desde el Orquestador
+            //mostrar la trama recibida desde el Orquestador
             Console.WriteLine($"Trama recibida de Orquestador: {tramaRecibida}");
 
-            // Generar la respuesta
+            //generar la respuesta
             string respuesta = Enviar(tramaRecibida);
 
-            // Enviar la respuesta de vuelta al Orquestador
-            byte[] respuestaBytes = Encoding.ASCII.GetBytes(respuesta);
+            //convertir la respuesta JSON a XML
+            dynamic respuestaObj = JsonConvert.DeserializeObject(respuesta);
+            string codigo = respuestaObj.codigo.ToString();
+            string descripcionRespuesta = respuestaObj.descripcion.ToString();
+
+            string respuestaXML = $"<respuesta><codigo>{codigo}</codigo><descripcion>{descripcionRespuesta}</descripcion></respuesta>";
+
+            //enviar la respuesta al Orquestador
+            byte[] respuestaBytes = Encoding.ASCII.GetBytes(respuestaXML);
             stream.Write(respuestaBytes, 0, respuestaBytes.Length);
 
-            // Mostrar la respuesta enviada al Orquestador
-            Console.WriteLine($"Respuesta enviada al Orquestador: {respuesta}");
+            //mostrar la respuesta enviada al Orquestador
+            Console.WriteLine($"Respuesta enviada al Orquestador: {respuestaXML}");
 
-            // Cerrar la conexión
+            //cerrar la conexion
             orquestadorClient.Close();
         }
         catch (Exception ex)

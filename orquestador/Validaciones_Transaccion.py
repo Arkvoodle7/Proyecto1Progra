@@ -36,11 +36,11 @@ class ValidadorTransaccion:
             try:
                 monto_float = float(monto)
                 if monto_float > 100000:
-                    return self.generarError("El monto no debe ser superior a 100.000.")
+                    return self.generarError("El monto no debe ser superior a 100.000")
                 if monto_float <= 0:
-                    return self.generarError("El monto debe ser mayor que cero.")
+                    return self.generarError("Debe enviar los datos completos y válidos")
             except ValueError:
-                return self.generarError("El monto debe ser un número válido")
+                return self.generarError("Debe enviar los datos completos y válidos")
 
         #validar si el cliente esta registrado en la base de datos
         registro = self.collection.find_one({"telefono": telefono})

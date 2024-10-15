@@ -15,7 +15,7 @@ public class TransaccionService implements ITransaccion {
     //metodo para que se aplique la Transaccion en la cuenta del usuario
     @Override
     public String aplicarTransaccion(TransaccionDto transaccion) {
-        // Busca la Cuenta por medio de la identificación
+        //busca la cuenta por medio de la identificacion
         Cuenta cuenta = cuentaRepository.buscarCuenta(transaccion.getIdentificacion(), transaccion.getNumeroCuenta());
         if (cuenta == null) {
             return "ERROR|Cuenta inexistente";

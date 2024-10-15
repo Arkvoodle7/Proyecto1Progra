@@ -6,7 +6,7 @@ import json
 import re
 from pymongo import MongoClient
 
-# Constructor
+#constructor
 from Validaciones_Transaccion import ValidadorTransaccion
 from GestorInscripcion import GestorInscripcion
 from ValidarInscripcion import ValidadorInscripcion
@@ -14,28 +14,25 @@ from ValidarInscripcion import ValidadorInscripcion
 class OrquestadorSocket:
 
     def __init__(self):
-        # [El código de inicialización permanece igual]
-        # ... (omitido por brevedad)
         config = configparser.ConfigParser()
         config.read('C:/Users/alexl/source/repos/Proyecto1Progra/orquestador/Config.ini')
         
         self.puerto_interno = int(config['Orquestador']['puerto_interno'])
         self.puerto_externo = int(config['Orquestador']['puerto_externo'])
-        self.puerto_bancario = int(config['Banco']['puerto'])  # Puerto del socket bancario
-        self.puerto_receptor_externo = int(config['ReceptorExterno']['puerto'])  # Puerto del socket receptor externo
+        self.puerto_bancario = int(config['Banco']['puerto'])  #puerto del socket bancario
+        self.puerto_receptor_externo = int(config['ReceptorExterno']['puerto'])  #puerto del socket receptor externo
         
         self.validador = ValidadorTransaccion()
         self.validadori = ValidadorInscripcion
 
-        # Inicializar la conexión a MongoDB
+        #inicializar la conexion a MongoDB
         self.mongo_uri = config['MongoDB']['uri']
         self.mongo_client = MongoClient(self.mongo_uri)
-        self.mongo_db = self.mongo_client.PagosMovilesOrquestador  # Reemplaza por el nombre de la base de datos correcto
+        self.mongo_db = self.mongo_client.PagosMovilesOrquestador
 
         self.gestor = GestorInscripcion(self.mongo_uri)
 
     def start(self):
-        # [El código de configuración del servidor permanece igual]
         Orquestador_interno = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         Orquestador_externo = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         Orquestador_interno.bind(('localhost', self.puerto_interno))
@@ -48,7 +45,6 @@ class OrquestadorSocket:
         threading.Thread(target=self.accept_connections, args=(Orquestador_externo, False)).start()
 
     def accept_connections(self, Orquestador_socket, es_interno):
-        # [El código permanece igual]
         while True:
             client_socket, client_address = Orquestador_socket.accept()
             cliente_thread = threading.Thread(target=self.handle_client, args=(client_socket, es_interno))
@@ -67,10 +63,10 @@ class OrquestadorSocket:
                 data = data.replace(b'\n', b'').replace(b'\r', b'')
                 trama_recibida = data.decode('utf-8')
 
-                # Eliminar espacios en blanco innecesarios de la cadena XML
+                #eliminar espacios en blanco innecesarios de la cadena XML
                 trama_recibida_minificada = self.minify_xml(trama_recibida)
 
-                # Determinar el origen y imprimir la trama recibida sin espacios adicionales
+                #determinar el origen y imprimir la trama recibida sin espacios adicionales
                 if es_interno:
                     print(f"Trama recibida del simulador: {trama_recibida_minificada}")
                 else:
@@ -80,15 +76,15 @@ class OrquestadorSocket:
 
                 if root.tag == "transaccion":
                     
-                    # Extraer los valores correctos del XML
+                    #extraer los valores correctos del XML
                     telefono = root.find('telefono').text
                     monto = root.find('monto').text
                     descripcion = root.find('descripcion').text
 
-                    # Llamar a manejar_transaccion con los datos extraídos
+                    #llamar a manejar_transaccion con los datos extraídos
                     respuesta = self.manejar_transaccion(telefono, monto, descripcion, es_interno)
 
-                    # Enviar la respuesta al cliente y imprimirla
+                    #enviar la respuesta al cliente y imprimirla
                     client_socket.send(respuesta.encode('utf-8'))
                     if es_interno:
                         print(f"Respuesta enviada al simulador: {respuesta}")
@@ -113,89 +109,95 @@ class OrquestadorSocket:
         client_socket.close()
 
     def minify_xml(self, xml_string):
-        # Eliminar espacios en blanco entre etiquetas
+        #eliminar espacios en blanco entre etiquetas
         xml_string = re.sub(r'>\s+<', '><', xml_string)
-        # Eliminar espacios al inicio y al final
+        #eliminar espacios al inicio y al final
         xml_string = xml_string.strip()
         return xml_string
 
     def manejar_transaccion(self, telefono, monto, descripcion, es_interno):
-
-        # Validación de la transacción
+        #validacion de la transaccion
         respuesta_error = self.validador.validarTransaccion(telefono, monto, descripcion, es_interno)
         if respuesta_error:
-            print(respuesta_error)
             return respuesta_error
 
-        # Obtener el cliente asociado
+        #obtener el cliente asociado
         registro_cliente = self.validador.obtenerCliente(telefono)
 
-        if registro_cliente is None:
-            # Cliente no asociado
-            print("Cliente no asociado a pagos móviles.")
-            respuesta_error = self.validador.generarError("Cliente no asociado a pagos móviles.")
-            return respuesta_error
+        if es_interno:
+            #si la trama proviene del simulador interno
+            identificacion = registro_cliente.get("identificacion", "000000000") if registro_cliente else "000000000"
+            cuenta = registro_cliente.get("numero_cuenta", "000000000") if registro_cliente else "000000000"
+
+            #procesar la trama
+            respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto, descripcion, es_interno)
+            return respuesta
         else:
-            identificacion = registro_cliente.get("identificacion", "000000000")
-            cuenta = registro_cliente.get("numero_cuenta", "000000000")
+            #si la trama proviene del Receptor Externo
+            if registro_cliente is None:
+                #cliente no asociado
+                print("Cliente no asociado a pagos móviles.")
+                respuesta_error = self.validador.generarError("Cliente no asociado a pagos móviles.")
+                return respuesta_error
+            else:
+                identificacion = registro_cliente.get("identificacion", "000000000")
+                cuenta = registro_cliente.get("numero_cuenta", "000000000")
 
-        # Procesar la trama
-        respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto, descripcion, es_interno)
-
-        # Retornar la respuesta al cliente (ya en formato XML o JSON)
-        return respuesta
+                #procesar la trama
+                respuesta = self.procesar_trama(telefono, identificacion, cuenta, monto, descripcion, es_interno)
+                return respuesta
 
     def procesar_trama(self, telefono, identificacion, cuenta, monto, descripcion, es_interno):
         cuenta_existente = self.mongo_db.TelefonosXCuentas.find_one({"telefono": telefono})
 
         if cuenta_existente:
-            # Transacción interna
+            #transaccion interna
             respuesta_bancaria = self.enviar_trama_bancaria(identificacion, cuenta, monto, "CRE", es_interno)
             return respuesta_bancaria
         else:
-            # Transacción externa
+            #transaccion externa
             respuesta_externa = self.enviar_trama_receptor_externo(telefono, monto, descripcion, es_interno)
             return respuesta_externa
 
     def enviar_trama_bancaria(self, identificacion, cuenta, monto, tipo, es_interno):
         try:
-            # Intentar conectar al socket bancario
+            #intentar conectar al socket bancario
             bancario_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             bancario_socket.connect(('localhost', self.puerto_bancario))
 
-            # Enviar la trama al socket bancario
+            #enviar la trama al socket bancario
             trama_banco = f"{identificacion}|{cuenta}|{monto}|{tipo}"
             print(f"Trama enviada a Bancario: {trama_banco}")
             bancario_socket.send((trama_banco + "\n").encode('utf-8'))
 
-            # Recibir la respuesta del socket bancario
+            #recibir la respuesta del socket bancario
             respuesta_banco = bancario_socket.recv(1024).decode('utf-8').strip()
             print(f"Respuesta recibida de Bancario: {respuesta_banco}")
             bancario_socket.close()
 
-            # Procesar la respuesta del banco
+            #procesar la respuesta del banco
             if respuesta_banco.startswith('OK|'):
-                # Respuesta exitosa
+                #respuesta exitosa
                 codigo = '0'
-                descripcion = respuesta_banco[3:]  # Remover 'OK|' del inicio
+                descripcion = respuesta_banco[3:]  #remover 'OK|' del inicio
             elif respuesta_banco.startswith('ERROR|'):
-                # Respuesta de error
+                #respuesta de error
                 codigo = '-1'
-                descripcion = respuesta_banco[6:]  # Remover 'ERROR|' del inicio
+                descripcion = respuesta_banco[6:]  #remover 'ERROR|' del inicio
             else:
-                # Respuesta inesperada
+                #respuesta inesperada
                 codigo = '-1'
                 descripcion = 'Respuesta inesperada del banco.'
 
-            # Crear la respuesta XML utilizando ElementTree
+            #crear la respuesta XML utilizando ElementTree
             respuesta_xml = ET.Element('respuesta')
             ET.SubElement(respuesta_xml, 'codigo').text = codigo
             ET.SubElement(respuesta_xml, 'descripcion').text = descripcion.strip()
 
-            # Convertir el árbol XML a una cadena
+            #convertir el arbol XML a una cadena
             respuesta_xml_str = ET.tostring(respuesta_xml, encoding='utf-8').decode('utf-8')
 
-            # Si la trama proviene del Receptor Externo, convertir a JSON
+            #si la trama proviene del Receptor Externo, convertir a JSON
             if not es_interno:
                 respuesta_json = {
                     "codigo": int(codigo),
@@ -203,7 +205,7 @@ class OrquestadorSocket:
                 }
                 return json.dumps(respuesta_json)
 
-            # Si la trama proviene del SimuladorInterno, devolver respuesta en XML
+            #si la trama proviene del SimuladorInterno, devolver respuesta en XML
             return respuesta_xml_str
 
         except socket.error as e:
@@ -223,32 +225,31 @@ class OrquestadorSocket:
 
     def enviar_trama_receptor_externo(self, telefono, monto, descripcion, es_interno):
         try:
-            # Conexión al socket del receptor externo
+            #conexion al socket del receptor externo
             receptor_externo_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             
-            # Establecer un timeout de 20 segundos
-            receptor_externo_socket.settimeout(20)  # Timeout de 20 segundos
+            #establecer un timeout de 20 segundos
+            receptor_externo_socket.settimeout(20)  #timeout de 20 segundos
             
             receptor_externo_socket.connect(('localhost', self.puerto_receptor_externo))
 
-            # Crear la trama en formato JSON para el receptor externo
+            #crear la trama en formato JSON para el receptor externo
             trama_receptor = f'{{"telefono":"{telefono}", "monto":{monto}, "descripcion":"{descripcion}"}}'
             print(f"Trama enviada al Receptor Externo: {trama_receptor}")
             receptor_externo_socket.send(trama_receptor.encode('utf-8'))
 
-            # Espera la respuesta del receptor externo con timeout
+            #espera la respuesta del receptor externo con timeout
             respuesta_receptor = receptor_externo_socket.recv(1024).decode('utf-8')
-            print(f"Respuesta recibida de Receptor Externo: {respuesta_receptor}")
-            # Cerrar el socket
+            print(f"Respuesta recibida del Receptor Externo: {respuesta_receptor}")
+            #cerrar el socket
             receptor_externo_socket.close()
 
-            # Si la trama proviene del Simulador Interno, devolver la respuesta
+            #si la trama proviene del Simulador Interno, devolver la respuesta
             if es_interno:
                 return respuesta_receptor
             else:
-                # Si proviene del Receptor Externo, enviar la trama al bancario
-                respuesta_bancaria = self.enviar_trama_bancaria(telefono, "000000000", monto, "CRE", es_interno)
-                return respuesta_bancaria
+                #si proviene del Receptor Externo, procesar la respuesta
+                return respuesta_receptor
 
         except socket.timeout as e:
             print(e)
@@ -273,18 +274,18 @@ class OrquestadorSocket:
             identificacion = root.find('identificacion').text
             telefono = root.find('telefono').text
 
-            # Validar datos de inscripción
+            #validar datos de inscripcion
             if root.tag == "inscripcion":
                 es_valido, mensaje = self.validadori.validar_datos(cuenta, identificacion, telefono)
                 if not es_valido:
                     print(mensaje)
                     cliente_socket.sendall(mensaje.encode('utf-8'))
-                    return  # Retornar aquí si hay un error
+                    return  #retornar aqui si hay un error
 
                 es_valido, respuesta = self.gestor.verificar_telefono_asociado(cuenta, telefono)
                 if respuesta:
                     cliente_socket.sendall(respuesta.encode('utf-8'))
-                    return  # Detener si hay error o reactivación
+                    return  #detener si hay error o reactivacion
 
                 if es_valido and respuesta is None:
                     respuesta_inscripcion = self.gestor.registrar_asociacion(cuenta, identificacion, telefono)
@@ -296,7 +297,7 @@ class OrquestadorSocket:
                 if not es_valido:
                     print(mensaje)
                     cliente_socket.sendall(mensaje.encode('utf-8'))
-                    return  # Error
+                    return
 
                 respuesta = self.gestor.desinscribir_telefono(cuenta, identificacion, telefono)
                 cliente_socket.sendall(respuesta.encode('utf-8'))
@@ -307,20 +308,20 @@ class OrquestadorSocket:
         finally:
             cliente_socket.close()
 
-    # Trama de envío del saldo
+    #trama de envio del saldo
     def enviar_trama_saldo(self, identificacion, cuenta):
         try:
             bancario_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             bancario_socket.connect(('localhost', self.puerto_bancario))
 
-            # Crea la trama sobre el saldo para bancario
+            #crea la trama sobre el saldo para bancario
             trama_saldo = f"{identificacion}|{cuenta}\n"  # Agregar '\n' al final
             print(f"Trama enviada a Bancario: {trama_saldo.strip()}")
             bancario_socket.send(trama_saldo.encode('utf-8'))
 
-            # Recibe la respuesta de bancario
-            respuesta_banco = bancario_socket.recv(1024).decode('utf-8').strip()
-            print(f"Respuesta recibida de Bancario: {respuesta_banco}")
+            #recibe la respuesta de bancario
+            respuesta_banco = bancario_socket.recv(1024).decode('utf-8')
+            print(f"Respuesta recibida de Bancario: {respuesta_banco.strip()}")
             bancario_socket.close()
 
             return respuesta_banco.strip()
@@ -338,7 +339,7 @@ class OrquestadorSocket:
                 client_socket.send(respuesta_error.encode('utf-8'))
                 return
 
-            # Obtener los datos del cliente
+            #obtener los datos del cliente
             registro_cliente = self.validador.obtenerCliente(telefono)
             if not registro_cliente:
                 respuesta_error = self.validador.generarError("Cliente no asociado a pagos móviles.")
@@ -348,26 +349,26 @@ class OrquestadorSocket:
             identificacion = registro_cliente['identificacion']
             cuenta = registro_cliente['numero_cuenta']
 
-            # Trama para obtener el saldo
+            #trama para obtener el saldo
             respuesta_banco = self.enviar_trama_saldo(identificacion, cuenta)
 
-            # Procesamiento de la respuesta del banco
+            #procesamiento de la respuesta del banco
             if respuesta_banco:
                 if respuesta_banco.startswith("OK|"):
                     saldo_cliente = respuesta_banco.split('|', 1)[1]
 
-                    # Respuesta de éxito en XML
+                    #respuesta de exito en XML
                     respuesta_exito = f"<respuesta><codigo>0</codigo><saldo>{saldo_cliente}</saldo></respuesta>"
                     print(f"Respuesta enviada al Simulador: {respuesta_exito}")
                     client_socket.send(respuesta_exito.encode('utf-8'))
                 elif respuesta_banco.startswith("ERROR|"):
-                    # Extraer el mensaje de error
+                    #extraer el mensaje de error
                     mensaje_error = respuesta_banco.split('|', 1)[1]
                     respuesta_error_banco = self.validador.generarError(mensaje_error)
                     print(mensaje_error)
                     client_socket.send(respuesta_error_banco.encode('utf-8'))
                 else:
-                    # Respuesta inesperada
+                    #respuesta inesperada
                     respuesta_error_banco = self.validador.generarError("Respuesta inesperada del banco.")
                     client_socket.send(respuesta_error_banco.encode('utf-8'))
             else:

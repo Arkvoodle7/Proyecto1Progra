@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading;
@@ -17,10 +18,10 @@ class TransaccionHandlerSE
 
             Console.WriteLine($"Trama recibida del Receptor Externo: {tramaRecibida}");
 
-            //respuesta despues de recibir la trama
-            string tramaRespuesta = "<respuesta><codigo>0</código><saldo>Transacción procesada</saldo></respuesta>";
+            //respuesta en formato JSON
+            string tramaRespuesta = "{\"codigo\":0,\"descripcion\":\"Transacción procesada\"}";
 
-            //enviar la respuesta de vuelta al Receptor Externo
+            //enviar la respuesta al Receptor Externo
             byte[] respuestaBytes = Encoding.ASCII.GetBytes(tramaRespuesta);
             stream.Write(respuestaBytes, 0, respuestaBytes.Length);
             Console.WriteLine($"Respuesta enviada al Receptor Externo: {tramaRespuesta}");
@@ -29,7 +30,7 @@ class TransaccionHandlerSE
             Thread bitacoraThread = new Thread(() => BitacoraHandlerSE.RegistrarBitacora(tramaRecibida, tramaRespuesta));
             bitacoraThread.Start();
 
-            //cerrar la conexión
+            //cerrar la conexion
             client.Close();
         }
         catch (Exception ex)

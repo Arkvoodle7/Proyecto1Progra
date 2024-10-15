@@ -4,7 +4,7 @@ public class TransaccionDto {
     private String identificacion;
     private String numeroCuenta;
     private double monto;
-    private String tipo; // (Débito o Crédito)
+    private String tipo; //debito o credito
 
     public String getIdentificacion() {
         return identificacion;
