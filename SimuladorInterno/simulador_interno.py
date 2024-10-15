@@ -95,15 +95,15 @@ def abrir_inscribir_desinscribir():
     ventana_inscribir.geometry('300x200')
     
     #campos y botones para inscribir/desinscribir
+    tk.Label(ventana_inscribir, text="Identificación").pack()  
+    identificacion_entry = tk.Entry(ventana_inscribir)
+    identificacion_entry.pack()
+
     tk.Label(ventana_inscribir, text="Número de cuenta").pack()
     cuenta_entry = tk.Entry(ventana_inscribir)
     cuenta_entry.pack()
     
-    tk.Label(ventana_inscribir, text="Identificación").pack()  
-    identificacion_entry = tk.Entry(ventana_inscribir)
-    identificacion_entry.pack()
-    
-    tk.Label(ventana_inscribir, text="Número de teléfono").pack()
+    tk.Label(ventana_inscribir, text="Teléfono").pack()
     telefono_entry = tk.Entry(ventana_inscribir)
     telefono_entry.pack()
     
@@ -140,7 +140,7 @@ def abrir_consultar_saldo():
     ventana_saldo.geometry('300x200')
     
     #campo y boton para consultar saldo
-    tk.Label(ventana_saldo, text="Número de teléfono").pack()
+    tk.Label(ventana_saldo, text="Teléfono").pack()
     telefono_saldo_entry = tk.Entry(ventana_saldo)
     telefono_saldo_entry.pack()
     

@@ -95,6 +95,7 @@ class OrquestadorSocket:
                     self.recibe_consulta_saldo(root, client_socket)
                 elif root.tag in ["inscripcion", "desinscripcion"]:
                     self.manejar_cliente(client_socket, root)
+                    break
 
             except ConnectionResetError as e:
                 print(e)
@@ -278,30 +279,31 @@ class OrquestadorSocket:
             if root.tag == "inscripcion":
                 es_valido, mensaje = self.validadori.validar_datos(cuenta, identificacion, telefono)
                 if not es_valido:
-                    print(mensaje)
+                    print(f"Respuesta enviada al simulador: {mensaje}")
                     cliente_socket.sendall(mensaje.encode('utf-8'))
                     return  #retornar aqui si hay un error
 
                 es_valido, respuesta = self.gestor.verificar_telefono_asociado(cuenta, telefono)
                 if respuesta:
+                    print(f"Respuesta enviada al simulador: {respuesta}")
                     cliente_socket.sendall(respuesta.encode('utf-8'))
                     return  #detener si hay error o reactivacion
 
                 if es_valido and respuesta is None:
                     respuesta_inscripcion = self.gestor.registrar_asociacion(cuenta, identificacion, telefono)
-                    cliente_socket.sendall(respuesta_inscripcion.encode('utf-8'))
-                    print(respuesta_inscripcion)
+                    print(f"Respuesta enviada al simulador: {respuesta_inscripcion}")
+                    cliente_socket.sendall(respuesta_inscripcion.encode('utf-8'))                    
 
             elif root.tag == "desinscripcion":
                 es_valido, mensaje = self.validadori.validar_datos_desinscripcion(cuenta, identificacion, telefono)
                 if not es_valido:
-                    print(mensaje)
+                    print(f"Respuesta enviada al simulador: {mensaje}")
                     cliente_socket.sendall(mensaje.encode('utf-8'))
                     return
 
                 respuesta = self.gestor.desinscribir_telefono(cuenta, identificacion, telefono)
                 cliente_socket.sendall(respuesta.encode('utf-8'))
-                print(respuesta)
+                print(f"Respuesta enviada al simulador: {respuesta}")
 
         except Exception as e:
             print(e)
