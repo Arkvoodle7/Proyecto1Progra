@@ -70,6 +70,7 @@ namespace SimuladorOtroBanco
             }
         }
 
+        //Holi es una prueba
         private void EnviarTrama(string trama)
         {
             try
