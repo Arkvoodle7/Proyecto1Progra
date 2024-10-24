@@ -76,7 +76,7 @@ class OrquestadorSocket:
 
                 if root.tag == "transaccion":
                     
-                    #extraer los valores correctos del XML
+                    #extraer los valores del XML
                     telefono = root.find('telefono').text
                     monto = root.find('monto').text
                     descripcion = root.find('descripcion').text
