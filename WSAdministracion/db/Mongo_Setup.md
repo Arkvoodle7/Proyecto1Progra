@@ -1,4 +1,4 @@
-use Admin; // Selecciona o crea la base de datos
+use PagosMovilesAdministracion; // Selecciona o crea la base de datos
 
 db.createCollection("Administradores"); // Crea la colección
 
