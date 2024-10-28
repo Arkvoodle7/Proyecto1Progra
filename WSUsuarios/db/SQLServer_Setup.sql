@@ -1,3 +1,5 @@
+CREATE DATABASE PagosMovilesUsuarios
+
 CREATE TABLE Usuarios (
     identificacion CHAR(9) PRIMARY KEY,
     nombre_usuario VARCHAR(50) NOT NULL,
