@@ -1,4 +1,4 @@
-package com.progra.wsusuarios;
+package com.pagosmoviles.wsusuarios;
 
 public class HelloWorld {
     public String sayHello() {
@@ -6,7 +6,7 @@ public class HelloWorld {
     }
 
     public static void main(String[] args) {
-        HelloWorld service = new HelloWorld();
+        com.pagosmoviles.wsusuarios.HelloWorld service = new com.pagosmoviles.wsusuarios.HelloWorld();
         System.out.println(service.sayHello());
     }
 }
