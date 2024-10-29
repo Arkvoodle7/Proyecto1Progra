@@ -4,7 +4,7 @@ class BitacoraHandlerSE
 {
     public static void RegistrarBitacora(string tramaRecibida, string tramaRespuesta)
     {
-        string connectionString = "server=localhost;user=root;password=Daniel2510*;database=PagosMovilesSocketExterno";
+        string connectionString = "server=localhost;user=root;password=lu26092004roazo*;database=PagosMovilesSocketExterno";
         using (MySqlConnection conn = new MySqlConnection(connectionString))
         {
             conn.Open();
