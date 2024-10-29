@@ -15,7 +15,7 @@ class OrquestadorSocket:
 
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read('C:/Users/alexl/source/repos/Proyecto1Progra/orquestador/Config.ini')
+        config.read('D:/U/Programacion4/Proyecto1Progra/orquestador/Config.ini')
         
         self.puerto_interno = int(config['Orquestador']['puerto_interno'])
         self.puerto_externo = int(config['Orquestador']['puerto_externo'])
