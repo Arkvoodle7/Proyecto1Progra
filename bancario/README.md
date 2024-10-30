@@ -11,6 +11,6 @@ javac -d out -sourcepath App\src App\src\Main.java
 ```
 y luego usar el siguiente comando para ejecutar/levantar el proyecto.
 ``` shell
-java -cp App out Main
+java -cp out Main
 ```
 
