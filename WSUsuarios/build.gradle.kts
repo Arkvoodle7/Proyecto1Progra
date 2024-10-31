@@ -1,11 +1,16 @@
 plugins {
     id("java")
-
+    id("org.springframework.boot") version "3.3.5"
+    id("io.spring.dependency-management") version "1.0.15.RELEASE"
+    id("org.unbroken-dome.xjc") version "2.0.0"
+    kotlin("jvm") version "1.8.20"
+    application
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 group = "com.pagosmoviles"
@@ -17,6 +22,10 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("javax.ws.rs:javax.ws.rs-api:2.1")
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
     implementation("org.springframework.boot:spring-boot-starter-web-services:3.3.5")
     implementation("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
@@ -27,28 +36,7 @@ dependencies {
 }
 
 
-
-// Tarea para generar XSD a partir de las clases Java
-tasks.register<JavaExec>("generateXsd") {
-    group = "build"
-    description = "Genera XSD a partir de las clases Java"
-
-
-    classpath = sourceSets["main"].runtimeClasspath
-    mainClass.set("com.sun.tools.xjc.XJCFacade")
-    args = listOf(
-            "-d", "${layout.buildDirectory.get()}/generated-sources/xjc", // Carpeta temporal para la generación
-            "-p", "com.pagosmoviles.generated",
-            "-s", "$projectDir/src/main/resources/generated-xsd", // Carpeta donde se generarán los XSD
-            "$projectDir/src/main/java/com/pagosmoviles/**/*.java" // Ruta a las clases Java
-    )
-}
-
-tasks.build {
-    dependsOn("generateXsd")
-}
-
-
 tasks.test {
     useJUnitPlatform()
 }
+
