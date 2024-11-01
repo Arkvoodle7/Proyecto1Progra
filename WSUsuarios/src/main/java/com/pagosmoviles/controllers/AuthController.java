@@ -1,10 +1,9 @@
 package com.pagosmoviles.controllers;
 
 import com.pagosmoviles.services.AuthService;
-import com.pagosmoviles.services.AuthService.AuthResponse;
 import com.pagosmoviles.dto.AuthRequestDto;
+import com.pagosmoviles.dto.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +19,18 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(
+            value = "/login",
+            consumes = MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8",
+            produces = MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8"
+    )
     public ResponseEntity<AuthResponse> autenticarUsuario(@RequestBody AuthRequestDto authRequest) {
-        String nombreUsuario = authRequest.getNombreUsuario();
-        String contrasena = authRequest.getContrasena();
+        AuthResponse authResponse = authService.autenticarUsuario(
+                authRequest.getNombreUsuario(),
+                authRequest.getContrasena()
+        );
 
-        AuthResponse authResponse = authService.autenticarUsuario(nombreUsuario, contrasena);
-
-        if (authResponse.getResultado() == 0) {
-            // Respuesta de éxito
-            return ResponseEntity.ok(authResponse);
-        } else {
-            // Respuesta de error
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authResponse);
-        }
+        return ResponseEntity.ok(authResponse);
     }
+
 }

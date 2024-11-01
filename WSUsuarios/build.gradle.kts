@@ -29,11 +29,16 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web-services:3.3.5")
     implementation("com.microsoft.sqlserver:mssql-jdbc:12.8.1.jre11")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
-    implementation("jakarta.xml.bind:jakarta.xml.bind-api:3.0.1") // Dependencias para JAXB
-    implementation("org.glassfish.jaxb:jaxb-runtime:3.0.1") // Dependencias para JAXB
+    implementation("jakarta.xml.bind:jakarta.xml.bind-api:3.0.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:3.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-web") // Dependencia agregada para controladores REST
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+
+
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
+
 
 
 tasks.test {

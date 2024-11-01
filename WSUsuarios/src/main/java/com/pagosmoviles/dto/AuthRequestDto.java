@@ -1,15 +1,21 @@
 package com.pagosmoviles.dto;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-@XmlRootElement
+@JacksonXmlRootElement(localName = "authRequestDto")
 public class AuthRequestDto {
 
+    @JacksonXmlProperty(localName = "nombreUsuario")
     private String nombreUsuario;
+
+    @JacksonXmlProperty(localName = "contrasena")
     private String contrasena;
 
-    @XmlElement
+    // Constructor por defecto necesario para la deserialización
+    public AuthRequestDto() {
+    }
+
     public String getNombreUsuario() {
         return nombreUsuario;
     }
@@ -18,7 +24,6 @@ public class AuthRequestDto {
         this.nombreUsuario = nombreUsuario;
     }
 
-    @XmlElement
     public String getContrasena() {
         return contrasena;
     }

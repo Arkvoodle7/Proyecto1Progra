@@ -2,13 +2,13 @@ package com.pagosmoviles.services;
 
 import com.pagosmoviles.entities.Usuario;
 import com.pagosmoviles.repository.UsuarioRepository;
-
+import com.pagosmoviles.dto.AuthResponse;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public AuthService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
@@ -23,24 +23,6 @@ public class AuthService {
         } else {
             // Credenciales incorrectas
             return new AuthResponse(-1, "Usuario y/o contraseña incorrectos");
-        }
-    }
-
-    public static class AuthResponse {
-        private int resultado;
-        private String mensaje;
-
-        public AuthResponse(int resultado, String mensaje) {
-            this.resultado = resultado;
-            this.mensaje = mensaje;
-        }
-
-        public int getResultado() {
-            return resultado;
-        }
-
-        public String getMensaje() {
-            return mensaje;
         }
     }
 }
