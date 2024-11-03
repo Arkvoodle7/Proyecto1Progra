@@ -1,5 +1,5 @@
 plugins {
-    id("java") apply false
+    id("java") // No necesita apply false
     id("org.springframework.boot") version "3.3.5" apply false
     id("io.spring.dependency-management") version "1.0.15.RELEASE" apply false
     id("org.unbroken-dome.xjc") version "2.0.0" apply false
