@@ -18,7 +18,7 @@ public class Main {
     public DataSource usuariosDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSourceBuilder.url("jdbc:sqlserver://DESKTOP-1U7DCG4;databaseName=PagosMovilesUsuarios;encrypt=true;trustServerCertificate=true");
+        dataSourceBuilder.url("jdbc:sqlserver://DESKTOP-L5QPGSA;databaseName=PagosMovilesUsuarios;encrypt=true;trustServerCertificate=true");
         dataSourceBuilder.username("sa");
         dataSourceBuilder.password("root");
         return dataSourceBuilder.build();
@@ -28,7 +28,7 @@ public class Main {
     public DataSource bancoDataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSourceBuilder.url("jdbc:sqlserver://DESKTOP-1U7DCG4;databaseName=PagosMovilesBancario;encrypt=true;trustServerCertificate=true");
+        dataSourceBuilder.url("jdbc:sqlserver://DESKTOP-L5QPGSA;databaseName=PagosMovilesBancario;encrypt=true;trustServerCertificate=true");
         dataSourceBuilder.username("sa");
         dataSourceBuilder.password("root");
         return dataSourceBuilder.build();
