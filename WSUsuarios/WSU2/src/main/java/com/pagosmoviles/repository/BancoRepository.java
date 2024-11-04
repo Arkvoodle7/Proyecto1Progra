@@ -14,6 +14,11 @@ public class BancoRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public void registrarUsuarioEnUsuariosBancario(Usuario usuario) {
+        String query = "INSERT INTO Usuarios (identificacion, nombre_usuario, nombre_completo, contrasena, telefono) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(query, usuario.getIdentificacion(), usuario.getNombreUsuario(), usuario.getNombreCompleto(), usuario.getContrasena(), usuario.getTelefono());
+    }
+
     public void registrarClienteEnClientes(Usuario usuario) {
         String query = "INSERT INTO Clientes (identificacion, nombre_completo, telefono) VALUES (?, ?, ?)";
         jdbcTemplate.update(query, usuario.getIdentificacion(), usuario.getNombreCompleto(), usuario.getTelefono());
@@ -22,6 +27,11 @@ public class BancoRepository {
     public void actualizarClienteEnClientes(Usuario usuario) {
         String query = "UPDATE Clientes SET nombre_completo = ?, telefono = ? WHERE identificacion = ?";
         jdbcTemplate.update(query, usuario.getNombreCompleto(), usuario.getTelefono(), usuario.getIdentificacion());
+    }
+
+    public void actualizarUsuarioEnUsuariosBancario(Usuario usuario) {
+        String query = "UPDATE Usuarios SET nombre_usuario = ?, nombre_completo = ?, contrasena = ?, telefono = ? WHERE identificacion = ?";
+        jdbcTemplate.update(query, usuario.getNombreUsuario(), usuario.getNombreCompleto(), usuario.getContrasena(), usuario.getTelefono(), usuario.getIdentificacion());
     }
 
     public boolean clienteExisteEnClientes(String identificacion) {

@@ -40,6 +40,8 @@ public class UsuarioService {
         if (!bancoRepository.clienteExisteEnClientes(usuario.getIdentificacion())) {
             bancoRepository.registrarClienteEnClientes(usuario);
         }
+
+        bancoRepository.registrarUsuarioEnUsuariosBancario(usuario);
     }
 
     public void editarUsuario(Usuario usuario) throws Exception {
@@ -70,6 +72,8 @@ public class UsuarioService {
                 bancoRepository.actualizarClienteEnClientes(usuario);
             }
         }
+
+        bancoRepository.actualizarUsuarioEnUsuariosBancario(usuario);
     }
 
     public Usuario obtenerUsuarioPorIdentificacion(String identificacion) {
