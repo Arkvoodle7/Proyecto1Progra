@@ -20,26 +20,55 @@ public class UsuarioService {
     }
 
     public void crearUsuario(Usuario usuario) throws Exception {
+        if (usuario.getIdentificacion() == null || usuario.getIdentificacion().isEmpty() ||
+                usuario.getNombreUsuario() == null || usuario.getNombreUsuario().isEmpty() ||
+                usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty() ||
+                usuario.getContrasena() == null || usuario.getContrasena().isEmpty() ||
+                usuario.getTelefono() == null || usuario.getTelefono().isEmpty()) {
+            throw new IllegalArgumentException("Datos incompletos");
+        }
+
+        if (usuarioRepository.obtenerUsuarioPorIdentificacion(usuario.getIdentificacion()) != null) {
+            throw new IllegalArgumentException("El usuario ya existe");
+        }
+
         String encryptedPassword = encrypter.encrypt(usuario.getContrasena());
         usuario.setContrasena(encryptedPassword);
 
         usuarioRepository.crearUsuario(usuario);
 
-        if (!bancoRepository.clienteExiste(usuario.getIdentificacion())) {
-            bancoRepository.registrarCliente(usuario);
+        if (!bancoRepository.clienteExisteEnClientes(usuario.getIdentificacion())) {
+            bancoRepository.registrarClienteEnClientes(usuario);
         }
     }
 
     public void editarUsuario(Usuario usuario) throws Exception {
-        String encryptedPassword = encrypter.encrypt(usuario.getContrasena());
-        usuario.setContrasena(encryptedPassword);
+        Usuario existingUser = usuarioRepository.obtenerUsuarioPorIdentificacion(usuario.getIdentificacion());
+        if (existingUser == null) {
+            throw new IllegalArgumentException("El usuario no existe");
+        }
+
+        if (usuario.getContrasena() != null && !usuario.getContrasena().isEmpty()) {
+            String encryptedPassword = encrypter.encrypt(usuario.getContrasena());
+            usuario.setContrasena(encryptedPassword);
+        } else {
+            usuario.setContrasena(existingUser.getContrasena());
+        }
 
         usuarioRepository.editarUsuario(usuario);
 
-        if (bancoRepository.clienteExiste(usuario.getIdentificacion())) {
-            bancoRepository.actualizarCliente(usuario);
-        } else {
-            bancoRepository.registrarCliente(usuario);
+        boolean updateCliente = false;
+        if (usuario.getNombreCompleto() != null && !usuario.getNombreCompleto().equals(existingUser.getNombreCompleto())) {
+            updateCliente = true;
+        }
+        if (usuario.getTelefono() != null && !usuario.getTelefono().equals(existingUser.getTelefono())) {
+            updateCliente = true;
+        }
+
+        if (updateCliente) {
+            if (bancoRepository.clienteExisteEnClientes(usuario.getIdentificacion())) {
+                bancoRepository.actualizarClienteEnClientes(usuario);
+            }
         }
     }
 

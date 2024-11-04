@@ -28,7 +28,6 @@ public class UsuarioResponseDto {
         this.telefono = telefono;
     }
 
-    // Getters y Setters
     public String getIdentificacion() {
         return identificacion;
     }

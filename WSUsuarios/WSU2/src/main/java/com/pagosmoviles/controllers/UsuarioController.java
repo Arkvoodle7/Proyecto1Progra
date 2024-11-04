@@ -21,31 +21,29 @@ public class UsuarioController {
 
     @PostMapping(
             value = "/crear",
-            consumes = MediaType.APPLICATION_XML_VALUE,
-            produces = MediaType.APPLICATION_XML_VALUE
+            consumes = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Void> crearUsuario(@RequestBody Usuario usuario) {
         try {
             usuarioService.crearUsuario(usuario);
-            return ResponseEntity.ok("<resultado>0</resultado><mensaje>Usuario creado exitosamente</mensaje>");
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("<resultado>-1</resultado><mensaje>Error al crear el usuario</mensaje>");
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping(
             value = "/editar",
-            consumes = MediaType.APPLICATION_XML_VALUE,
-            produces = MediaType.APPLICATION_XML_VALUE
+            consumes = MediaType.APPLICATION_XML_VALUE
     )
-    public ResponseEntity<String> editarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Void> editarUsuario(@RequestBody Usuario usuario) {
         try {
             usuarioService.editarUsuario(usuario);
-            return ResponseEntity.ok("<resultado>0</resultado><mensaje>Usuario editado exitosamente</mensaje>");
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.badRequest().body("<resultado>-1</resultado><mensaje>Error al editar el usuario</mensaje>");
+            return ResponseEntity.badRequest().build();
         }
     }
 
