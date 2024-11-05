@@ -38,3 +38,21 @@ INSERT INTO Cuentas (numero_cuenta, nombre_usuario, tipo_cuenta, saldo) VALUES
 ('8765432109', 'user_808880888', 'empresarial', CAST(1280.90 AS Decimal(15, 2))),
 ('1029384756', 'user_909990999', 'ahorros', CAST(5000.00 AS Decimal(15, 2))),
 ('1928374650', 'user_111110000', 'empresarial', CAST(100.00 AS Decimal(15, 2)));
+
+CREATE TABLE Clientes (
+    identificacion VARCHAR(50) PRIMARY KEY,
+    nombre_completo VARCHAR(100),
+    telefono VARCHAR(20)
+);
+
+insert into Clientes (identificacion, nombre_completo, telefono) values
+('101110111', 'User Full Name 101110111', '88888888'),
+('111111000', 'User Full Name 111111000', '00000000'),
+('202202222', 'User Full Name 202202222', '77777777'),
+('303303333', 'User Full Name 303303333', '66666666'),
+('404404444', 'User Full Name 404404444', '55555555'),
+('505505555', 'User Full Name 505505555', '44444444'),
+('606606666', 'User Full Name 606606666', '33333333'),
+('707707777', 'User Full Name 707707777', '22222222'),
+('808808888', 'User Full Name 808808888', '11111111'),
+('909909999', 'User Full Name 909909999', '99999999');
