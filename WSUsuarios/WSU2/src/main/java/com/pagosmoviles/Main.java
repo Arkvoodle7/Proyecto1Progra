@@ -3,6 +3,7 @@ package com.pagosmoviles;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 
 import javax.sql.DataSource;
@@ -11,7 +12,9 @@ import javax.sql.DataSource;
 public class Main {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
+        builder.properties("server.port=8083");
+        builder.run(args);
     }
 
     @Bean(name = "usuariosDataSource")

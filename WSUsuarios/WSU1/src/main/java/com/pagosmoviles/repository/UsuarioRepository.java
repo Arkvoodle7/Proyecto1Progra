@@ -4,6 +4,7 @@ import com.pagosmoviles.entities.Usuario;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
+
 import java.sql.ResultSet;
 
 @Repository
@@ -15,11 +16,11 @@ public class UsuarioRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Usuario obtenerUsuarioPorCredenciales(String nombreUsuario, String contrasena) {
-        String query = "SELECT * FROM Usuarios WHERE nombre_usuario = ? AND contrasena = ?";
+    public Usuario obtenerUsuarioPorNombreUsuario(String nombreUsuario) {
+        String query = "SELECT * FROM Usuarios WHERE nombre_usuario = ?";
 
         try {
-            return jdbcTemplate.queryForObject(query, new Object[]{nombreUsuario, contrasena}, (ResultSet rs, int rowNum) -> {
+            return jdbcTemplate.queryForObject(query, new Object[]{nombreUsuario}, (ResultSet rs, int rowNum) -> {
                 Usuario usuario = new Usuario();
                 usuario.setIdentificacion(rs.getString("identificacion"));
                 usuario.setNombreUsuario(rs.getString("nombre_usuario"));
@@ -29,7 +30,6 @@ public class UsuarioRepository {
                 return usuario;
             });
         } catch (EmptyResultDataAccessException e) {
-            // No se encontró el usuario, devolver null
             return null;
         }
     }
