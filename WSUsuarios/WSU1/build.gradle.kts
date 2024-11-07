@@ -48,4 +48,3 @@ tasks.test {
 tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     environment("ENCRYPTION_SECRET_KEY", "1234567890abcdef")
 }
-
