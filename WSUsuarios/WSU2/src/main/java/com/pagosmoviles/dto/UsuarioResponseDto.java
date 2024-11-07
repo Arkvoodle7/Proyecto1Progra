@@ -1,10 +1,10 @@
-package com.pagosmoviles.entities;
+package com.pagosmoviles.dto;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 @JacksonXmlRootElement(localName = "usuario")
-public class Usuario {
+public class UsuarioResponseDto {
 
     @JacksonXmlProperty(localName = "identificacion")
     private String identificacion;
@@ -15,11 +15,18 @@ public class Usuario {
     @JacksonXmlProperty(localName = "nombreCompleto")
     private String nombreCompleto;
 
-    @JacksonXmlProperty(localName = "contrasena")
-    private String contrasena;
-
     @JacksonXmlProperty(localName = "telefono")
     private String telefono;
+
+    public UsuarioResponseDto() {
+    }
+
+    public UsuarioResponseDto(String identificacion, String nombreUsuario, String nombreCompleto, String telefono) {
+        this.identificacion = identificacion;
+        this.nombreUsuario = nombreUsuario;
+        this.nombreCompleto = nombreCompleto;
+        this.telefono = telefono;
+    }
 
     public String getIdentificacion() {
         return identificacion;
@@ -43,14 +50,6 @@ public class Usuario {
 
     public void setNombreCompleto(String nombreCompleto) {
         this.nombreCompleto = nombreCompleto;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
     }
 
     public String getTelefono() {
