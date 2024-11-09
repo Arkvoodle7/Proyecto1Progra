@@ -13,22 +13,14 @@ namespace Negocio
 {
     public class AD_Usuarios
     {
-        private readonly byte[] key = new byte[32]; // Genera o carga una clave segura
-
-        public AD_Usuarios()
-        {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                rng.GetBytes(key);
-            }
-        }
+        // Clave fija de 16 bytes en hexadecimal
+        private readonly byte[] key = Encoding.UTF8.GetBytes("1234567890abcdef");
 
         public void CrearUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string contrasena, string telefono)
         {
-            // contrasena encriptada con base64
+            // Encripta la contraseña con la clave fija
             var (encryptedDataBase64, ivBase64, tagBase64) = Encriptacion_Usuario.Encrypt(contrasena, key);
 
-            
             AD_UsuarioBD repo = new AD_UsuarioBD();
             repo.InsertUsuarios(identificacion, nombreUsuario, nombreCompleto, encryptedDataBase64, telefono);
         }
@@ -39,7 +31,6 @@ namespace Negocio
             {
                 string encryptedPassword = null;
 
-                //encripta la nueva contrasena
                 if (!string.IsNullOrEmpty(contrasena))
                 {
                     var (encryptedData, _, _) = Encriptacion_Usuario.Encrypt(contrasena, key);
