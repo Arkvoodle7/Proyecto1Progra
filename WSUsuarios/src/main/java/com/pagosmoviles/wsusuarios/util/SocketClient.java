@@ -52,7 +52,7 @@ public class SocketClient {
             // Manejar el caso en que el tiempo de espera del socket se agote
             return "<respuesta><codigo>-1</codigo><descripcion>Tiempo de espera agotado en el socket</descripcion></respuesta>";
         } catch (IOException e) {
-            // Manejar otros errores de comunicación
+
             return "<respuesta><codigo>-1</codigo><descripcion>Error de comunicación</descripcion></respuesta>";
         }
     }

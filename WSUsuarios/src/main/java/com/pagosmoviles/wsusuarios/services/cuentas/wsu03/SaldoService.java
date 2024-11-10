@@ -2,6 +2,7 @@ package com.pagosmoviles.wsusuarios.services.cuentas.wsu03;
 
 import com.pagosmoviles.wsusuarios.dto.cuentas.wsu03.SaldoRequest;
 import com.pagosmoviles.wsusuarios.dto.cuentas.wsu03.SaldoResponse;
+import com.pagosmoviles.wsusuarios.util.ParserXML;
 import com.pagosmoviles.wsusuarios.util.SocketClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -33,22 +34,20 @@ public class SaldoService {
     @ResponsePayload
     public SaldoResponse consultarSaldo(@RequestPayload SaldoRequest request) {
         // Crear la trama XML para enviar al socket
-        String message = "<saldo><telefono>" + request.getTelefono() + "</telefono></saldo>";
-        logger.info("Enviando mensaje al socket: {}", message);
+        String saldoMessage = "<saldo><telefono>" + request.getTelefono() + "</telefono></saldo>";
+        logger.info("Enviando mensaje al socket: {}", saldoMessage);
 
 
-        String responseXml = socketClient.sendMessage(message);
-        logger.info("Respuesta recibida del socket: {}", responseXml);
+        String saldoResponseXml = socketClient.sendMessage(saldoMessage);
+        logger.info("Respuesta recibida del socket: {}", saldoResponseXml);
 
         // Crear la respuesta SOAP
         SaldoResponse response = new SaldoResponse();
-        System.out.println(response);
+
 
         try {
             // Parsear la respuesta XML
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.parse(new ByteArrayInputStream(responseXml.getBytes()));
-            Element root = doc.getDocumentElement();
+            Element root = ParserXML.parseXmlResponse(saldoResponseXml);
 
 
             int codigo = Integer.parseInt(root.getElementsByTagName("codigo").item(0).getTextContent());

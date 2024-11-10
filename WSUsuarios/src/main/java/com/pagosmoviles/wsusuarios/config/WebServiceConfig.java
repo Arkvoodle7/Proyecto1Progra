@@ -45,6 +45,16 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return wsdl11Definition;
     }
 
+    @Bean(name = "wsu04")
+    public Wsdl11Definition wsu04WsdlDefinition(XsdSchema transaccionSchema) {
+        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+        wsdl11Definition.setPortTypeName("TransaccionPort");
+        wsdl11Definition.setLocationUri("/wsusuarios");
+        wsdl11Definition.setTargetNamespace("http://pagosmoviles.com/wsusuarios");
+        wsdl11Definition.setSchema(transaccionSchema);
+        return wsdl11Definition;
+    }
+
 
 
     @Bean
@@ -55,6 +65,11 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     @Bean
     public XsdSchema saldoSchema() {
         return new SimpleXsdSchema(new ClassPathResource("xsd/saldo.xsd"));
+    }
+
+    @Bean
+    public XsdSchema transaccionSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("xsd/transaccion.xsd"));
     }
 
 
