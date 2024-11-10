@@ -36,12 +36,13 @@ public class SaldoService {
         String message = "<saldo><telefono>" + request.getTelefono() + "</telefono></saldo>";
         logger.info("Enviando mensaje al socket: {}", message);
 
-        // Enviar la solicitud al socket y recibir la respuesta
+
         String responseXml = socketClient.sendMessage(message);
         logger.info("Respuesta recibida del socket: {}", responseXml);
 
         // Crear la respuesta SOAP
         SaldoResponse response = new SaldoResponse();
+        System.out.println(response);
 
         try {
             // Parsear la respuesta XML
@@ -49,15 +50,15 @@ public class SaldoService {
             Document doc = builder.parse(new ByteArrayInputStream(responseXml.getBytes()));
             Element root = doc.getDocumentElement();
 
-            // Obtener y establecer el código y la descripción
+
             int codigo = Integer.parseInt(root.getElementsByTagName("codigo").item(0).getTextContent());
             response.setCodigo(codigo);
 
-            // Si el código es 0, se obtiene el saldo
+
             if (codigo == 0) {
                 double saldo = Double.parseDouble(root.getElementsByTagName("saldo").item(0).getTextContent());
                 response.setSaldo(saldo);
-                response.setDescripcion("Operación exitosa");
+                response.setDescripcion("OK");
             } else {
                 String descripcion = root.getElementsByTagName("descripcion").item(0).getTextContent();
                 response.setDescripcion(descripcion);
