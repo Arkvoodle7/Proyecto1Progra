@@ -25,27 +25,18 @@ namespace Negocio
             repo.InsertUsuarios(identificacion, nombreUsuario, nombreCompleto, encryptedDataBase64, telefono);
         }
 
-        public string ActualizarUsuario(string identificacion, string nombre_usuario, string nombre_completo, string contrasena, string telefono)
+        public void ActualizarUsuario(string identificacion, string nombre_usuario, string nombre_completo, string contrasena, string telefono)
         {
-            try
+            string encryptedPassword = null;
+
+            if (!string.IsNullOrEmpty(contrasena))
             {
-                string encryptedPassword = null;
-
-                if (!string.IsNullOrEmpty(contrasena))
-                {
-                    var (encryptedData, _, _) = Encriptacion_Usuario.Encrypt(contrasena, key);
-                    encryptedPassword = encryptedData;
-                }
-
-                AD_UsuarioBD usuarioBD = new AD_UsuarioBD();
-                usuarioBD.UpdateUsuarios(identificacion, nombre_usuario, nombre_completo, encryptedPassword, telefono);
-
-                return "Usuario actualizado exitosamente.";
+                var (encryptedData, _, _) = Encriptacion_Usuario.Encrypt(contrasena, key);
+                encryptedPassword = encryptedData;
             }
-            catch (Exception ex)
-            {
-                return $"Error al actualizar el usuario: {ex.Message}";
-            }
+
+            AD_UsuarioBD usuarioBD = new AD_UsuarioBD();
+            usuarioBD.UpdateUsuarios(identificacion, nombre_usuario, nombre_completo, encryptedPassword, telefono);
         }
 
         public void EliminarUsuario(string identificacion)
