@@ -1,7 +1,7 @@
 package com.pagosmoviles.controllers;
 
-import com.pagosmoviles.entities.Usuario;
 import com.pagosmoviles.dto.UsuarioResponseDto;
+import com.pagosmoviles.entities.Usuario;
 import com.pagosmoviles.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

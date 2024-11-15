@@ -2,13 +2,14 @@ package com.pagosmoviles.utils;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.Security;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.security.SecureRandom;
+import java.security.Security;
+import java.util.Base64;
 
 @Component
 public class Encrypter {

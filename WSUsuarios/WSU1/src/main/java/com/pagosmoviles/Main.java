@@ -1,10 +1,9 @@
 package com.pagosmoviles;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
 
 import javax.sql.DataSource;
 
@@ -21,7 +20,7 @@ public class Main {
     public DataSource dataSource() {
         DataSourceBuilder<?> dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSourceBuilder.url("jdbc:sqlserver://DESKTOP-1U7DCG4;databaseName=PagosMovilesUsuarios;encrypt=true;trustServerCertificate=true");
+        dataSourceBuilder.url("spring.datasource.url=jdbc:sqlserver://TRAINER-GHOST\\\\MSSQLSERVER_MAIN;databaseName=PagosMovilesBancario;encrypt=true;trustServerCertificate=true");
         dataSourceBuilder.username("sa");
         dataSourceBuilder.password("root");
         return dataSourceBuilder.build();
