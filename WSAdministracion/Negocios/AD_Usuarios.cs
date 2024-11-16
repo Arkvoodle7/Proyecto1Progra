@@ -13,30 +13,48 @@ namespace Negocio
 {
     public class AD_Usuarios
     {
-        // Clave fija de 16 bytes en hexadecimal
-        private readonly byte[] key = Encoding.UTF8.GetBytes("1234567890abcdef");
+        private readonly byte[] key = new byte[32]; // Genera o carga una clave segura
+
+        public AD_Usuarios()
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(key);
+            }
+        }
 
         public void CrearUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string contrasena, string telefono)
         {
-            // Encripta la contraseña con la clave fija
+            // contrasena encriptada con base64
             var (encryptedDataBase64, ivBase64, tagBase64) = Encriptacion_Usuario.Encrypt(contrasena, key);
 
+            
             AD_UsuarioBD repo = new AD_UsuarioBD();
             repo.InsertUsuarios(identificacion, nombreUsuario, nombreCompleto, encryptedDataBase64, telefono);
         }
 
-        public void ActualizarUsuario(string identificacion, string nombre_usuario, string nombre_completo, string contrasena, string telefono)
+        public string ActualizarUsuario(string identificacion, string nombre_usuario, string nombre_completo, string contrasena, string telefono)
         {
-            string encryptedPassword = null;
-
-            if (!string.IsNullOrEmpty(contrasena))
+            try
             {
-                var (encryptedData, _, _) = Encriptacion_Usuario.Encrypt(contrasena, key);
-                encryptedPassword = encryptedData;
-            }
+                string encryptedPassword = null;
 
-            AD_UsuarioBD usuarioBD = new AD_UsuarioBD();
-            usuarioBD.UpdateUsuarios(identificacion, nombre_usuario, nombre_completo, encryptedPassword, telefono);
+                //encripta la nueva contrasena
+                if (!string.IsNullOrEmpty(contrasena))
+                {
+                    var (encryptedData, _, _) = Encriptacion_Usuario.Encrypt(contrasena, key);
+                    encryptedPassword = encryptedData;
+                }
+
+                AD_UsuarioBD usuarioBD = new AD_UsuarioBD();
+                usuarioBD.UpdateUsuarios(identificacion, nombre_usuario, nombre_completo, encryptedPassword, telefono);
+
+                return "Usuario actualizado exitosamente.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error al actualizar el usuario: {ex.Message}";
+            }
         }
 
         public void EliminarUsuario(string identificacion)
