@@ -12,15 +12,10 @@ namespace Datos
 {
     public class AD_UsuarioBD
     {
-        // conexion con bancario
-        private string connectionStringBancario = ConfigurationManager.ConnectionStrings["PagosMovilesBancario"].ConnectionString;
+        // conexion
+        private string connectionString = ConfigurationManager.ConnectionStrings["PagosMovilesBancario"].ConnectionString;
 
-        // conexion con usuario
-        private string connectionStringUsuarios = ConfigurationManager.ConnectionStrings["PagosMovilesUsuarios"].ConnectionString;
-
-
-        private SqlConnection conexionBancario;
-        private SqlConnection conexionUsuarios;
+        private SqlConnection conexion;
 
         DataSet mi_set = new DataSet();
 
@@ -28,31 +23,23 @@ namespace Datos
 
 
         #region 'Metodos'
-
-        //abrir y cerrar la conexión de Bancario
-        private void AbrirConexionBancario()
+        //Abre la bd
+        private void AbrirConexion()
         {
-            conexionBancario = new SqlConnection(connectionStringBancario);
-            conexionBancario.Open();
+            try
+            {
+                conexion = new SqlConnection(connectionString);
+                conexion.Open();
+            }
+            catch (Exception ex)
+            {
+                throw new System.Exception("Error al abrir conexion:" + ex.Message);
+            }
         }
-
-        private void CerrarConexionBancario()
+        //Cierra la bd
+        private void CerrarConexion()
         {
-            if (conexionBancario != null && conexionBancario.State == ConnectionState.Open)
-                conexionBancario.Close();
-        }
-
-        //abrir y cerrar la conexión de Usuarios
-        private void AbrirConexionUsuarios()
-        {
-            conexionUsuarios = new SqlConnection(connectionStringUsuarios);
-            conexionUsuarios.Open();
-        }
-
-        private void CerrarConexionUsuarios()
-        {
-            if (conexionUsuarios != null && conexionUsuarios.State == ConnectionState.Open)
-                conexionUsuarios.Close();
+            conexion.Close();
         }
 
         //agregar contrasena
@@ -60,10 +47,10 @@ namespace Datos
         {
             SqlCommand instruccionSQL;
 
-            AbrirConexionBancario();
+            AbrirConexion();
 
-            instruccionSQL = new SqlCommand("insert into Usuarios (identificacion, nombre_usuario, nombre_completo, contrasena, telefono) " +
-                                            "values (@identificacion, @nombre_usuario, @nombre_completo, @contrasenaEncriptadaBase64, @telefono)", conexionBancario);
+            instruccionSQL = new SqlCommand("INSERT INTO Usuarios (identificacion, nombre_usuario, nombre_completo, contrasena, telefono) " +
+                                            "VALUES (@identificacion, @nombre_usuario, @nombre_completo, @contrasenaEncriptadaBase64, @telefono)", conexion);
 
             instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
             instruccionSQL.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
@@ -73,58 +60,25 @@ namespace Datos
 
             instruccionSQL.ExecuteNonQuery();
 
-            //verifica que el usuario exista en clientes
-            instruccionSQL = new SqlCommand("select count(*) from Clientes where identificacion = @identificacion", conexionBancario);
-            instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
-            int count = (int)instruccionSQL.ExecuteScalar();
-
-            //inserta en clientes
-            if (count == 0)
-            {
-                instruccionSQL = new SqlCommand("insert into Clientes (identificacion, nombre_completo, telefono) " +
-                                                "values (@identificacion, @nombre_completo, @telefono)", conexionBancario);
-
-                instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
-                instruccionSQL.Parameters.AddWithValue("@nombre_completo", nombre_completo);
-                instruccionSQL.Parameters.AddWithValue("@telefono", telefono);
-
-                instruccionSQL.ExecuteNonQuery();
-            }
-
-            CerrarConexionBancario();
-
-
-            // insert en PagosMovilesUsuarios
-            AbrirConexionUsuarios();
-            SqlCommand instruccionSQLUsuarios = new SqlCommand("insert into Usuarios (identificacion, nombre_usuario, nombre_completo, contrasena, telefono) " +
-                                                               "values (@identificacion, @nombre_usuario, @nombre_completo, @contrasenaEncriptadaBase64, @telefono)", conexionUsuarios);
-
-            instruccionSQLUsuarios.Parameters.AddWithValue("@identificacion", identificacion);
-            instruccionSQLUsuarios.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
-            instruccionSQLUsuarios.Parameters.AddWithValue("@nombre_completo", nombre_completo);
-            instruccionSQLUsuarios.Parameters.AddWithValue("@contrasenaEncriptadaBase64", contrasenaEncriptadaBase64);
-            instruccionSQLUsuarios.Parameters.AddWithValue("@telefono", telefono);
-            instruccionSQLUsuarios.ExecuteNonQuery();
-
-            CerrarConexionUsuarios();
+            CerrarConexion();
         }
 
         //modificar bd
         public void UpdateUsuarios(string identificacion, string nombre_usuario, string nombre_completo, string contrasenaEncriptada, string telefono)
         {
             SqlCommand instruccionSQL;
-            AbrirConexionBancario();
+            AbrirConexion();
 
-            string query = "update Usuarios set nombre_usuario = @nombre_usuario, nombre_completo = @nombre_completo, telefono = @telefono";
+            string query = "UPDATE Usuarios SET nombre_usuario = @nombre_usuario, nombre_completo = @nombre_completo, telefono = @telefono";
 
             if (contrasenaEncriptada != null)
             {
                 query += ", contrasena = @contrasenaEncriptada";
             }
 
-            query += " where identificacion = @identificacion";
+            query += " WHERE identificacion = @identificacion";
 
-            instruccionSQL = new SqlCommand(query, conexionBancario);
+            instruccionSQL = new SqlCommand(query, conexion);
 
             instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
             instruccionSQL.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
@@ -136,54 +90,23 @@ namespace Datos
             instruccionSQL.Parameters.AddWithValue("@telefono", telefono);
 
             instruccionSQL.ExecuteNonQuery();
-
-            //actualiza clientes
-            instruccionSQL = new SqlCommand("update clientes set nombre_completo = @nombre_completo, telefono = @telefono " +
-                                             "where identificacion = @identificacion", conexionBancario);
-
-            instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
-            instruccionSQL.Parameters.AddWithValue("@nombre_completo", nombre_completo);
-            instruccionSQL.Parameters.AddWithValue("@telefono", telefono);
-
-            instruccionSQL.ExecuteNonQuery();
-
-            CerrarConexionBancario();
-
-            // update en pagosmovilesusuarios
-            AbrirConexionUsuarios();
-
-            instruccionSQL = new SqlCommand(query, conexionUsuarios);
-            instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
-            instruccionSQL.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
-            instruccionSQL.Parameters.AddWithValue("@nombre_completo", nombre_completo);
-
-            if (contrasenaEncriptada != null)
-            {
-                instruccionSQL.Parameters.AddWithValue("@contrasenaencriptada", contrasenaEncriptada);
-            }
-
-            instruccionSQL.Parameters.AddWithValue("@telefono", telefono);
-
-            instruccionSQL.ExecuteNonQuery();
-
-            CerrarConexionUsuarios();
-
+            CerrarConexion();
         }
 
         public void DeleteUsuario(string identificacion)
         {
             SqlCommand instruccionSQL;
 
-            AbrirConexionUsuarios();
+            AbrirConexion();
 
 
-            instruccionSQL = new SqlCommand("delete from Usuarios where identificacion = @identificacion", conexionUsuarios);
+            instruccionSQL = new SqlCommand("delete from Usuarios where identificacion = @identificacion", conexion);
 
             instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
 
             instruccionSQL.ExecuteNonQuery();
 
-            CerrarConexionUsuarios();
+            CerrarConexion();
         }
 
         //muestra todos los usuarios
@@ -192,9 +115,9 @@ namespace Datos
             SqlCommand instruccionSQL;
             List<Usuario> listaUsuarios = new List<Usuario>();
 
-            AbrirConexionBancario();
+            AbrirConexion();
 
-            instruccionSQL = new SqlCommand("select * from Usuarios", conexionBancario);
+            instruccionSQL = new SqlCommand("select * from Usuarios", conexion);
 
             try
             {
@@ -207,6 +130,7 @@ namespace Datos
                         Identificacion = reader["identificacion"].ToString(),
                         NombreUsuario = reader["nombre_usuario"].ToString(),
                         NombreCompleto = reader["nombre_completo"].ToString(),
+                        Contrasena = reader["contrasena"].ToString(),
                         Telefono = reader["telefono"].ToString()
                     };
                     listaUsuarios.Add(usuario);
@@ -220,7 +144,7 @@ namespace Datos
             }
             finally
             {
-                CerrarConexionBancario();
+                CerrarConexion();
             }
 
             return listaUsuarios;
@@ -232,9 +156,9 @@ namespace Datos
             SqlCommand instruccionSQL;
             Usuario usuario = null;
 
-            AbrirConexionBancario();
+            AbrirConexion();
 
-            instruccionSQL = new SqlCommand("select * from Usuarios where identificacion = @identificacion", conexionBancario);
+            instruccionSQL = new SqlCommand("select * from Usuarios where identificacion = @identificacion", conexion);
             instruccionSQL.Parameters.AddWithValue("@identificacion", identificacion);
 
             try
@@ -248,6 +172,7 @@ namespace Datos
                         Identificacion = reader["identificacion"].ToString(),
                         NombreUsuario = reader["nombre_usuario"].ToString(),
                         NombreCompleto = reader["nombre_completo"].ToString(),
+                        Contrasena = reader["contrasena"].ToString(),
                         Telefono = reader["telefono"].ToString()
                     };
                 }
@@ -260,7 +185,7 @@ namespace Datos
             }
             finally
             {
-                CerrarConexionBancario();
+                CerrarConexion();
             }
 
             return usuario;

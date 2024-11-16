@@ -12,6 +12,7 @@ namespace Negocio
 {
     public class Encriptacion_Usuario
     {
+        private static readonly int KeySize = 32; // 256 bits
         private static readonly int IvSize = 12; // 96 bits
         private static readonly int TagSize = 16; // 128 bits
 
@@ -46,5 +47,12 @@ namespace Negocio
             return (encryptedDataBase64, ivBase64, tagBase64);
         }
 
+        // genera una clave segura de 256 bits (32 bytes)
+        public static byte[] GenerateKey()
+        {
+            byte[] key = new byte[KeySize];
+            new SecureRandom().NextBytes(key);
+            return key;
+        }
     }
 }
