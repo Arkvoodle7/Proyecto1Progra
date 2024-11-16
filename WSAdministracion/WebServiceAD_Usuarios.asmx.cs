@@ -22,58 +22,26 @@ namespace WSAdministracion
     {
 
         [WebMethod]
-        public string HelloWorld()
+        public void CrearUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string telefono, string contrasena)
         {
-            return "Hola a todos";
-        }
-        [WebMethod]
-        public XmlDocument CrearUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string telefono, string contrasena)
-        {
-            XmlDocument response = new XmlDocument();
-
-            try
-            {
-                AD_Usuarios usuarioService = new AD_Usuarios();
-                usuarioService.CrearUsuario(identificacion, nombreUsuario, nombreCompleto, contrasena, telefono);
-
-                response.LoadXml("<Respuesta><Codigo>0</Codigo><Descripcion>Usuario creado exitosamente</Descripcion></Respuesta>");
-            }
-            catch (Exception ex)
-            {
-                response.LoadXml($"<Respuesta><Codigo>-1</Codigo><Descripcion>{ex.Message}</Descripcion></Respuesta>");
-            }
-
-            return response;
+            AD_Usuarios usuarioService = new AD_Usuarios();
+            usuarioService.CrearUsuario(identificacion, nombreUsuario, nombreCompleto, contrasena, telefono);
         }
 
         [WebMethod]
-        public string ActualizarUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string telefono, string contrasena)
+        public void ActualizarUsuario(string identificacion, string nombreUsuario, string nombreCompleto, string telefono, string contrasena)
         {
             AD_Usuarios usuarioService = new AD_Usuarios();
 
-            string resultado = usuarioService.ActualizarUsuario(identificacion, nombreUsuario, nombreCompleto, contrasena, telefono);
+            usuarioService.ActualizarUsuario(identificacion, nombreUsuario, nombreCompleto, contrasena, telefono);
 
-            return resultado;
         }
         [WebMethod]
-        public XmlDocument EliminarUsuario(string identificacion)
+        public void EliminarUsuario(string identificacion)
         {
-            XmlDocument response = new XmlDocument();
+            AD_Usuarios usuarioService = new AD_Usuarios();
 
-            try
-            {
-                AD_Usuarios usuarioService = new AD_Usuarios();
-
-                usuarioService.EliminarUsuario(identificacion);
-                response.LoadXml("<Respuesta><Codigo>0</Codigo><Descripcion>Usuario eliminado exitosamente</Descripcion></Respuesta>");
-            }
-            catch (Exception ex)
-            {
-                response.LoadXml($"<Respuesta><Codigo>-1</Codigo><Descripcion>{ex.Message}</Descripcion></Respuesta>");
-            }
-
-            return response;
-
+            usuarioService.EliminarUsuario(identificacion);
         }
 
         [WebMethod]
