@@ -19,31 +19,11 @@ namespace WSAdministracion
     // [System.Web.Script.Services.ScriptService]
     public class WebServiceAD_Cuentas : System.Web.Services.WebService
     {
-
         [WebMethod]
-        public string HelloWorld()
+        public void CrearCuetna(string numero_cuenta, string nombre_usuario, string tipo_cuenta, decimal saldo)
         {
-            return "Hola a todos";
-        }
-
-        [WebMethod]
-        public XmlDocument CrearCuetna(string numero_cuenta, string nombre_usuario, string tipo_cuenta, decimal saldo)
-        {
-            XmlDocument response = new XmlDocument();
-
-            try
-            {
-                AD_Cuentas cuentasService = new AD_Cuentas();
-                cuentasService.CrearCuenta(numero_cuenta, nombre_usuario, tipo_cuenta, saldo);
-
-                response.LoadXml("<Respuesta><Codigo>0</Codigo><Descripcion>Cuenta creada exitosamente</Descripcion></Respuesta>");
-            }
-            catch (Exception ex)
-            {
-                response.LoadXml($"<Respuesta><Codigo>-1</Codigo><Descripcion>{ex.Message}</Descripcion></Respuesta>");
-            }
-
-            return response;
+            AD_Cuentas cuentasService = new AD_Cuentas();
+            cuentasService.CrearCuenta(numero_cuenta, nombre_usuario, tipo_cuenta, saldo);
         }
 
         [WebMethod]
