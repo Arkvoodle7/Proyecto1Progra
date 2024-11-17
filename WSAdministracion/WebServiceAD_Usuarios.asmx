@@ -1,1 +1,0 @@
-﻿<%@ WebService Language="C#" CodeBehind="WebServiceAD_Usuarios.asmx.cs" Class="WSAdministracion.WebServiceAD_Usuarios" %>
