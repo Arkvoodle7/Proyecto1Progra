@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://pagosmoviles.com/wsusuarios"
+           xmlns="http://pagosmoviles.com/wsusuarios"
+           elementFormDefault="qualified">
+
+    <!-- Solicitud de consulta de realizar transferencias (wsu04) -->
+    <xs:element name="transaccionRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="telefono" type="xs:string"/>
+                <xs:element name="monto" type="xs:double" minOccurs="0"/>
+                <xs:element name="descripcion" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Respuesta de consulta de realizar transferencias (wsu04) -->
+    <xs:element name="transaccionResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="codigo" type="xs:int"/>
+                <xs:element name="descripcion" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
