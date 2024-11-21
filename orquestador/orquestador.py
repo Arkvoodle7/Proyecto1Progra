@@ -15,7 +15,7 @@ class OrquestadorSocket:
 
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read('Config.ini')
+        config.read('C:/Users/alexl/source/repos/Proyecto1Progra/orquestador/Config.ini')
         
         self.puerto_interno = int(config['Orquestador']['puerto_interno'])
         self.puerto_externo = int(config['Orquestador']['puerto_externo'])
@@ -68,7 +68,7 @@ class OrquestadorSocket:
 
                 #determinar el origen y imprimir la trama recibida sin espacios adicionales
                 if es_interno:
-                    print(f"Trama recibida del simulador: {trama_recibida_minificada}")
+                    print(f"Trama recibida del Web Service: {trama_recibida_minificada}")
                 else:
                     print(f"Trama recibida del Receptor Externo: {trama_recibida_minificada}")
 
@@ -87,7 +87,7 @@ class OrquestadorSocket:
                     #enviar la respuesta al cliente y imprimirla
                     client_socket.send(respuesta.encode('utf-8'))
                     if es_interno:
-                        print(f"Respuesta enviada al simulador: {respuesta}")
+                        print(f"Respuesta enviada al Web Service: {respuesta}")
                     else:
                         print(f"Respuesta enviada al Receptor Externo: {respuesta}")
 
@@ -126,7 +126,7 @@ class OrquestadorSocket:
         registro_cliente = self.validador.obtenerCliente(telefono)
 
         if es_interno:
-            #si la trama proviene del simulador interno
+            #si la trama proviene del Web Service
             identificacion = registro_cliente.get("identificacion", "000000000") if registro_cliente else "000000000"
             cuenta = registro_cliente.get("numero_cuenta", "000000000") if registro_cliente else "000000000"
 
@@ -206,7 +206,7 @@ class OrquestadorSocket:
                 }
                 return json.dumps(respuesta_json)
 
-            #si la trama proviene del SimuladorInterno, devolver respuesta en XML
+            #si la trama proviene del Web Service, devolver respuesta en XML
             return respuesta_xml_str
 
         except socket.error as e:
@@ -245,7 +245,7 @@ class OrquestadorSocket:
             #cerrar el socket
             receptor_externo_socket.close()
 
-            #si la trama proviene del Simulador Interno, devolver la respuesta
+            #si la trama proviene del Web Service, devolver la respuesta
             if es_interno:
                 return respuesta_receptor
             else:
@@ -279,31 +279,31 @@ class OrquestadorSocket:
             if root.tag == "inscripcion":
                 es_valido, mensaje = self.validadori.validar_datos(cuenta, identificacion, telefono)
                 if not es_valido:
-                    print(f"Respuesta enviada al simulador: {mensaje}")
+                    print(f"Respuesta enviada al Web Service: {mensaje}")
                     cliente_socket.sendall(mensaje.encode('utf-8'))
                     return  #retornar aqui si hay un error
 
                 es_valido, respuesta = self.gestor.verificar_telefono_asociado(cuenta, telefono)
                 if respuesta:
-                    print(f"Respuesta enviada al simulador: {respuesta}")
+                    print(f"Respuesta enviada al Web Service: {respuesta}")
                     cliente_socket.sendall(respuesta.encode('utf-8'))
                     return  #detener si hay error o reactivacion
 
                 if es_valido and respuesta is None:
                     respuesta_inscripcion = self.gestor.registrar_asociacion(cuenta, identificacion, telefono)
-                    print(f"Respuesta enviada al simulador: {respuesta_inscripcion}")
+                    print(f"Respuesta enviada al Web Service: {respuesta_inscripcion}")
                     cliente_socket.sendall(respuesta_inscripcion.encode('utf-8'))                    
 
             elif root.tag == "desinscripcion":
                 es_valido, mensaje = self.validadori.validar_datos_desinscripcion(cuenta, identificacion, telefono)
                 if not es_valido:
-                    print(f"Respuesta enviada al simulador: {mensaje}")
+                    print(f"Respuesta enviada al Web Service: {mensaje}")
                     cliente_socket.sendall(mensaje.encode('utf-8'))
                     return
 
                 respuesta = self.gestor.desinscribir_telefono(cuenta, identificacion, telefono)
                 cliente_socket.sendall(respuesta.encode('utf-8'))
-                print(f"Respuesta enviada al simulador: {respuesta}")
+                print(f"Respuesta enviada al Web Service: {respuesta}")
 
         except Exception as e:
             print(e)
@@ -361,7 +361,7 @@ class OrquestadorSocket:
 
                     #respuesta de exito en XML
                     respuesta_exito = f"<respuesta><codigo>0</codigo><saldo>{saldo_cliente}</saldo></respuesta>"
-                    print(f"Respuesta enviada al Simulador: {respuesta_exito}")
+                    print(f"Respuesta enviada al Web Service: {respuesta_exito}")
                     client_socket.send(respuesta_exito.encode('utf-8'))
                 elif respuesta_banco.startswith("ERROR|"):
                     #extraer el mensaje de error
