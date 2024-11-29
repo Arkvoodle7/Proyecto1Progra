@@ -6,9 +6,9 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h2>Gestión de Administradores</h2>
-        <asp:Button ID="btnAgregarAdministrador" runat="server" Text="Agregar Administrador" OnClick="btnAgregarAdministrador_Click" CssClass="btn btn-primary mb-3" />
-        <asp:GridView ID="gvAdministradores" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1" OnRowCommand="gvAdministradores_RowCommand">
+        <h2>Administradores</h2>
+        <asp:Button ID="btnAgregarAdministrador" runat="server" Text="Agregar Administrador" CssClass="btn btn-primary mb-3" />
+        <asp:GridView ID="gvAdministradores" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1">
             <Columns>
                 <asp:BoundField DataField="placeholder1" HeaderText="placeholder1" />
                 <asp:BoundField DataField="placeholder2" HeaderText="placeholder2" />

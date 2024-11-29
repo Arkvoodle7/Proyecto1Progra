@@ -25,8 +25,7 @@
                             ID="btnLogin" 
                             runat="server" 
                             CssClass="btn btn-primary mt-3 w-100" 
-                            Text="Iniciar Sesión" 
-                            OnClick="btnLogin_Click" />
+                            Text="Iniciar Sesión" />
                     </div>
                 </div>
             </div>

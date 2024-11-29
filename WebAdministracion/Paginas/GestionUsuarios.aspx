@@ -6,9 +6,9 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h2>Gestión de Usuarios</h2>
-        <asp:Button ID="btnAgregarUsuario" runat="server" Text="Agregar Usuario" OnClick="btnAgregarUsuario_Click" CssClass="btn btn-primary mb-3" />
-        <asp:GridView ID="gvUsuarios" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1" OnRowCommand="gvUsuarios_RowCommand">
+        <h2>Usuarios</h2>
+        <asp:Button ID="btnAgregarUsuario" runat="server" Text="Agregar Usuario" CssClass="btn btn-primary mb-3" />
+        <asp:GridView ID="gvUsuarios" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1">
             <Columns>
                 <asp:BoundField DataField="placeholder1" HeaderText="placeholder1" />
                 <asp:BoundField DataField="placeholder2" HeaderText="placeholder2" />

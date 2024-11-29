@@ -5,21 +5,21 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace WebAdministracion.Paginas
+namespace WebUsuarios.Paginas
 {
     public partial class Pagina : System.Web.UI.MasterPage
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Usuario"] != null) //administrador autenticado
+            if (Session["Usuario"] != null) //usuario autenticado
             {
                 OpcionesLogin.Visible = false;
-                OpcionesAdministrador.Visible = true;
+                OpcionesUsuario.Visible = true;
             }
             else //no autenticado
             {
                 OpcionesLogin.Visible = true;
-                OpcionesAdministrador.Visible = false;
+                OpcionesUsuario.Visible = false;
             }
         }
 

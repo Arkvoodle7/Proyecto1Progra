@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Pagina.Master.cs" Inherits="WebAdministracion.Paginas.Pagina" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Pagina.master.cs" Inherits="WebUsuarios.Paginas.Pagina" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +38,7 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
+                            <!-- Opciones para usuarios no autenticados -->
                             <asp:PlaceHolder ID="OpcionesLogin" runat="server" Visible="true">
                                 <div class="sb-sidenav-menu-heading">Inicio</div>
                                 <a class="nav-link" href="PaginaLogin.aspx">
@@ -46,19 +47,24 @@
                                 </a>
                             </asp:PlaceHolder>
 
-                            <asp:PlaceHolder ID="OpcionesAdministrador" runat="server" Visible="false">
-                                <div class="sb-sidenav-menu-heading">Administración</div>
-                                <a class="nav-link" href="GestionAdministradores.aspx">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-user-shield"></i></div>
-                                    Administradores
-                                </a>
-                                <a class="nav-link" href="GestionUsuarios.aspx">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                    Usuarios
-                                </a>
-                                <a class="nav-link" href="GestionCuentas.aspx">
+                            <!-- Opciones para usuarios autenticados -->
+                            <asp:PlaceHolder ID="OpcionesUsuario" runat="server" Visible="false">
+                                <div class="sb-sidenav-menu-heading">Usuario</div>
+                                <a class="nav-link" href="ConsultarSaldo.aspx">
                                     <div class="sb-nav-link-icon"><i class="fas fa-wallet"></i></div>
-                                    Cuentas
+                                    Consulta de saldo
+                                </a>
+                                <a class="nav-link" href="Transferencias.aspx">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
+                                    Transferencias
+                                </a>
+                                <a class="nav-link" href="Inscribirse.aspx">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-user-plus"></i></div>
+                                    Inscribirse
+                                </a>
+                                <a class="nav-link" href="Desinscribirse.aspx">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-user-minus"></i></div>
+                                    Des inscribirse
                                 </a>
                             </asp:PlaceHolder>
                         </div>
