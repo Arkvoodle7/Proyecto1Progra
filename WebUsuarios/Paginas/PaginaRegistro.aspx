@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Registro" Language="C#" MasterPageFile="~/Paginas/Pagina.master" AutoEventWireup="true" CodeBehind="PaginaRegistro.aspx.cs" Inherits="WebUsuarios.Paginas.PaginaRegistro" %>
+﻿<%@ Page Title="Registro" Language="C#" MasterPageFile="~/Paginas/Pagina.master" AutoEventWireup="true" CodeBehind="PaginaRegistro.aspx.cs" Inherits="WebUsuarios.Paginas.PaginaRegistro" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -26,7 +26,7 @@
                             <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" placeholder="Número de teléfono" />
                         </div>
                         <div class="d-grid mb-3">
-                            <asp:Button ID="btnRegistrar" runat="server" CssClass="btn btn-primary" Text="Aceptar" />
+                            <asp:Button ID="btnRegistrar" runat="server" CssClass="btn btn-primary" Text="Aceptar" OnClick="btnRegistrar_Click" />
                         </div>
                         <div class="d-grid">
                             <asp:Button ID="btnRegresar" runat="server" CssClass="btn btn-secondary" Text="Regresar" PostBackUrl="~/Paginas/PaginaLogin.aspx" />

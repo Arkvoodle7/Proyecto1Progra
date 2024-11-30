@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace WebUsuarios.Paginas
 {
@@ -11,17 +7,36 @@ namespace WebUsuarios.Paginas
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Usuario"] != null) //usuario autenticado
+            if (!IsPostBack)
             {
-                OpcionesLogin.Visible = false;
-                OpcionesUsuario.Visible = true;
-            }
-            else //no autenticado
-            {
-                OpcionesLogin.Visible = true;
-                OpcionesUsuario.Visible = false;
+                ActualizarBarraLateral();
             }
         }
 
+        private void ActualizarBarraLateral()
+        {
+            if (Session["Usuario"] != null) // Usuario autenticado
+            {
+                OpcionesLogin.Visible = false;
+                OpcionesUsuario.Visible = true;
+                IconoUsuario.Visible = true; // Mostrar el menú del usuario
+            }
+            else // Usuario no autenticado
+            {
+                OpcionesLogin.Visible = true;
+                OpcionesUsuario.Visible = false;
+                IconoUsuario.Visible = false; // Ocultar el menú del usuario
+            }
+        }
+
+        protected void CerrarSesion_Click(object sender, EventArgs e)
+        {
+            // Limpiar la sesión
+            Session.Clear();
+            Session.Abandon();
+
+            // Redirigir al login
+            Response.Redirect("PaginaLogin.aspx");
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Login" Language="C#" MasterPageFile="~/Paginas/Pagina.master" AutoEventWireup="true" CodeBehind="PaginaLogin.aspx.cs" Inherits="WebUsuarios.Paginas.PaginaLogin" %>
+﻿<%@ Page Title="Login" Language="C#" MasterPageFile="~/Paginas/Pagina.master" AutoEventWireup="true" CodeBehind="PaginaLogin.aspx.cs" Inherits="WebUsuarios.Paginas.PaginaLogin" Async="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -29,10 +29,11 @@
                             ID="btnLogin" 
                             runat="server" 
                             CssClass="btn btn-primary mt-3 w-100" 
-                            Text="Iniciar Sesión" />
+                            Text="Iniciar Sesión"
+                            OnClick="btnLogin_Click" />
                         <div class="text-center mt-4">
                             <asp:HyperLink ID="hlRegistro" runat="server" CssClass="text-decoration-none" NavigateUrl="PaginaRegistro.aspx">
-                                ¿No tienes cuenta? Regístrate aquí
+                                ¿No tienes cuenta aún? Regístrate aquí
                             </asp:HyperLink>
                         </div>
                     </div>

@@ -1,12 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Datos;
 using System.Threading.Tasks;
 
 namespace Negocios
 {
-    internal class NegociosLogin
+    public class NegociosLogin
     {
+        private readonly DatosLogin datosLogin = new DatosLogin();
+
+        public async Task<LoginResult> ValidarCredencialesAsync(string nombreUsuario, string contrasena)
+        {
+            var authResponse = await datosLogin.ValidarCredencialesAsync(nombreUsuario, contrasena);
+
+            // Mapear AuthResponse a LoginResult
+            return new LoginResult
+            {
+                Resultado = authResponse.Resultado,
+                Mensaje = authResponse.Mensaje
+            };
+        }
+    }
+
+    // Clase genérica para enviar datos a la GUI
+    public class LoginResult
+    {
+        public int Resultado { get; set; }
+        public string Mensaje { get; set; }
     }
 }
