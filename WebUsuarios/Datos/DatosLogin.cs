@@ -18,7 +18,7 @@ namespace Datos
             {
                 using (var client = new HttpClient())
                 {
-                    // Crear la trama XML del authRequestDto
+                    //crear la trama XML del authRequestDto
                     var authRequest = new AuthRequestDto
                     {
                         NombreUsuario = nombreUsuario,
@@ -27,7 +27,7 @@ namespace Datos
 
                     var xmlSerializer = new XmlSerializer(typeof(AuthRequestDto));
                     var ns = new XmlSerializerNamespaces();
-                    ns.Add("", ""); // Elimina los espacios de nombres
+                    ns.Add("", "");
 
                     var settings = new XmlWriterSettings
                     {
@@ -43,17 +43,17 @@ namespace Datos
                         xmlContent = stringWriter.ToString();
                     }
 
-                    // Registrar el XML enviado
+                    //registrar el XML enviado
                     System.Diagnostics.Debug.WriteLine("XML Enviado:");
                     System.Diagnostics.Debug.WriteLine(xmlContent);
 
-                    // Enviar la solicitud al WS con Content-Type correcto
+                    //enviar la solicitud al WS con Content-Type correcto
                     var content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
                     var response = await client.PostAsync(url, content);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        // Leer la respuesta del WS
+                        //leer la respuesta del WS
                         var responseXml = await response.Content.ReadAsStringAsync();
                         var xmlDeserializer = new XmlSerializer(typeof(AuthResponse));
                         using (var stringReader = new StringReader(responseXml))
@@ -84,7 +84,7 @@ namespace Datos
         }
     }
 
-    // Clases para serializar y deserializar las tramas
+    //clases para serializar y deserializar las tramas
     [XmlRoot("authRequestDto")]
     public class AuthRequestDto
     {

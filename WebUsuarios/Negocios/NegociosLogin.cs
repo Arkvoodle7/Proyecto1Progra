@@ -11,7 +11,7 @@ namespace Negocios
         {
             var authResponse = await datosLogin.ValidarCredencialesAsync(nombreUsuario, contrasena);
 
-            // Mapear AuthResponse a LoginResult
+            //mapear AuthResponse a LoginResult
             return new LoginResult
             {
                 Resultado = authResponse.Resultado,
@@ -20,7 +20,7 @@ namespace Negocios
         }
     }
 
-    // Clase genérica para enviar datos a la GUI
+    //clase generica para enviar datos a la GUI
     public class LoginResult
     {
         public int Resultado { get; set; }

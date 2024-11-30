@@ -15,27 +15,27 @@ namespace WebUsuarios.Paginas
 
         private void ActualizarBarraLateral()
         {
-            if (Session["Usuario"] != null) // Usuario autenticado
+            if (Session["Usuario"] != null) //usuario autenticado
             {
                 OpcionesLogin.Visible = false;
                 OpcionesUsuario.Visible = true;
-                IconoUsuario.Visible = true; // Mostrar el menú del usuario
+                IconoUsuario.Visible = true; //mostrar el menu del usuario
             }
-            else // Usuario no autenticado
+            else //usuario no autenticado
             {
                 OpcionesLogin.Visible = true;
                 OpcionesUsuario.Visible = false;
-                IconoUsuario.Visible = false; // Ocultar el menú del usuario
+                IconoUsuario.Visible = false; //esconder el menu del usuario
             }
         }
 
         protected void CerrarSesion_Click(object sender, EventArgs e)
         {
-            // Limpiar la sesión
+            //limpiar la sesion
             Session.Clear();
             Session.Abandon();
 
-            // Redirigir al login
+            //redirigir al login
             Response.Redirect("PaginaLogin.aspx");
         }
     }

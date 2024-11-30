@@ -11,45 +11,43 @@ namespace WebUsuarios.Paginas
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            // Registrar la tarea asíncrona
             Page.RegisterAsyncTask(new PageAsyncTask(ValidarLogin));
         }
 
         private async Task ValidarLogin()
         {
-            // Capturar valores del formulario
+            //capturar valores del formulario
             string nombreUsuario = txtUsuario.Text.Trim();
             string contrasena = txtPassword.Text.Trim();
 
-            // Validar que los campos no estén vacíos
+            //validar que los campos no esten vacios
             if (string.IsNullOrEmpty(nombreUsuario) || string.IsNullOrEmpty(contrasena))
             {
                 lblMensaje.Text = "Por favor, ingrese sus credenciales.";
                 return;
             }
 
-            // Llamar al método de negocios para validar credenciales
+            //llamar al metodo de negocios para validar credenciales
             try
             {
                 var respuesta = await negociosLogin.ValidarCredencialesAsync(nombreUsuario, contrasena);
 
-                if (respuesta.Resultado == 0) // Credenciales correctas
+                if (respuesta.Resultado == 0) //credenciales correctas
                 {
-                    // Establecer la sesión del usuario autenticado
+                    //establecer la sesion del usuario autenticado
                     Session["Usuario"] = nombreUsuario;
 
-                    // Redirigir a la página principal (la maestra se encargará de mostrar las opciones correctas)
+                    //redirigir a la pagina de consulta de saldo
                     Response.Redirect("ConsultarSaldo.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
                 }
-                else // Credenciales incorrectas
+                else //credenciales incorrectas
                 {
-                    lblMensaje.Text = respuesta.Mensaje; // Mostrar mensaje de error
+                    lblMensaje.Text = respuesta.Mensaje;
                 }
             }
             catch (Exception ex)
             {
-                // Manejar errores
                 lblMensaje.Text = "Error al procesar la solicitud: " + ex.Message;
             }
         }

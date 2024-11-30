@@ -18,10 +18,10 @@ namespace Datos
             {
                 using (var client = new HttpClient())
                 {
-                    // Serializar el objeto Usuario a XML
+                    //serializar el objeto Usuario a XML
                     var xmlSerializer = new XmlSerializer(typeof(Usuario));
                     var ns = new XmlSerializerNamespaces();
-                    ns.Add("", ""); // Eliminar espacios de nombres
+                    ns.Add("", "");
 
                     var settings = new XmlWriterSettings
                     {
@@ -37,37 +37,31 @@ namespace Datos
                         xmlContent = stringWriter.ToString();
                     }
 
-                    // Registrar el XML enviado (opcional para depuración)
-                    // System.Diagnostics.Debug.WriteLine("XML Enviado:");
-                    // System.Diagnostics.Debug.WriteLine(xmlContent);
-
-                    // Crear el contenido de la solicitud
+                    //crear el contenido de la solicitud
                     var content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
 
-                    // Enviar la solicitud POST al WS
+                    //enviar la solicitud POST al WS
                     var response = await client.PostAsync(url, content);
 
-                    // Verificar el código de estado HTTP
+                    //verificar el codigo de estado HTTP
                     if (response.IsSuccessStatusCode)
                     {
-                        return true; // Registro exitoso
+                        return true; //registro exitoso
                     }
                     else
                     {
-                        return false; // Error en el registro
+                        return false; //error en el registro
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Manejar excepciones si es necesario
-                // Puedes registrar el error o manejarlo según tus necesidades
                 return false;
             }
         }
     }
 
-    // Clase Usuario para serialización
+    //clase Usuario para serializacion
     [XmlRoot("usuario")]
     public class Usuario
     {

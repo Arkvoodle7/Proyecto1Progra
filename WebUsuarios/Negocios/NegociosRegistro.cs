@@ -9,18 +9,17 @@ namespace Negocios
 
         public async Task<bool> RegistrarUsuarioAsync(Usuario usuarioNegocios)
         {
-            // Validaciones adicionales si es necesario
             if (string.IsNullOrEmpty(usuarioNegocios.Identificacion) ||
                 string.IsNullOrEmpty(usuarioNegocios.NombreUsuario) ||
                 string.IsNullOrEmpty(usuarioNegocios.NombreCompleto) ||
                 string.IsNullOrEmpty(usuarioNegocios.Contrasena) ||
                 string.IsNullOrEmpty(usuarioNegocios.Telefono))
             {
-                // No se puede registrar el usuario debido a datos incompletos
+                //no se puede registrar el usuario si hay datos incompletos
                 return false;
             }
 
-            // Mapear Usuario de Negocios a Usuario de Datos
+            //mapear Usuario de Negocios a Usuario de Datos
             var usuarioDatos = new Datos.Usuario
             {
                 Identificacion = usuarioNegocios.Identificacion,
@@ -30,12 +29,12 @@ namespace Negocios
                 Telefono = usuarioNegocios.Telefono
             };
 
-            // Llamar al método de Datos para registrar el usuario
+            //llamar al metodo de Datos para registrar el usuario
             return await datosRegistro.RegistrarUsuarioAsync(usuarioDatos);
         }
     }
 
-    // Definición de la clase Usuario dentro del mismo archivo
+    //definicion de la clase Usuario dentro del mismo archivo
     public class Usuario
     {
         public string Identificacion { get; set; }

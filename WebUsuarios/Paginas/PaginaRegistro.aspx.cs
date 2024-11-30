@@ -16,31 +16,29 @@ namespace WebUsuarios.Paginas
 
         protected void btnRegistrar_Click(object sender, EventArgs e)
         {
-            // Registrar la tarea asíncrona
             Page.RegisterAsyncTask(new PageAsyncTask(RegistrarUsuario));
         }
 
         private async Task RegistrarUsuario()
         {
-            // Capturar valores del formulario
+            //capturar valores del formulario
             string identificacion = txtIdentificacion.Text.Trim();
             string nombreUsuario = txtNombreUsuario.Text.Trim();
             string nombreCompleto = txtNombreCompleto.Text.Trim();
             string contrasena = txtPassword.Text.Trim();
             string telefono = txtTelefono.Text.Trim();
 
-            // Validar que los campos no estén vacíos
+            //validar que los campos no esten vacios
             if (string.IsNullOrEmpty(identificacion) ||
                 string.IsNullOrEmpty(nombreUsuario) ||
                 string.IsNullOrEmpty(nombreCompleto) ||
                 string.IsNullOrEmpty(contrasena) ||
                 string.IsNullOrEmpty(telefono))
             {
-                // No hacer nada si hay campos vacíos
                 return;
             }
 
-            // Crear objeto Usuario de Negocios
+            //crear objeto Usuario de Negocios
             var usuario = new Usuario
             {
                 Identificacion = identificacion,
@@ -50,18 +48,17 @@ namespace WebUsuarios.Paginas
                 Telefono = telefono
             };
 
-            // Llamar al método de Negocios para registrar el usuario
+            //llamar al metodo de Negocios para registrar el usuario
             bool registroExitoso = await negociosRegistro.RegistrarUsuarioAsync(usuario);
 
             if (registroExitoso)
             {
-                // Registro exitoso, redirigir a PaginaLogin.aspx
+                //registro exitoso, redirigir a PaginaLogin.aspx
                 Response.Redirect("PaginaLogin.aspx");
             }
             else
             {
-                // No hacer nada si el registro falla
-                // Puedes agregar lógica adicional si lo deseas
+
             }
         }
     }
