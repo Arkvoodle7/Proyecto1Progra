@@ -29,7 +29,7 @@ namespace Negocios
                 string.IsNullOrEmpty(cuenta.TipoCuenta) ||
                 cuenta.Saldo <= 0)
             {
-                throw new Exception("Todos los campos son requeridos y el saldo debe ser mayor a 0.");
+                throw new Exception("El saldo debe ser mayor a 0.");
             }
 
             _datosCuenta.CrearCuenta(cuenta);

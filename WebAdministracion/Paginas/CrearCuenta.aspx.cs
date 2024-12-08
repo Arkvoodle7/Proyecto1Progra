@@ -50,10 +50,21 @@ namespace WebAdministracion.Paginas
         {
             try
             {
+                // Obtener el nombre del usuario usando la cédula ingresada
+                string cedula = txtCedulaUsuario.Text.Trim();
+                string nombreUsuario = _negociosCuenta.ObtenerNombreUsuarioPorCedula(cedula);
+
+                if (string.IsNullOrEmpty(nombreUsuario))
+                {
+                    lblMensaje.Text = "No se encontró un usuario con esta cédula.";
+                    lblMensaje.CssClass = "text-danger";
+                    return; // detiene el proceso si no se encuentra el usuario
+                }
+
                 var cuenta = new ModeloCuenta
                 {
                     NumeroCuenta = txtNumeroCuenta.Text.Trim(),
-                    NombreUsuario = txtCedulaUsuario.Text.Trim(),
+                    NombreUsuario = nombreUsuario,
                     TipoCuenta = ddlTipoCuenta.SelectedValue,
                     Saldo = Convert.ToDecimal(txtSaldoInicial.Text.Trim())
                 };
@@ -77,7 +88,7 @@ namespace WebAdministracion.Paginas
             decimal saldo;
             if (decimal.TryParse(args.Value, out saldo))
             {
-                // Validar que el saldo esté dentro del rango permitido
+                // valida que el saldo este dentro del rango permitido
                 if (saldo >= 0.01m && saldo <= 9999999999.99m)
                 {
                     args.IsValid = true;

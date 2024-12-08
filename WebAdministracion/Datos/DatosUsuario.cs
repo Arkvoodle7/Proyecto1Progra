@@ -58,7 +58,7 @@ namespace Datos
 
         public void EliminarUsuario(string identificacion)
         {
-            // Llama al método del servicio web para eliminar el usuario
+            // llAMA al metodo del servicio web para eliminar el usuario
             _webServiceCliente.EliminarUsuario(identificacion);
         }
     }

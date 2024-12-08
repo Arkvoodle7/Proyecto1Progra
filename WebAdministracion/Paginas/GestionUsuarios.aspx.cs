@@ -32,10 +32,9 @@ namespace WebAdministracion.Paginas
         {
             try
             {
-                // Llama a la capa de negocios para obtener la lista de usuarios
                 var usuarios = _userService.ObtenerTodosLosUsuarios();
 
-                // Enlaza los datos al GridView
+                //carga el grrid
                 gvUsuarios.DataSource = usuarios;
                 gvUsuarios.DataBind();
             }
@@ -54,26 +53,50 @@ namespace WebAdministracion.Paginas
         {
             if (e.CommandName == "Editar")
             {
-                // Obtener la identificación del usuario desde CommandArgument
                 string identificacion = e.CommandArgument.ToString();
 
-                // Redirigir a la página de edición con la identificación como parámetro
+                // redirige a la pagina de edicion con la identificacion como parametro
                 Response.Redirect($"EditarUsuario.aspx?identificacion={identificacion}");
             }
 
             if (e.CommandName == "Eliminar")
             {
-                // Obtener la identificación del usuario desde CommandArgument
+                //obtiene la identificación del usuario desde el CommandArgument
                 string identificacion = e.CommandArgument.ToString();
 
-                // Llamar al método de la capa de negocios para eliminar el usuario
-                _userService.EliminarUsuario(identificacion);
+                if (!string.IsNullOrEmpty(identificacion))
+                {
+                    try
+                    {
+                        _userService.EliminarUsuario(identificacion);
 
-                // Volver a cargar el listado de usuarios
-                CargarUsuarios();
+                        CargarUsuarios();
 
-                
+                    }
+                    catch (Exception ex)
+                    {
+                        lblMensaje.Text = "Error al eliminar el usuario: " + ex.Message;
+                    }
+                }
+                else
+                {
+                    lblMensaje.Text = "La identificación no puede estar vacía.";
+                }
             }
         }
+
+        protected override void Render(HtmlTextWriter writer)
+        {
+            foreach (GridViewRow row in gvUsuarios.Rows)
+            {
+                if (gvUsuarios.DataKeys[row.RowIndex].Value != null)
+                {
+                    string identificacion = gvUsuarios.DataKeys[row.RowIndex].Value.ToString();
+                    ClientScript.RegisterForEventValidation(gvUsuarios.UniqueID, "Eliminar$" + identificacion);
+                }
+            }
+            base.Render(writer);
+        }
+
     }
 }

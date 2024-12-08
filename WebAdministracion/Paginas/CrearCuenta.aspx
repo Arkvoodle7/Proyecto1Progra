@@ -33,13 +33,6 @@
         <div class="mb-3">
             <label for="txtSaldoInicial">Saldo Inicial:</label>
             <asp:TextBox ID="txtSaldoInicial" runat="server" CssClass="form-control"></asp:TextBox>
-            <asp:CustomValidator 
-                ID="cvSaldoInicial" 
-                runat="server" 
-                ControlToValidate="txtSaldoInicial" 
-                ErrorMessage="El saldo inicial debe ser mayor a 0.01 y menor a 9,999,999,999.99" 
-                OnServerValidate="cvSaldoInicial_ServerValidate" 
-                CssClass="text-danger" />
            <asp:RequiredFieldValidator 
                 ID="rfvSaldoInicial" 
                 runat="server" 
@@ -50,7 +43,7 @@
 
         <div class="mt-4">
             <asp:Button ID="btnAceptar" runat="server" Text="Aceptar" CssClass="btn btn-primary me-2" OnClick="btnAceptar_Click"  />
-            <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary" OnClick="btnRegresar_Click"  />
+            <asp:Button ID="btnRegresar" runat="server" Text="Regresar" CssClass="btn btn-secondary" OnClick="btnRegresar_Click" CausesValidation="false"  />
         </div>
     </div>
 </asp:Content>

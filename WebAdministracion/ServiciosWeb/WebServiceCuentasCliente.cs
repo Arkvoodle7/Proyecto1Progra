@@ -17,12 +17,12 @@ namespace ServiciosWeb
             _client = new WebServiceAD_CuentasSoapClient();
         }
 
-        // Método para obtener el listado de cuentas
+        // metodo para obtener el listado de cuentas
         public List<ModeloCuenta> ListarTodasCuentas()
         {
-            var cuentasWS = _client.ListarTodasCuentas(); // Llama al método del servicio web
+            var cuentasWS = _client.ListarTodasCuentas(); // llama al metodo del web service
 
-            // Convierte las cuentas del servicio a ModeloCuenta
+            // convierte las cuentas del servicio a ModeloCuenta
             return cuentasWS.Select(cuentaWS => new ModeloCuenta
             {
                 NumeroCuenta = cuentaWS.NumeroCuenta,

@@ -23,14 +23,37 @@ namespace WebAdministracion.Paginas
             //carga los datos del usuario
             if (!IsPostBack)
             {
+                // Obtener el parámetro "identificacion" de la URL
                 string identificacion = Request.QueryString["identificacion"];
+
                 if (!string.IsNullOrEmpty(identificacion))
                 {
-                    CargarUsuario(identificacion);
+                    try
+                    {
+                        // Llamar a la capa de negocios para obtener el usuario
+                        var usuario = _userService.ObtenerUsuarioIdentificacion(identificacion);
+
+                        if (usuario != null)
+                        {
+                            // Rellenar los campos con los datos del usuario
+                            txtIdentificacion.Text = usuario.Identificacion;
+                            txtNombreUsuario.Text = usuario.NombreUsuario;
+                            txtNombreCompleto.Text = usuario.NombreCompleto;
+                            txtTelefono.Text = usuario.Telefono;
+                        }
+                        else
+                        {
+                            lblMensaje.Text = "Usuario no encontrado.";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        lblMensaje.Text = "Error al cargar el usuario: " + ex.Message;
+                    }
                 }
                 else
                 {
-                    lblMensaje.Text = "No se proporcionó una identificación válida.";
+                    lblMensaje.Text = "Identificación no proporcionada.";
                 }
             }
         }
@@ -58,17 +81,19 @@ namespace WebAdministracion.Paginas
         {
             try
             {
-                //crear un objeto con los datos actualizados
-                var usuarioActualizado = new ModeloUsuario
+                // Crear el objeto usuario con los datos del formulario
+                var usuario = new ModeloUsuario
                 {
                     Identificacion = txtIdentificacion.Text,
                     NombreUsuario = txtNombreUsuario.Text,
                     NombreCompleto = txtNombreCompleto.Text,
-                    Telefono = txtTelefono.Text,
+                    Telefono = txtTelefono.Text
                 };
 
-                _userService.ActualizarUsuario(usuarioActualizado, txtContrasena.Text);
+                // Actualizar el usuario
+                _userService.ActualizarUsuario(usuario, txtContrasena.Text);
 
+                // Redirigir al listado de usuarios después de la actualización
                 Response.Redirect("GestionUsuarios.aspx");
             }
             catch (Exception ex)

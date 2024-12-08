@@ -20,11 +20,41 @@
                 <asp:TemplateField HeaderText="Acciones">
                     <ItemTemplate>
                         <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="Editar" CommandArgument='<%# Eval("Identificacion") %>' CssClass="btn btn-warning btn-sm me-1" />
-                        <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Eliminar" CommandArgument='<%# Eval("Identificacion") %>' CssClass="btn btn-danger btn-sm" OnClientClick="return confirm('¿Realmente desea eliminar el usuario seleccionado?');" />
+                        <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Eliminar" CommandArgument='<%# Eval("Identificacion") %>' CssClass="btn btn-danger btn-sm" OnClientClick='<%# "return confirmarEliminacion(\"" + Eval("Identificacion") + "\");" %>' />
                     </ItemTemplate>
                 </asp:TemplateField>
             </Columns>
         </asp:GridView>
+
     </div>
+<script type="text/javascript">
+    function confirmarEliminacion(identificacion) {
+        console.log("Intentando eliminar usuario con Identificación:", identificacion);
+        Swal.fire({
+            title: '¿Realmente desea eliminar el usuario seleccionado?',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+            icon: 'warning',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log("Confirmación de eliminación recibida para Identificación:", identificacion);
+                // realiza el postback al servidor con la identificación
+                __doPostBack('<%= gvUsuarios.UniqueID %>', 'Eliminar$' + identificacion);
+            } else {
+                console.log("Eliminación cancelada para Identificación:", identificacion);
+            }
+        });
+
+        return false;
+    }
+</script>
+
+
+
+
+
+
 </asp:Content>
 
