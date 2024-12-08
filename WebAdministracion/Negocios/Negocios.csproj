@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -48,6 +48,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\WSAdministracion\Modelos\Modelos.csproj">
+      <Project>{8cfe57a9-6715-425e-8269-488ebb5460fe}</Project>
+      <Name>Modelos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Datos\Datos.csproj">
       <Project>{cf5a4c3b-c73c-46fb-a0f4-ae3fe1bb65be}</Project>
       <Name>Datos</Name>

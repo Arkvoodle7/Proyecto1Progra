@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="CrearCuetna">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="numero_cuenta" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nombre_usuario" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="tipo_cuenta" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="saldo" type="s:decimal" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CrearCuetnaResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="ListarCuentas">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="nombre_usuario" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ListarCuentasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ListarCuentasResult" type="tns:ArrayOfCuentas" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfCuentas">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Cuentas" nillable="true" type="tns:Cuentas" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Cuentas">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="NumeroCuenta" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NombreUsuario" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoCuenta" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="Saldo" type="s:decimal" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ListarTodasCuentas">
+        <s:complexType />
+      </s:element>
+      <s:element name="ListarTodasCuentasResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ListarTodasCuentasResult" type="tns:ArrayOfCuentas" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerNombreUsuarioPorCedula">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cedula" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ObtenerNombreUsuarioPorCedulaResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ObtenerNombreUsuarioPorCedulaResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="CrearCuetnaSoapIn">
+    <wsdl:part name="parameters" element="tns:CrearCuetna" />
+  </wsdl:message>
+  <wsdl:message name="CrearCuetnaSoapOut">
+    <wsdl:part name="parameters" element="tns:CrearCuetnaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListarCuentasSoapIn">
+    <wsdl:part name="parameters" element="tns:ListarCuentas" />
+  </wsdl:message>
+  <wsdl:message name="ListarCuentasSoapOut">
+    <wsdl:part name="parameters" element="tns:ListarCuentasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ListarTodasCuentasSoapIn">
+    <wsdl:part name="parameters" element="tns:ListarTodasCuentas" />
+  </wsdl:message>
+  <wsdl:message name="ListarTodasCuentasSoapOut">
+    <wsdl:part name="parameters" element="tns:ListarTodasCuentasResponse" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNombreUsuarioPorCedulaSoapIn">
+    <wsdl:part name="parameters" element="tns:ObtenerNombreUsuarioPorCedula" />
+  </wsdl:message>
+  <wsdl:message name="ObtenerNombreUsuarioPorCedulaSoapOut">
+    <wsdl:part name="parameters" element="tns:ObtenerNombreUsuarioPorCedulaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebServiceAD_CuentasSoap">
+    <wsdl:operation name="CrearCuetna">
+      <wsdl:input message="tns:CrearCuetnaSoapIn" />
+      <wsdl:output message="tns:CrearCuetnaSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarCuentas">
+      <wsdl:input message="tns:ListarCuentasSoapIn" />
+      <wsdl:output message="tns:ListarCuentasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ListarTodasCuentas">
+      <wsdl:input message="tns:ListarTodasCuentasSoapIn" />
+      <wsdl:output message="tns:ListarTodasCuentasSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNombreUsuarioPorCedula">
+      <wsdl:input message="tns:ObtenerNombreUsuarioPorCedulaSoapIn" />
+      <wsdl:output message="tns:ObtenerNombreUsuarioPorCedulaSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebServiceAD_CuentasSoap" type="tns:WebServiceAD_CuentasSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CrearCuetna">
+      <soap:operation soapAction="http://tempuri.org/CrearCuetna" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarCuentas">
+      <soap:operation soapAction="http://tempuri.org/ListarCuentas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarTodasCuentas">
+      <soap:operation soapAction="http://tempuri.org/ListarTodasCuentas" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNombreUsuarioPorCedula">
+      <soap:operation soapAction="http://tempuri.org/ObtenerNombreUsuarioPorCedula" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebServiceAD_CuentasSoap12" type="tns:WebServiceAD_CuentasSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CrearCuetna">
+      <soap12:operation soapAction="http://tempuri.org/CrearCuetna" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarCuentas">
+      <soap12:operation soapAction="http://tempuri.org/ListarCuentas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ListarTodasCuentas">
+      <soap12:operation soapAction="http://tempuri.org/ListarTodasCuentas" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtenerNombreUsuarioPorCedula">
+      <soap12:operation soapAction="http://tempuri.org/ObtenerNombreUsuarioPorCedula" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebServiceAD_Cuentas">
+    <wsdl:port name="WebServiceAD_CuentasSoap" binding="tns:WebServiceAD_CuentasSoap">
+      <soap:address location="https://localhost:44396/WebServiceAD_Cuentas.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebServiceAD_CuentasSoap12" binding="tns:WebServiceAD_CuentasSoap12">
+      <soap12:address location="https://localhost:44396/WebServiceAD_Cuentas.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

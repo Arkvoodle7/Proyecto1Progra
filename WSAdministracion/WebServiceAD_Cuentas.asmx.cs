@@ -32,5 +32,19 @@ namespace WSAdministracion
             AD_Cuentas cuentasService = new AD_Cuentas();
             return cuentasService.ListarCuentas(nombre_usuario);
         }
+
+        [WebMethod]
+        public List<Cuentas> ListarTodasCuentas()
+        {
+            AD_Cuentas cuentasService = new AD_Cuentas();
+            return cuentasService.ListartTodasCuentas();
+        }
+
+        [WebMethod]
+        public string ObtenerNombreUsuarioPorCedula(string cedula)
+        {
+            AD_Cuentas cuentasService = new AD_Cuentas();
+            return cuentasService.ObtenerNombreUsuarioPorCedula(cedula);
+        }
     }
 }

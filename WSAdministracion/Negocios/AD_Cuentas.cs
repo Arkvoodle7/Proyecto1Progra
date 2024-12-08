@@ -23,5 +23,17 @@ namespace Negocio
 
             return cuentasBD.MostrarCuentas(nombre_usuario);
         }
+
+        public List<Cuentas> ListartTodasCuentas()
+        {
+            AD_CuentasBD cuentasBD = new AD_CuentasBD();
+            return cuentasBD.MostrarTodasCuentas();
+        }
+
+        public string ObtenerNombreUsuarioPorCedula(string cedula)
+        {
+            AD_CuentasBD cuentasBD = new AD_CuentasBD();
+            return cuentasBD.ObtenerNombreUsuarioPorCedula(cedula);
+        }
     }
 }

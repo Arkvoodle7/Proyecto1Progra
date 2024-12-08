@@ -98,6 +98,72 @@ namespace Datos
             return listaCuentas;
         }
 
+        public List<Cuentas> MostrarTodasCuentas()
+        {
+            SqlCommand instruccionSQL;
+            List<Cuentas> listaCuentas = new List<Cuentas>();
+
+            AbrirConexion();
+
+            instruccionSQL = new SqlCommand("select * from Cuentas", conexion);
+
+            try
+            {
+                SqlDataReader reader = instruccionSQL.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Cuentas cuenta = new Cuentas
+                    {
+                        NumeroCuenta = reader["numero_cuenta"].ToString(),
+                        NombreUsuario = reader["nombre_usuario"].ToString(),
+                        TipoCuenta = reader["tipo_cuenta"].ToString(),
+                        Saldo = Convert.ToDecimal(reader["saldo"])
+                    };
+                    listaCuentas.Add(cuenta);
+                }
+
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al leer los datos: " + ex.Message);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+
+            return listaCuentas;
+        }
+
+
+        public string ObtenerNombreUsuarioPorCedula(string cedula)
+        {
+            string nombreUsuario = string.Empty;
+
+            try
+            {
+                AbrirConexion();
+
+                var comando = new SqlCommand("select nombre_usuario from Usuarios where identificacion = @cedula", conexion);
+                comando.Parameters.AddWithValue("@cedula", cedula);
+
+                var resultado = comando.ExecuteScalar();
+                nombreUsuario = resultado?.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al buscar el usuario por cedula: " + ex.Message);
+            }
+            finally
+            {
+                CerrarConexion();
+            }
+
+            return nombreUsuario;
+        }
+
         #endregion
     }
 }

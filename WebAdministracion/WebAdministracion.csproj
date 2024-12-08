@@ -44,6 +44,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -69,7 +74,11 @@
   <ItemGroup>
     <Content Include="assets\img\Megatron.png" />
     <Content Include="css\styles.css" />
+    <Content Include="css\Style_Users.css" />
     <Content Include="js\scripts.js" />
+    <Content Include="Paginas\CrearCuenta.aspx" />
+    <Content Include="Paginas\CrearUsuario.aspx" />
+    <Content Include="Paginas\EditarUsuario.aspx" />
     <Content Include="Paginas\GestionAdministradores.aspx" />
     <Content Include="Paginas\GestionCuentas.aspx" />
     <Content Include="Paginas\GestionUsuarios.aspx" />
@@ -77,6 +86,27 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Paginas\CrearCuenta.aspx.cs">
+      <DependentUpon>CrearCuenta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Paginas\CrearCuenta.aspx.designer.cs">
+      <DependentUpon>CrearCuenta.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\CrearUsuario.aspx.cs">
+      <DependentUpon>CrearUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Paginas\CrearUsuario.aspx.designer.cs">
+      <DependentUpon>CrearUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Paginas\EditarUsuario.aspx.cs">
+      <DependentUpon>EditarUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Paginas\EditarUsuario.aspx.designer.cs">
+      <DependentUpon>EditarUsuario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Paginas\GestionAdministradores.aspx.cs">
       <DependentUpon>GestionAdministradores.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -125,12 +155,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\WSAdministracion\Modelos\Modelos.csproj">
+      <Project>{8CFE57A9-6715-425E-8269-488EBB5460FE}</Project>
+      <Name>Modelos</Name>
+    </ProjectReference>
     <ProjectReference Include="Negocios\Negocios.csproj">
       <Project>{8e1c6d8e-2aae-4887-a4eb-ca3ade32b49e}</Project>
       <Name>Negocios</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

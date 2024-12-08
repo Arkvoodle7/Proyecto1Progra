@@ -192,9 +192,9 @@ namespace Datos
             SqlCommand instruccionSQL;
             List<Usuario> listaUsuarios = new List<Usuario>();
 
-            AbrirConexionBancario();
+            AbrirConexionUsuarios();
 
-            instruccionSQL = new SqlCommand("select * from Usuarios", conexionBancario);
+            instruccionSQL = new SqlCommand("select * from Usuarios", conexionUsuarios);
 
             try
             {
@@ -220,7 +220,7 @@ namespace Datos
             }
             finally
             {
-                CerrarConexionBancario();
+                CerrarConexionUsuarios();
             }
 
             return listaUsuarios;
