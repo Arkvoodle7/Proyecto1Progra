@@ -11,17 +11,18 @@ namespace WebAdministracion.Paginas
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["Usuario"] != null) //administrador autenticado
+            if (Session["UsuarioAutenticado"] != null)
             {
-                OpcionesLogin.Visible = false;
-                OpcionesAdministrador.Visible = true;
+                // Usuario autenticado, mostrar las opciones de administración
+                OpcionesLogin.Visible = false;  // Ocultar opciones de login
+                OpcionesAdministrador.Visible = true;  // Mostrar las opciones de administrador
             }
-            else //no autenticado
+            else
             {
-                OpcionesLogin.Visible = true;
-                OpcionesAdministrador.Visible = false;
+                // Usuario no autenticado, mostrar las opciones de login
+                OpcionesLogin.Visible = true;   // Mostrar opciones de login
+                OpcionesAdministrador.Visible = false;  // Ocultar las opciones de administrador
             }
         }
-
     }
 }

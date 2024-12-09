@@ -17,33 +17,19 @@
             <asp:TemplateField HeaderText="Acciones">
                 <ItemTemplate>
                     <asp:Button ID="btnEditar" runat="server" Text="Editar" CommandName="Editar" CommandArgument='<%# Eval("NombreUsuario") %>' CssClass="btn btn-warning btn-sm me-1" />
-                    <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Eliminar" CommandArgument='<%# Eval("NombreUsuario") %>' CssClass="btn btn-danger btn-sm" OnClientClick='<%# "return confirmarEliminacion(\"" + Eval("NombreUsuario") + "\");" %>' />
+                  <asp:Button 
+                    ID="btnEliminar" 
+                    runat="server" 
+                    Text="Eliminar" 
+                    CommandName="Eliminar" 
+                    CommandArgument='<%# Eval("NombreUsuario") %>' 
+                    CssClass="btn btn-danger btn-sm" />
+
                 </ItemTemplate>
             </asp:TemplateField>
         </Columns>
     </asp:GridView>
+        <asp:Label ID="lblEliminarUsuario" runat="server" CssClass="text-info" Visible="false"></asp:Label>
 </div>
-<script type="text/javascript">
-    function confirmarEliminacion(nombreusuario) {
-        console.log("Intentando eliminar usuario con Identificación:", nombreusuario);
-        Swal.fire({
-            title: '¿Realmente desea eliminar el usuario seleccionado?',
-            showCancelButton: true,
-            confirmButtonText: 'Sí',
-            cancelButtonText: 'No',
-            icon: 'warning',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                console.log("Confirmación de eliminación recibida para Identificación:", nombreusuario);
-                // realiza el postback al servidor con la identificación
-                __doPostBack('<%= gvAdministradores.UniqueID %>', 'Eliminar$' + nombreusuario);
-            } else {
-                console.log("Eliminación cancelada para nombreusuario:", nombreusuario);
-            }
-        });
 
-        return false;
-    }
-</script>
 </asp:Content>

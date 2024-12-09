@@ -20,8 +20,6 @@ namespace WebAdministracion.Paginas
                 string nombreUsuario = Request.QueryString["nombreUsuario"];
                 if (!string.IsNullOrEmpty(nombreUsuario))
                 {
-                    lblNombreUsuario.Text = "Parámetro nombreUsuario: " + nombreUsuario;
-
                     try
                     {
                         var administrador = _negociosAdministrador.ObtenerAdministradorPorNombreUsuario(nombreUsuario);
@@ -42,7 +40,7 @@ namespace WebAdministracion.Paginas
                 }
                 else
                 {
-                    lblMensaje.Text = "Nombre de usuario no proporcionado.";
+                    lblMensaje.Text = "Administrador no proporcionado.";
                 }
             }
         }
@@ -70,7 +68,7 @@ namespace WebAdministracion.Paginas
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = "Error al actualizar el administrador: " + ex.Message;
+                lblMensaje.Text = "Error al editar administrador: " + ex.Message;
             }
         }
 

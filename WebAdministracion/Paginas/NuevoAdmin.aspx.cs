@@ -15,7 +15,7 @@ namespace WebAdministracion.Paginas
 
         public NuevoAdmin()
         {
-            _negociosAdministrador = new NegociosAdministrador(); // Instancia la capa de negocio
+            _negociosAdministrador = new NegociosAdministrador();
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -27,17 +27,17 @@ namespace WebAdministracion.Paginas
         {
             try
             {
-                // Crear un nuevo administrador con los datos del formulario
+                // Crear un nuevo administrador
                 var nuevoAdmin = new ModeloAdmins
                 {
                     NombreUsuario = txt_nombreU.Text,
                     NombreCompleto = txt_nombreC.Text
                 };
 
-                // Llama al servicio para crear el administrador
+                
                 _negociosAdministrador.CrearAdministrador(nuevoAdmin, txt_contra.Text);
 
-                // Redirige al listado de administradores con un mensaje de éxito
+                
                 Response.Redirect("GestionAdministradores.aspx");
             }
             catch (Exception ex)

@@ -4,6 +4,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Modelos;
 using Negocios;
+using MongoDB.Bson;
 
 namespace WebAdministracion.Paginas
 {
@@ -51,16 +52,25 @@ namespace WebAdministracion.Paginas
             if (e.CommandName == "Editar")
             {
                 string nombreUsuario = e.CommandArgument.ToString();
-                Response.Redirect($"EditarAdmin.aspx?nombreUsuario={nombreUsuario}");
+                // Extraer "nombre_usuario"
+                var usuarioJson = BsonDocument.Parse(nombreUsuario);
+                string nombreUsuarioExtraido = usuarioJson["nombre_usuario"].ToString();
+
+                Response.Redirect($"EditarAdmin.aspx?nombreUsuario={nombreUsuarioExtraido}");
             }
             else if (e.CommandName == "Eliminar")
             {
                 string nombreUsuario = e.CommandArgument.ToString();
+               
+                var usuarioJson = BsonDocument.Parse(nombreUsuario);
+                string nombreUsuarioExtraido = usuarioJson["nombre_usuario"].ToString();
 
                 try
                 {
-                    _negociosAdministrador.EliminarAdministrador(nombreUsuario);
-                    CargarAdministradores(); // Actualiza la lista después de eliminar
+                    _negociosAdministrador.EliminarAdministrador(nombreUsuarioExtraido);
+
+                    CargarAdministradores();
+
                 }
                 catch (Exception ex)
                 {
@@ -68,15 +78,15 @@ namespace WebAdministracion.Paginas
                 }
             }
         }
-        // este render te va a servir para eliminar, si no te sirve este le decis a chat y te va a dar otro que se llama diferente
+
         protected override void Render(HtmlTextWriter writer)
         {
             foreach (GridViewRow row in gvAdministradores.Rows)
             {
                 if (gvAdministradores.DataKeys[row.RowIndex].Value != null)
                 {
-                    string identificacion = gvAdministradores.DataKeys[row.RowIndex].Value.ToString();
-                    ClientScript.RegisterForEventValidation(gvAdministradores.UniqueID, "Eliminar$" + identificacion);
+                    string nombreUsuario = gvAdministradores.DataKeys[row.RowIndex].Value.ToString();
+                    ClientScript.RegisterForEventValidation(gvAdministradores.UniqueID, "Eliminar$" + nombreUsuario);
                 }
             }
             base.Render(writer);
