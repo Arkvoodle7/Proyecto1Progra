@@ -48,11 +48,5 @@ namespace WebServiceAdmin
             return _client.borrar_usuario(nombre_usuario);
         }
 
-        public class AdminWS
-        {
-            public string NombreUsuario { get; set; }
-            public string NombreCompleto { get; set; }
-        }
-
     }
 }

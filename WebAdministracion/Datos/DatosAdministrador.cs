@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Datos.Modelos;
+using Modelos;
 using WebServiceAdmin;
 using MongoDB.Bson;
 
@@ -16,15 +16,15 @@ namespace Datos
         }
 
         // Método para obtener todos los administradores
-        public List<ModeloAdmin> ObtenerAdministradores()
+        public List<ModeloAdmins> ObtenerAdministradores()
         {
             var administradoresWS = _webServiceAdmin.ListarUsuarios();
 
-            var administradores = new List<ModeloAdmin>();
+            var administradores = new List<ModeloAdmins>();
 
             foreach (var administradorWS in administradoresWS)
             {
-                    administradores.Add(new ModeloAdmin
+                    administradores.Add(new ModeloAdmins
                     {
                         NombreUsuario = administradorWS,
                         NombreCompleto = administradorWS
@@ -34,13 +34,13 @@ namespace Datos
             return administradores;
         }
         // Método para insertar un nuevo administrador
-        public void InsertarAdministrador(ModeloAdmin administrador, string contrasena)
+        public void InsertarAdministrador(ModeloAdmins administrador, string contrasena)
         {
             _webServiceAdmin.CrearUsuario(administrador.NombreUsuario, administrador.NombreCompleto, contrasena);
         }
 
         // Método para obtener un administrador por nombre de usuario
-        public ModeloAdmin ObtenerAdministradorPorNombreUsuario(string nombreUsuario)
+        public ModeloAdmins ObtenerAdministradorPorNombreUsuario(string nombreUsuario)
         {
             var administradorWS = _webServiceAdmin.ObtenerUsuario(nombreUsuario);  
 
@@ -50,7 +50,7 @@ namespace Datos
             }
             var usuario = BsonDocument.Parse(administradorWS);
 
-            return new ModeloAdmin
+            return new ModeloAdmins
             {
                 NombreUsuario = usuario["nombre_usuario"].ToString(),
                 NombreCompleto = usuario["nombre_completo"].ToString()
@@ -75,7 +75,7 @@ namespace Datos
             }
         }
 
-        public void ActualizarAdministrador(ModeloAdmin administrador, string contrasena)
+        public void ActualizarAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||
                 string.IsNullOrEmpty(administrador.NombreCompleto) ||

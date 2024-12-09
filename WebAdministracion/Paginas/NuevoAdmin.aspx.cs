@@ -1,4 +1,4 @@
-﻿using Datos.Modelos;
+﻿using Modelos;
 using Negocios;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace WebAdministracion.Paginas
             try
             {
                 // Crear un nuevo administrador con los datos del formulario
-                var nuevoAdmin = new ModeloAdmin
+                var nuevoAdmin = new ModeloAdmins
                 {
                     NombreUsuario = txt_nombreU.Text,
                     NombreCompleto = txt_nombreC.Text

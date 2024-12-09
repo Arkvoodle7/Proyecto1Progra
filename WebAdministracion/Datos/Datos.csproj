@@ -66,7 +66,6 @@
     <Compile Include="DatosCuenta.cs" />
     <Compile Include="DatosLogin.cs" />
     <Compile Include="DatosUsuario.cs" />
-    <Compile Include="Modelos\ModeloAdmin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +79,10 @@
     <ProjectReference Include="..\..\WebServiceAdmin\WebServiceAdmin.csproj">
       <Project>{ad514ad8-ae94-465f-842d-5817e42351c5}</Project>
       <Name>WebServiceAdmin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Modelos\Modelos.csproj">
+      <Project>{34d9a05d-0c73-46d0-a3a5-3bd897f803d0}</Project>
+      <Name>Modelos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

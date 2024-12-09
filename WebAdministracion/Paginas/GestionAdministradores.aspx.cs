@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.UI;
 using System.Web.UI.WebControls;
-using Datos.Modelos;
+using Modelos;
 using Negocios;
 
 namespace WebAdministracion.Paginas
@@ -66,6 +67,19 @@ namespace WebAdministracion.Paginas
                     lblMensaje.Text = "Error al eliminar el administrador: " + ex.Message;
                 }
             }
+        }
+        // este render te va a servir para eliminar, si no te sirve este le decis a chat y te va a dar otro que se llama diferente
+        protected override void Render(HtmlTextWriter writer)
+        {
+            foreach (GridViewRow row in gvAdministradores.Rows)
+            {
+                if (gvAdministradores.DataKeys[row.RowIndex].Value != null)
+                {
+                    string identificacion = gvAdministradores.DataKeys[row.RowIndex].Value.ToString();
+                    ClientScript.RegisterForEventValidation(gvAdministradores.UniqueID, "Eliminar$" + identificacion);
+                }
+            }
+            base.Render(writer);
         }
     }
 }

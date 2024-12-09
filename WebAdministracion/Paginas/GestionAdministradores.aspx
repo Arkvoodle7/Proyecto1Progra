@@ -24,22 +24,26 @@
     </asp:GridView>
 </div>
 <script type="text/javascript">
-    function confirmarEliminacion(nombreUsuario) {
+    function confirmarEliminacion(nombreusuario) {
+        console.log("Intentando eliminar usuario con Identificación:", nombreusuario);
         Swal.fire({
-            title: '¿Realmente desea eliminar el administrador seleccionado?',
+            title: '¿Realmente desea eliminar el usuario seleccionado?',
             showCancelButton: true,
-            confirmButtonText: 'Si',
+            confirmButtonText: 'Sí',
             cancelButtonText: 'No',
             icon: 'warning',
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                // Realiza el postback con el nombreUsuario para eliminar
-                __doPostBack('<%= gvAdministradores.UniqueID %>', 'Eliminar$' + nombreUsuario);
+                console.log("Confirmación de eliminación recibida para Identificación:", nombreusuario);
+                // realiza el postback al servidor con la identificación
+                __doPostBack('<%= gvAdministradores.UniqueID %>', 'Eliminar$' + nombreusuario);
+            } else {
+                console.log("Eliminación cancelada para nombreusuario:", nombreusuario);
             }
         });
 
-        return false;  // Evita que el GridView realice el postback antes de la confirmación
+        return false;
     }
 </script>
 </asp:Content>

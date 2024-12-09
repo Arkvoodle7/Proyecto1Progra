@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Datos.Modelos
+namespace Modelos
 {
-    public class ModeloAdmin
+    public class ModeloAdmins
     {
         public string NombreUsuario { get; set; }
         public string NombreCompleto { get; set; }

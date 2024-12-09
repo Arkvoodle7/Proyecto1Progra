@@ -62,6 +62,10 @@
       <Project>{cf5a4c3b-c73c-46fb-a0f4-ae3fe1bb65be}</Project>
       <Name>Datos</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modelos\Modelos.csproj">
+      <Project>{34d9a05d-0c73-46d0-a3a5-3bd897f803d0}</Project>
+      <Name>Modelos</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

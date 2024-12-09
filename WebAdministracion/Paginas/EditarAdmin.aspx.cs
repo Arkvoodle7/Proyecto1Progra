@@ -1,5 +1,5 @@
 ﻿using System;
-using Datos.Modelos;
+using Modelos;
 using Negocios;
 
 namespace WebAdministracion.Paginas
@@ -51,7 +51,7 @@ namespace WebAdministracion.Paginas
         {
             try
             {
-                var administrador = new ModeloAdmin
+                var administrador = new ModeloAdmins
                 {
                     NombreUsuario = txt_nombreU.Text.Trim(),
                     NombreCompleto = txt_nombreC.Text.Trim()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Datos;
-using Datos.Modelos;
+using Modelos;
 
 namespace Negocios
 {
@@ -15,13 +15,13 @@ namespace Negocios
         }
 
         // Método para obtener todos los administradores
-        public List<ModeloAdmin> ObtenerTodosLosAdministradores()
+        public List<ModeloAdmins> ObtenerTodosLosAdministradores()
         {
             return _datosAdministrador.ObtenerAdministradores();
         }
 
         // Método para crear un nuevo administrador
-        public void CrearAdministrador(ModeloAdmin administrador, string contrasena)
+        public void CrearAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||
                 string.IsNullOrEmpty(administrador.NombreCompleto) ||
@@ -33,7 +33,7 @@ namespace Negocios
         }
 
         // Método para obtener un administrador por nombre de usuario
-        public ModeloAdmin ObtenerAdministradorPorNombreUsuario(string nombreUsuario)
+        public ModeloAdmins ObtenerAdministradorPorNombreUsuario(string nombreUsuario)
         {
             return _datosAdministrador.ObtenerAdministradorPorNombreUsuario(nombreUsuario);
         }
@@ -55,7 +55,7 @@ namespace Negocios
             }
         }
 
-        public void ActualizarAdministrador(ModeloAdmin administrador, string contrasena)
+        public void ActualizarAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||
                 string.IsNullOrEmpty(administrador.NombreCompleto) ||
