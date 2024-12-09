@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
     <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script> <!-- Versión completa -->
     <asp:PlaceHolder ID="HeadContent" runat="server"></asp:PlaceHolder>
     <script src="~/js/scripts.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -82,6 +83,10 @@
                 </footer>
             </div>
         </div>
+
+        <!-- Añadir un LinkButton oculto para forzar la generación de __doPostBack -->
+        <asp:LinkButton ID="lnkDummy" runat="server" Style="display:none;"></asp:LinkButton>
+
     </form>
 
     <!-- Scripts -->

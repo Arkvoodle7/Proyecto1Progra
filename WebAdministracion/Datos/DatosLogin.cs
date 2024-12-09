@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Datos
 {
-    internal class DatosLogin
+    public class DatosLogin
     {
+        public string Usuario { get; set; }
+        public string Mensaje { get; set; }
+        public int Resultado { get; set; }
     }
 }
