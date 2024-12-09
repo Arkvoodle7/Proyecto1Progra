@@ -24,7 +24,7 @@
 
             <div id="contra">
                 <asp:Label ID="lblcontra" Text="Contraseña:" runat="server" />
-                <asp:TextBox ID="txt_contra" runat="server" />
+                <asp:TextBox ID="txt_contra" runat="server" TextMode="Password" />
             </div>
 
             <div id="botones">
