@@ -57,45 +57,70 @@ namespace Datos
             CerrarConexion();
         }
 
-        //muestra todas las cuentas de un usuario
         public List<Cuentas> MostrarCuentas(string nombre_usuario)
         {
             SqlCommand instruccionSQL;
             List<Cuentas> listaCuentas = new List<Cuentas>();
 
-            AbrirConexion();
-
-            instruccionSQL = new SqlCommand("select * from Cuentas where nombre_usuario = @nombre_usuario", conexion);
-            instruccionSQL.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
-
             try
             {
+                Console.WriteLine("Abriendo conexión con la base de datos...");
+                AbrirConexion();
+
+                instruccionSQL = new SqlCommand("SELECT * FROM Cuentas WHERE nombre_usuario = @nombre_usuario", conexion);
+                instruccionSQL.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
+
+                Console.WriteLine("Ejecutando consulta SQL...");
                 SqlDataReader reader = instruccionSQL.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    Cuentas cuenta = new Cuentas
+                    listaCuentas.Add(new Cuentas
                     {
                         NumeroCuenta = reader["numero_cuenta"].ToString(),
                         NombreUsuario = reader["nombre_usuario"].ToString(),
                         TipoCuenta = reader["tipo_cuenta"].ToString(),
                         Saldo = Convert.ToDecimal(reader["saldo"])
-                    };
-                    listaCuentas.Add(cuenta);
+                    });
                 }
 
                 reader.Close();
+                Console.WriteLine($"Consulta SQL completada. Cuentas encontradas: {listaCuentas.Count}");
             }
             catch (Exception ex)
             {
-                throw new System.Exception("Error al leer los datos: " + ex.Message);
+                Console.WriteLine($"Error al consultar las cuentas: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw new Exception("Error al consultar las cuentas: " + ex.Message);
             }
             finally
             {
                 CerrarConexion();
+                Console.WriteLine("Conexión cerrada.");
             }
 
             return listaCuentas;
+        }
+        // Nuevo método para obtener el teléfono del usuario
+        public string ObtenerTelefonoPorUsuario(string nombre_usuario)
+        {
+            string telefono = string.Empty;
+
+            using (SqlConnection conexion = new SqlConnection(connectionString))
+            {
+                conexion.Open();
+                SqlCommand comando = new SqlCommand(
+                    "SELECT Telefono FROM Usuarios WHERE nombre_usuario = @nombre_usuario", conexion);
+                comando.Parameters.AddWithValue("@nombre_usuario", nombre_usuario);
+
+                object resultado = comando.ExecuteScalar();
+                if (resultado != null)
+                {
+                    telefono = resultado.ToString();
+                }
+            }
+
+            return telefono;
         }
 
         #endregion

@@ -23,5 +23,12 @@ namespace Negocio
 
             return cuentasBD.MostrarCuentas(nombre_usuario);
         }
+        // Nuevo método para obtener el teléfono del usuario
+        public string ObtenerTelefonoPorUsuario(string nombre_usuario)
+        {
+            AD_CuentasBD cuentasBD = new AD_CuentasBD();
+            return cuentasBD.ObtenerTelefonoPorUsuario(nombre_usuario); // Llama al método en el repositorio
+        }
+
     }
 }
