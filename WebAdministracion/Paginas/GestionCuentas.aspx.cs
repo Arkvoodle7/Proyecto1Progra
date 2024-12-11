@@ -11,7 +11,22 @@ namespace WebAdministracion.Paginas
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                CargarCuentas();
+            }
+        }
+        private void CargarCuentas()
+        {
+            // Simulación de datos
+            var cuentas = new List<object>
+    {
+        new { NumeroCuenta = "123456", Usuario = "jperez", TipoCuenta = "Ahorros", Saldo = 5000 },
+        new { NumeroCuenta = "654321", Usuario = "mlopez", TipoCuenta = "Empresarial", Saldo = 15000 }
+    };
 
+            gvCuentas.DataSource = cuentas;
+            gvCuentas.DataBind();
         }
     }
 }

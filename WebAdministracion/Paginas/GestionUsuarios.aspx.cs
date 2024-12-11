@@ -11,7 +11,22 @@ namespace WebAdministracion.Paginas
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
+                CargarUsuarios();
+            }
+        }
+        private void CargarUsuarios()
+        {
+            // Simulación de datos
+            var usuarios = new List<object>
+    {
+        new { Identificacion = 105160987, NombreUsuario = "jperez", NombreCompleto = "Juan Pérez", Telefono = "89765432" },
+        new { Identificacion = 206780345, NombreUsuario = "mlopez", NombreCompleto = "María López", Telefono = "66778899" }
+    };
 
+            gvUsuarios.DataSource = usuarios;
+            gvUsuarios.DataBind();
         }
     }
 }

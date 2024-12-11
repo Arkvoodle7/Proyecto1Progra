@@ -8,19 +8,13 @@
     <div>
           <h2>Cuentas</h2>
         <asp:Button ID="btnAgregarCuenta" runat="server" Text="Agregar Cuenta" CssClass="btn btn-primary mb-3" />
-        <asp:GridView ID="gvCuentas" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1">
-            <Columns>
-                <asp:BoundField DataField="placeholder1" HeaderText="placeholder1" />
-                <asp:BoundField DataField="placeholder2" HeaderText="placeholder2" />
-                <asp:BoundField DataField="placeholder3" HeaderText="placeholder3" />
-                <asp:BoundField DataField="placeholder4" HeaderText="placeholder4" />
-                <asp:TemplateField HeaderText="Acciones">
-                    <ItemTemplate>
-                        <asp:Button ID="btnModificar" runat="server" Text="Modificar" CommandName="Modificar" CommandArgument='<%# Eval("placeholder1") %>' CssClass="btn btn-warning btn-sm" />
-                        <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CommandName="Eliminar" CommandArgument='<%# Eval("placeholder1") %>' CssClass="btn btn-danger btn-sm" />
-                    </ItemTemplate>
-                </asp:TemplateField>
-            </Columns>
-        </asp:GridView>
+      <asp:GridView ID="gvCuentas" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="NumeroCuenta">
+        <Columns>
+            <asp:BoundField DataField="NumeroCuenta" HeaderText="Número de Cuenta" />
+            <asp:BoundField DataField="Usuario" HeaderText="Usuario" />
+            <asp:BoundField DataField="TipoCuenta" HeaderText="Tipo de Cuenta" />
+            <asp:BoundField DataField="Saldo" HeaderText="Saldo" DataFormatString="{0:C}" />
+        </Columns>
+    </asp:GridView>
     </div>
 </asp:Content>
