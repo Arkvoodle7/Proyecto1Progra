@@ -24,6 +24,7 @@
                         <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user fa-fw"></i>
                         </a>
+                        <%--cerrar sesión real--%>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
                                 <a class="dropdown-item" href="#" runat="server">Cerrar sesión</a>
@@ -41,6 +42,7 @@
                         <div class="nav">
                             <asp:PlaceHolder ID="OpcionesLogin" runat="server" Visible="true">
                                 <div class="sb-sidenav-menu-heading">Inicio</div>
+                                <%--cerrar sesión funcional por ahora--%>
                                 <a class="nav-link" href="PaginaLogin.aspx">
                                     <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
                                     Iniciar Sesión

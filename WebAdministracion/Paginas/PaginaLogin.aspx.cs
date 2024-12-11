@@ -26,6 +26,7 @@ namespace WebAdministracion.Paginas
             {
                 if (resultado.resultado == 0)
                 {
+                    Session["UsuarioAutenticado"] = usuario;
                     //redirigir
                     Response.Redirect("GestionAdministradores.aspx");
                 }
