@@ -67,10 +67,9 @@ namespace Datos
 
             try
             {
-                // Llamamos al servicio web para eliminar el usuario
+                
                 var resultado = _webServiceAdmin.EliminarUsuario(nombreUsuario);
 
-                // Verifica si la eliminación fue exitosa
                 if (resultado != "Usuario eliminado con éxito")
                 {
                     throw new Exception("Error al eliminar el administrador: " + resultado);
@@ -82,6 +81,7 @@ namespace Datos
             }
         }
 
+        // Método para editar administrador
         public void ActualizarAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||

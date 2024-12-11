@@ -19,7 +19,6 @@ namespace Negocios
             }
             catch (Exception ex)
             {
-                //Mensaje de error
                 throw new Exception($"Error al consumir el servicio web: {ex.Message}", ex);
             }
         }

@@ -20,7 +20,7 @@ namespace Negocios
             return _datosAdministrador.ObtenerAdministradores();
         }
 
-        // Método para crear un nuevo administrador
+        // Método para un nuevo administrador
         public void CrearAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||
@@ -38,6 +38,7 @@ namespace Negocios
             return _datosAdministrador.ObtenerAdministradorPorNombreUsuario(nombreUsuario);
         }
 
+        // Método para eliminar un usuario
         public void EliminarAdministrador(string nombreUsuario)
         {
             if (string.IsNullOrEmpty(nombreUsuario))
@@ -55,6 +56,7 @@ namespace Negocios
             }
         }
 
+        // Método para editar un usuario
         public void ActualizarAdministrador(ModeloAdmins administrador, string contrasena)
         {
             if (string.IsNullOrEmpty(administrador.NombreUsuario) ||

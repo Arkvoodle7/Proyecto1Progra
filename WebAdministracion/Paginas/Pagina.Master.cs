@@ -13,16 +13,28 @@ namespace WebAdministracion.Paginas
         {
             if (Session["UsuarioAutenticado"] != null)
             {
-                // Usuario autenticado, mostrar las opciones de administración
-                OpcionesLogin.Visible = false;  // Ocultar opciones de login
-                OpcionesAdministrador.Visible = true;  // Mostrar las opciones de administrador
+                // Administrador autenticado 
+                OpcionesLogin.Visible = false;  
+                OpcionesCerrarSesion.Visible = true;
+                OpcionesAdministrador.Visible = true; 
             }
             else
             {
-                // Usuario no autenticado, mostrar las opciones de login
-                OpcionesLogin.Visible = true;   // Mostrar opciones de login
-                OpcionesAdministrador.Visible = false;  // Ocultar las opciones de administrador
+                // Administrador no auntenticado
+                OpcionesLogin.Visible = true; 
+                OpcionesCerrarSesion.Visible = false;
+                OpcionesAdministrador.Visible = false; 
             }
+        }
+
+        protected void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            // Cerrar sesión, deshabilitar todas las opciones 
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("PaginaLogin.aspx");
+            OpcionesCerrarSesion.Visible = false;
+            OpcionesAdministrador.Visible = false;
         }
     }
 }

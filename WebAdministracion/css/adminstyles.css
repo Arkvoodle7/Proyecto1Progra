@@ -1,35 +1,68 @@
 ﻿body {
     background-color: #f8f9fa; /* Fondo claro */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* Títulos */
-h2 {
+form {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+h1 {
     font-weight: bold;
     color: #343a40; /* Gris oscuro */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* Botón Agregar Usuario */
-.btn-primary {
-    font-size: 16px;
-    padding: 10px 20px;
-    border-radius: 5px;
+div[id^="nombre"], div[id^="contra"], div[id="botones"] {
+    margin-bottom: 15px; /* Espaciado entre los campos */
+    text-align: center; /* Centrar contenido */
 }
 
-/* Tabla */
-.table {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-    .table th, .table td {
-        text-align: center;
-        vertical-align: middle;
+    div[id^="nombre"] label, div[id^="contra"] label {
+        display: block;
+        font-weight: bold;
+        color: #495057; /* Gris medio */
+        margin-bottom: 5px;
     }
 
-/* Botones de acción */
-.btn-warning, .btn-danger {
+    div[id^="nombre"] input, div[id^="contra"] input {
+        width: 90%; /* Ajuste del ancho */
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ced4da; /* Borde gris */
+        border-radius: 4px; /* Esquinas redondeadas */
+        box-sizing: border-box;
+    }
+
+    div[id="botones"] button {
+        display: inline-block;
+        width: 45%; /* Ancho uniforme */
+        font-size: 16px;
+        padding: 10px 0;
+        border-radius: 5px;
+        border: none;
+        background-color: #007bff; /* Azul primario */
+        color: white;
+        cursor: pointer;
+        margin: 5px;
+        text-transform: uppercase;
+    }
+
+        div[id="botones"] button:hover {
+            background-color: #0056b3; /* Azul más oscuro */
+        }
+
+.text-danger {
+    color: #dc3545; /* Rojo */
     font-size: 14px;
-    padding: 5px 10px;
+    text-align: center;
+    margin-top: 10px;
 }

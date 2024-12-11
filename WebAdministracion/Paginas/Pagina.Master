@@ -24,12 +24,14 @@
                         <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user fa-fw"></i>
                         </a>
-                        <%--cerrar sesión real--%>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li>
-                                <a class="dropdown-item" href="#" runat="server">Cerrar sesión</a>
-                            </li>
-                        </ul>
+                        <%--cerrar sesión--%>
+                         <asp:PlaceHolder ID="OpcionesCerrarSesion" runat="server" Visible="false">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li>
+                                    <asp:LinkButton ID="btnCerrarSesion" runat="server" CssClass="dropdown-item" OnClick="btnCerrarSesion_Click">Cerrar sesión</asp:LinkButton>
+                                </li>
+                            </ul>
+                        </asp:PlaceHolder>
                     </li>
                 </ul>
             </div>
@@ -42,8 +44,7 @@
                         <div class="nav">
                             <asp:PlaceHolder ID="OpcionesLogin" runat="server" Visible="true">
                                 <div class="sb-sidenav-menu-heading">Inicio</div>
-                                <%--cerrar sesión funcional por ahora--%>
-                                <a class="nav-link" href="PaginaLogin.aspx">
+                                <a class="nav-link">
                                     <div class="sb-nav-link-icon"><i class="fas fa-sign-in-alt"></i></div>
                                     Iniciar Sesión
                                 </a>
@@ -86,7 +87,7 @@
             </div>
         </div>
 
-        <!-- Añadir un LinkButton oculto para forzar la generación de __doPostBack -->
+        <!-- LinkButton oculto para forzar la generación de __doPostBack -->
         <asp:LinkButton ID="lnkDummy" runat="server" Style="display:none;"></asp:LinkButton>
 
         <!-- Scripts -->
