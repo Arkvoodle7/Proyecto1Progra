@@ -6,7 +6,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h2>Cuentas</h2>
+          <h2>Cuentas</h2>
         <asp:Button ID="btnAgregarCuenta" runat="server" Text="Agregar Cuenta" CssClass="btn btn-primary mb-3" />
         <asp:GridView ID="gvCuentas" runat="server" AutoGenerateColumns="False" CssClass="table table-striped" DataKeyNames="placeholder1">
             <Columns>
