@@ -11,24 +11,24 @@
                     <div class="card-body">
                         <asp:Label ID="lblMensaje" runat="server" ForeColor="Red" CssClass="form-text text-danger"></asp:Label>
                         <div class="form-group mb-3">
-                            <asp:TextBox 
-                                ID="txtUsuario" 
-                                runat="server" 
-                                CssClass="form-control mb-3" 
+                            <asp:TextBox
+                                ID="txtUsuario"
+                                runat="server"
+                                CssClass="form-control mb-3"
                                 placeholder="Usuario"></asp:TextBox>
                         </div>
                         <div class="form-group mb-3">
-                            <asp:TextBox 
-                                ID="txtPassword" 
-                                runat="server" 
-                                CssClass="form-control mb-3" 
-                                placeholder="Contraseña" 
+                            <asp:TextBox
+                                ID="txtPassword"
+                                runat="server"
+                                CssClass="form-control mb-3"
+                                placeholder="Contraseña"
                                 TextMode="Password"></asp:TextBox>
                         </div>
-                        <asp:Button 
-                            ID="btnLogin" 
-                            runat="server" 
-                            CssClass="btn btn-primary mt-3 w-100" 
+                        <asp:Button
+                            ID="btnLogin"
+                            runat="server"
+                            CssClass="btn btn-primary mt-3 w-100"
                             Text="Iniciar Sesión"
                             OnClick="btnLogin_Click" />
                         <div class="text-center mt-4">
