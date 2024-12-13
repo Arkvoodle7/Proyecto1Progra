@@ -15,13 +15,13 @@ namespace WebUsuarios.Paginas
     {
 
         /// <summary>
-        /// Control PanelTransferencias.
+        /// Control lblMensaje.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel PanelTransferencias;
+        protected global::System.Web.UI.WebControls.Literal lblMensaje;
 
         /// <summary>
         /// Control txtTelefonoDestino.
@@ -51,12 +51,12 @@ namespace WebUsuarios.Paginas
         protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
-        /// Control btnTransferir.
+        /// Control btnConfirmar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnTransferir;
+        protected global::System.Web.UI.WebControls.Button btnConfirmar;
     }
 }
