@@ -43,7 +43,7 @@ namespace WebUsuarios.Paginas
 
             if (isSuccess)
             {
-                MostrarMensaje("Éxito", mensaje, "success", "fa-check-circle");
+                MostrarMensaje("Operación Exitosa", mensaje, "success", "fa-check-circle");
             }
             else
             {
