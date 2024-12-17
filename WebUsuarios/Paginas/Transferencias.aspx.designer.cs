@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿//------------------------------------------------------------------------------
+=======
+//------------------------------------------------------------------------------
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
 // <generado automáticamente>
 //     Este código fue generado por una herramienta.
 //
@@ -15,13 +19,21 @@ namespace WebUsuarios.Paginas
     {
 
         /// <summary>
+<<<<<<< HEAD
         /// Control PanelTransferencias.
+=======
+        /// Control lblMensaje.
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
+<<<<<<< HEAD
         protected global::System.Web.UI.WebControls.Panel PanelTransferencias;
+=======
+        protected global::System.Web.UI.WebControls.Literal lblMensaje;
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
 
         /// <summary>
         /// Control txtTelefonoDestino.
@@ -51,12 +63,20 @@ namespace WebUsuarios.Paginas
         protected global::System.Web.UI.WebControls.TextBox txtDescripcion;
 
         /// <summary>
+<<<<<<< HEAD
         /// Control btnTransferir.
+=======
+        /// Control btnConfirmar.
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
+<<<<<<< HEAD
         protected global::System.Web.UI.WebControls.Button btnTransferir;
+=======
+        protected global::System.Web.UI.WebControls.Button btnConfirmar;
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
     }
 }

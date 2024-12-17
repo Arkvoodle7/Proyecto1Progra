@@ -76,5 +76,17 @@ namespace WebAdministracion.Paginas
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+<<<<<<< HEAD
+=======
+
+        /// <summary>
+        /// Control lnkDummy.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkDummy;
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
     }
 }

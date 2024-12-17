@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 ﻿<%@ Page Title="Login" Language="C#" MasterPageFile="~/Paginas/Pagina.Master" AutoEventWireup="true" CodeBehind="PaginaLogin.aspx.cs" Inherits="WebAdministracion.Paginas.PaginaLogin" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+=======
+<%@ Page Title="Login" Language="C#" MasterPageFile="~/Paginas/Pagina.Master" AutoEventWireup="true" CodeBehind="PaginaLogin.aspx.cs" Inherits="WebAdministracion.Paginas.PaginaLogin" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <link href="../css/styles.css" rel="stylesheet" />
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5">
@@ -25,7 +32,11 @@
                             ID="btnLogin" 
                             runat="server" 
                             CssClass="btn btn-primary mt-3 w-100" 
+<<<<<<< HEAD
                             Text="Iniciar Sesión" />
+=======
+                            Text="Iniciar Sesión" onclick="btnLogin_Click"/>
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
                     </div>
                 </div>
             </div>

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Pagina.Master.cs" Inherits="WebAdministracion.Paginas.Pagina" %>
+=======
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Pagina.Master.cs" Inherits="WebAdministracion.Paginas.Pagina" %>
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,8 +11,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title><asp:ContentPlaceHolder ID="TitleContent" runat="server" /></title>
+<<<<<<< HEAD
     <link href="~/css/styles.css" rel="stylesheet" />
     <asp:PlaceHolder ID="HeadContent" runat="server"></asp:PlaceHolder>
+=======
+
+    <!-- Hojas de estilo -->
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/Style_Users.css" />
+    <link rel="stylesheet" type="text/css" href="css/Style_Cuentas.css" />
+    
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.min.css">
+    
+    <asp:PlaceHolder ID="HeadContent" runat="server"></asp:PlaceHolder>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.0/dist/sweetalert2.all.min.js"></script>
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
     <script src="~/js/scripts.js"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -16,6 +36,10 @@
     <form id="form1" runat="server">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand ps-3" href="PaginaLogin.aspx">Pagos Móviles</a>
+<<<<<<< HEAD
+=======
+            
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
             <!-- Navbar -->
             <div class="d-flex ms-auto" runat="server" id="IconoUsuario">
                 <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
@@ -38,6 +62,10 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
+<<<<<<< HEAD
+=======
+                            <!-- Opciones de inicio y administración -->
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
                             <asp:PlaceHolder ID="OpcionesLogin" runat="server" Visible="true">
                                 <div class="sb-sidenav-menu-heading">Inicio</div>
                                 <a class="nav-link" href="PaginaLogin.aspx">
@@ -70,6 +98,11 @@
                 <main>
                     <asp:ContentPlaceHolder ID="MainContent" runat="server" />
                 </main>
+<<<<<<< HEAD
+=======
+                
+                <!-- Pie de página -->
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
@@ -82,10 +115,21 @@
                 </footer>
             </div>
         </div>
+<<<<<<< HEAD
     </form>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="~/js/scripts.js"></script>
+=======
+
+        <!-- Añadir un LinkButton oculto para forzar la generación de __doPostBack -->
+        <asp:LinkButton ID="lnkDummy" runat="server" Style="display:none;"></asp:LinkButton>
+
+        <!-- Scripts de Bootstrap y adicionales -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="~/js/scripts.js"></script>
+    </form>
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
 </body>
 </html>

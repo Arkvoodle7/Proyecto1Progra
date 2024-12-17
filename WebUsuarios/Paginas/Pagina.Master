@@ -11,6 +11,10 @@
     <asp:PlaceHolder ID="HeadContent" runat="server"></asp:PlaceHolder>
     <script src="<%= ResolveUrl("~/js/scripts.js") %>"></script>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+<<<<<<< HEAD
+=======
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+>>>>>>> bac7423082a8dfee49ab73d45a08abd65507d25d
 </head>
 <body class="sb-nav-fixed">
     <form id="form1" runat="server">
